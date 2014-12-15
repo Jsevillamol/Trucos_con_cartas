@@ -8,18 +8,18 @@ const int CARTASxPALO=13,
           CENTINELA=52;
 
 //TIPOS PROPIOS
-typedef enum tPalo
+typedef enum
 {
 	picas,
 	treboles,
 	diamantes,
 	corazones
-};
+} tPalo;
 
-typedef enum tNumero 
+typedef enum  
 {
-	A,2,3,4,5,6,7,8,9,10,J,Q,K
-};
+	A, J=11, Q, K
+} tNumero;
 
 typedef int tCarta;
 typedef tCarta tMazo[MAX_CARTAS+1];
