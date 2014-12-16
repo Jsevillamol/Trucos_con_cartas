@@ -20,7 +20,7 @@ typedef enum
 
 typedef enum  
 {
-	A, J=11, Q, K
+	A=1, J=11, Q, K
 } tNumero;
 
 typedef int tCarta;
@@ -28,6 +28,8 @@ typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
 int cuantas(tMazo mazo);
+tPalo palo(tCarta carta);
+tNumero numero(tCarta carta);
 
 bool cargar(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
@@ -50,6 +52,16 @@ int main()
 int cuantas(tMazo mazo)
 {
 	return 1; //Placeholder
+}
+
+tPalo palo(tCarta carta)
+{
+	return picas;
+}
+
+tNumero numero(tCarta carta)
+{
+	return A;
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -81,7 +93,25 @@ bool abrir(string &nomb, ifstream &archivo)
 
 string traducir(tCarta carta)
 {
-	return ""; //PLACEHOLDER
+	string s="";
+	switch (palo(carta))
+	{
+		case 0: 
+			s+="p";
+			break;
+		case 1:
+			s+="t";
+			break;
+		case 2:
+			s+="d";
+			break;
+		case 3:
+			s+="c";
+			break;
+	}
+	s += " ";
+	s += to_string(numero(carta));
+	return s;
 }
 
 tCarta traducir(string carta)
