@@ -38,6 +38,10 @@ void barajar(tMazo mazo);
 void intercambiar (tMazo mazo, int posicion1, int posicion2);
 int randint(int max);
 
+void cortar(tMazo mazo, int cuantasCartas);
+bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
+bool unir(tMazo mazo, const tMazo otroMazo);
+
 int main()
 {
 	return 1;
@@ -106,4 +110,23 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 int randint(int max)
 {
 	return 1; //PLACEHOLDER
+}
+
+void cortar(tMazo mazo, int cuantasCartas)
+{
+	tMazo otroMazo;
+	//Corta...
+	if (partir(mazo,cuantasCartas,otroMazo))
+		//...y completa.
+		unir(mazo, otroMazo);
+}
+
+bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
+{
+	return true; //PLACEHOLDER
+}
+
+bool unir(tMazo mazo, const tMazo otroMazo)
+{
+	return true; //PLACEHOLDER
 }
