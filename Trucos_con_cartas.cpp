@@ -40,7 +40,12 @@ int randint(int max);
 
 int main()
 {
+	return 1;
+}
 
+int cuantas(tMazo mazo)
+{
+	return 1; //Placeholder
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -51,11 +56,11 @@ bool cargar(tMazo mazo, string &nomb)
 	ifstream archivo;
 	if (abrir(nomb, archivo))
 	{
-		getline(linea, archivo);
+		getline(archivo,linea);
 		while (linea != "x" && cont < MAX_CARTAS)
 		{
 			mazo[cont] = traducir(linea);
-			getline(linea, archivo);
+			getline(archivo,linea);
 			cont++;
 		}
 		mazo[cont] = CENTINELA;
@@ -65,10 +70,20 @@ bool cargar(tMazo mazo, string &nomb)
 }
 
 //Abre el archivo que indica el usuario. Si el archivo no existe, se pregunta de nuevo, hasta tres veces.
-bool abrir(string &nomb, ifstream &archivo);
+bool abrir(string &nomb, ifstream &archivo)
+{
+	return false; //PLACEHOLDER
+}
 
-string traducir(tCarta carta);
-tCarta traducir(string carta);
+string traducir(tCarta carta)
+{
+	return ""; //PLACEHOLDER
+}
+
+tCarta traducir(string carta)
+{
+	return 1; //PLACEHOLDER
+}
 
 
 //Baraja el mazo, intercambiando aleatoriemente cartas
@@ -81,4 +96,14 @@ void barajar(tMazo mazo)
 		pos2 = randint(nCartas);
 		intercambiar(mazo, pos1, pos2);
 	}
+}
+
+void intercambiar(tMazo mazo, int pos1, int pos2)
+{
+
+}
+
+int randint(int max)
+{
+	return 1; //PLACEHOLDER
 }
