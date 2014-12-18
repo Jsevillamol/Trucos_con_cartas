@@ -53,7 +53,11 @@ int main()
 
 int cuantas(tMazo mazo)
 {
-	return 1; //Placeholder
+	int i;
+	
+	for(i=0; mazo[i] != CENTINELA; i++);
+	
+	return i;
 }
 
 tPalo palo(tCarta carta)
@@ -90,7 +94,22 @@ bool cargar(tMazo mazo, string &nomb)
 //Abre el archivo que indica el usuario. Si el archivo no existe, se pregunta de nuevo, hasta tres veces.
 bool abrir(string &nomb, ifstream &archivo)
 {
-	return false; //PLACEHOLDER
+	cout << "Introduzca el nombre del archivo:" << endl;
+	cin >> nomb;
+	archivo.open(nomb);	
+	
+	if(!archivo.is_open())
+	{
+		for(int i=0; (i<2) && (!archivo.is_open()); i++)
+		{
+			cout << "Error, no se ha encontrado el archivo " << nomb << endl;
+			cin  >> nomb;
+			archivo.open(nomb);
+		}
+	}
+	if(archivo.is_open()) return true;
+	
+	else return false;
 }
 
 string traducir(tCarta carta)
@@ -165,7 +184,7 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 
 void mostrar(tMazo mazo)
 {
-	for(int i=0; mazo[i] != CENTINELA; i++)
+	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
 	{
 		cout << traducir(mazo[i]) << " ";
 	}
