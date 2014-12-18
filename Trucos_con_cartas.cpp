@@ -45,8 +45,9 @@ int randint(int max);
 void cortar(tMazo mazo, int cuantasCartas);
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
 bool unir(tMazo mazo, const tMazo otroMazo);
+
 void mostrar(tMazo mazo);
-void vaiciar(tMazo mazo);
+void vaciar(tMazo mazo);
 
 int main()
 {
@@ -186,7 +187,20 @@ void cortar(tMazo mazo, int cuantasCartas)
 
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 {
-	return true; //PLACEHOLDER
+	int i;
+	if (cuantasCoger > cuantas(mazo)) return false;
+	else
+	{
+		for (i = 0; mazo[cuantasCoger + i] != CENTINELA; i++)
+		{
+			otroMazo[i] = mazo[cuantasCoger + i];
+		}
+
+		mazo[cuantasCoger] = CENTINELA;
+		otroMazo[i] = CENTINELA;
+
+		return true;
+	}
 }
 
 bool unir(tMazo mazo, const tMazo otroMazo)
