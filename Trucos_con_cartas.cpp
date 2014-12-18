@@ -165,13 +165,14 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 
 void mostrar(tMazo mazo)
 {
-	for(int i=0; mazo[i] != CENTINELA; i++)
+	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
 	{
 		cout << traducir(mazo[i]) << " ";
 	}
+	cout << endl;
 }
 
-void vaiciar(tMazo mazo)
+void vaciar(tMazo mazo)
 {
-	mazo[0] == CENTINELA;
+	mazo[0] = CENTINELA;
 }
