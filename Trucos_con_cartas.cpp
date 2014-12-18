@@ -32,7 +32,7 @@ typedef tCarta tMazo[MAX_CARTAS+1];
 int menu();
 int digitoEntre(int a, int b);
 
-int cuantas(tMazo mazo);
+int cuantas(const tMazo mazo);
 tPalo palo(tCarta carta);
 tNumero numero(tCarta carta);
 
@@ -58,7 +58,7 @@ int main()
 	return 1;
 }
 
-int cuantas(tMazo mazo)
+int cuantas(const tMazo mazo)
 {
 	int i;
 	
@@ -208,7 +208,20 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
-	return true; //PLACEHOLDER
+	int total = cuantas(mazo), i;
+
+	if (total + cuantas(otroMazo) > MAX_CARTAS) return false;
+	else
+	{
+		for (i = 0; otroMazo[i] != CENTINELA; i++)
+		{
+			mazo[total + i] = otroMazo[i];
+		}
+
+		mazo[total+i] = CENTINELA;
+		
+		return true;
+	}
 }
 
 void mostrar(tMazo mazo)
