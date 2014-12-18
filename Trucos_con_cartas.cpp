@@ -54,7 +54,27 @@ void vaciar(tMazo mazo);
 
 int main()
 {
+	int opcion, cantidad;
+	tMazo mazo;
+	string nomb;
+	
 	srand(time(NULL));
+
+	do
+	{
+		opcion = menu();
+		if (opcion == 1) cargar(mazo, nomb);
+		else if (opcion == 2) barajar(mazo);
+		else if (opcion == 3) ;
+		else if (opcion == 4) 
+		{
+			cout << "Cuantas?";
+			cin >> cantidad;
+			cortar(mazo, cantidad);
+		}
+		else if (opcion == 5) /*guardar(mazo)*/;
+	}while(opcion != 0);
+
 	return 1;
 }
 
