@@ -1,6 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -48,6 +50,7 @@ void vaiciar(tMazo mazo);
 
 int main()
 {
+	srand(time(NULL));
 	return 1;
 }
 
@@ -160,7 +163,7 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 
 int randint(int max)
 {
-	return 1; //PLACEHOLDER
+	return rand() % (max + 1);
 }
 
 void cortar(tMazo mazo, int cuantasCartas)
