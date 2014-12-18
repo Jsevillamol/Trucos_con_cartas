@@ -29,6 +29,9 @@ typedef int tCarta;
 typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
+int menu();
+int digitoEntre(int a, int b);
+
 int cuantas(tMazo mazo);
 tPalo palo(tCarta carta);
 tNumero numero(tCarta carta);
@@ -220,4 +223,45 @@ void mostrar(tMazo mazo)
 void vaciar(tMazo mazo)
 {
 	mazo[0] = CENTINELA;
+}
+
+int menu()
+{
+	cout << "1 - Cargar"                    << endl
+	     << "2 - Barajar"                   << endl
+	     << "3 - Añadir"                    << endl
+	     << "4 - Cortar"                    << endl
+	     << "5 - Guardar"                   << endl
+	     << "0 - Salir"                     << endl;
+	
+	int seleccionar = digitoEntre(0,6);
+
+	return seleccionar;
+}
+
+int digitoEntre(int a, int b)
+{
+	int digito = -1;
+
+	do
+	{
+		cin.sync(); //Por si quedan datos basura en el buffer
+		cin >> digito;
+
+		if (cin.fail())
+		{
+			cout << "Error! Introduce un digito" << endl;
+			cin.clear();
+		}
+
+		else if (digito < a || digito > b)
+		{
+			cout << "Error! Introduce un digito entre " << a << " y " << b << endl;
+			digito = -1;
+		}
+		
+	}
+	while (digito == -1);
+
+	return digito;
 }
