@@ -38,6 +38,7 @@ tNumero numero(tCarta carta);
 
 bool cargar(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
+bool guardar(const tMazo mazo, string &nomb);
 string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
@@ -72,7 +73,11 @@ int main()
 			cin >> cantidad;
 			cortar(mazo, cantidad);
 		}
-		else if (opcion == 5) /*guardar(mazo)*/;
+		else if (opcion == 5) 
+		{
+			if (guardar(mazo, nomb)) cout << "Guardado exitoso!" << endl;
+			else cout << "Fallo al guardar" << endl;
+		}
 	}while(opcion != 0);
 
 	return 1;
@@ -139,6 +144,11 @@ bool abrir(string &nomb, ifstream &archivo)
 	if(archivo.is_open()) return true;
 	
 	else return false;
+}
+
+bool guardar(const tMazo mazo, string &nomb)
+{
+	return true; //Placeholder
 }
 
 string traducir(tCarta carta)
