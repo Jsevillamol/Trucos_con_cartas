@@ -36,7 +36,7 @@ tNumero numero(tCarta carta);
 bool cargar(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
 string traducir(tCarta carta);
-tCarta traducir(string carta);
+tCarta traducir(char p, int n);
 
 void barajar(tMazo mazo);
 void intercambiar (tMazo mazo, int posicion1, int posicion2);
@@ -76,16 +76,18 @@ tNumero numero(tCarta carta)
 //Carga un mazo de un archivo a elección del usuario.
 bool cargar(tMazo mazo, string &nomb)
 {
-	string linea;
-	int cont=0;
+	char p;
+	int cont=0, n;
 	ifstream archivo;
 	if (abrir(nomb, archivo))
 	{
-		getline(archivo,linea);
-		while (linea != "x" && cont < MAX_CARTAS)
+		archivo >> p;
+		archivo >> n;
+		while (p != 'x' && cont < MAX_CARTAS)
 		{
-			mazo[cont] = traducir(linea);
-			getline(archivo,linea);
+			mazo[cont] = traducir(p,n);
+			archivo >> p;
+			archivo >> n;
 			cont++;
 		}
 		mazo[cont] = CENTINELA;
@@ -138,9 +140,16 @@ string traducir(tCarta carta)
 	return s;
 }
 
-tCarta traducir(string carta)
+tCarta traducir(char p, int n)
 {
-	return 1; //PLACEHOLDER
+	tPalo suit;
+
+	if (p == 'c')     suit = corazones;
+	else if (p == 't') suit = treboles;
+	else if (p == 'p') suit = picas;
+	else if (p == 'd') suit = diamantes;
+
+	return n + int (suit) * CARTASxPALO;
 }
 
 
