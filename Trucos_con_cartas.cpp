@@ -38,6 +38,7 @@ tNumero numero(tCarta carta);
 
 bool cargar(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
+bool agregar(tMazo mazo);
 bool guardar(const tMazo mazo, string &nomb);
 string traducir(tCarta carta);
 tCarta traducir(char p, int n);
@@ -60,13 +61,19 @@ int main()
 	string nomb;
 	
 	srand(time(NULL));
+	vaciar(mazo);
 
 	do
 	{
 		opcion = menu();
-		if (opcion == 1) cargar(mazo, nomb);
+		if (opcion == 1) 
+		{
+			if (cargar(mazo, nomb))
+				mostrar(mazo);
+			else cout << "El archivo no pudo cargarse." << endl;
+		}
 		else if (opcion == 2) barajar(mazo);
-		else if (opcion == 3) ;
+		else if (opcion == 3) agregar(mazo);
 		else if (opcion == 4) 
 		{
 			cout << "Cuantas?";
@@ -114,6 +121,7 @@ bool cargar(tMazo mazo, string &nomb)
 		archivo >> n;
 		while (p != 'x' && cont < MAX_CARTAS)
 		{
+			cout << p << " " << n << endl;
 			mazo[cont] = traducir(p,n);
 			archivo >> p;
 			archivo >> n;
@@ -143,6 +151,16 @@ bool abrir(string &nomb, ifstream &archivo)
 	}
 	if(archivo.is_open()) return true;
 	
+	else return false;
+}
+
+//Concatena al mazo actual un mazo cargado de archivo.
+bool agregar(tMazo mazo)
+{
+	tMazo otroMazo;
+	string nomb;
+	if (!cargar(otroMazo, nomb) || !unir(mazo, otroMazo))
+		return true;
 	else return false;
 }
 
@@ -178,7 +196,7 @@ tCarta traducir(char p, int n)
 {
 	tPalo suit;
 
-	if (p == 'c')     suit = corazones;
+	if (p == 'c')      suit = corazones;
 	else if (p == 't') suit = treboles;
 	else if (p == 'p') suit = picas;
 	else if (p == 'd') suit = diamantes;
