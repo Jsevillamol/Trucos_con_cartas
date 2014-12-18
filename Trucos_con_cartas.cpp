@@ -43,6 +43,8 @@ int randint(int max);
 void cortar(tMazo mazo, int cuantasCartas);
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
 bool unir(tMazo mazo, const tMazo otroMazo);
+void mostrar(tMazo mazo);
+void vaiciar(tMazo mazo);
 
 int main()
 {
@@ -64,7 +66,7 @@ tNumero numero(tCarta carta)
 	return A;
 }
 
-//Carga un mazo de un archivo a elección del usuario.
+//Carga un mazo de un archivo a elecciÃ³n del usuario.
 bool cargar(tMazo mazo, string &nomb)
 {
 	string linea;
@@ -159,4 +161,18 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
 	return true; //PLACEHOLDER
+}
+
+void mostrar(tMazo mazo)
+{
+	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
+	{
+		cout << traducir(mazo[i]) << " ";
+	}
+	cout << endl;
+}
+
+void vaciar(tMazo mazo)
+{
+	mazo[0] = CENTINELA;
 }
