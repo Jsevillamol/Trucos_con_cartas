@@ -72,17 +72,30 @@ int main()
 				mostrar(mazo);
 			else cout << "El archivo no pudo cargarse." << endl;
 		}
-		else if (opcion == 2) barajar(mazo);
-		else if (opcion == 3) agregar(mazo);
+		else if (opcion == 2) 
+		{
+			barajar(mazo);
+			cout << "Mazo barajado:" << endl;
+			mostrar(mazo);
+		}
+		else if (opcion == 3) 
+		{
+			agregar(mazo);
+			cout << "Mazo actual:" << endl;
+			mostrar(mazo);
+		}
 		else if (opcion == 4) 
 		{
 			cout << "Cuantas?";
 			cin >> cantidad;
 			cortar(mazo, cantidad);
+			cout << "Mazo actual:" << endl;
+			mostrar(mazo);
 		}
 		else if (opcion == 5) 
 		{
-			if (guardar(mazo, nomb)) cout << "Guardado exitoso!" << endl;
+			if (guardar(mazo, nomb)) 
+				 cout << "Guardado exitoso!" << endl;
 			else cout << "Fallo al guardar" << endl;
 		}
 	}while(opcion != 0);
@@ -121,7 +134,6 @@ bool cargar(tMazo mazo, string &nomb)
 		archivo >> n;
 		while (p != 'x' && cont < MAX_CARTAS)
 		{
-			cout << p << " " << n << endl;
 			mazo[cont] = traducir(p,n);
 			archivo >> p;
 			archivo >> n;
@@ -159,9 +171,17 @@ bool agregar(tMazo mazo)
 {
 	tMazo otroMazo;
 	string nomb;
-	if (!cargar(otroMazo, nomb) || !unir(mazo, otroMazo))
-		return true;
-	else return false;
+	if (!cargar(otroMazo, nomb))
+	{
+		cout << "No pudo cargarse el archivo" << endl;
+		return false;
+	}
+	else if (!unir(mazo, otroMazo))
+	{
+		cout << "El mazo seleccionado junto al actual superan el limite de cartas por mazo" << endl;
+		return false;
+	}
+	else return true;
 }
 
 bool guardar(const tMazo mazo, string &nomb)
@@ -201,7 +221,7 @@ tCarta traducir(char p, int n)
 	else if (p == 'p') suit = picas;
 	else if (p == 'd') suit = diamantes;
 
-	return n + int (suit) * CARTASxPALO;
+	return (n-1 + int (suit) * CARTASxPALO);
 }
 
 
@@ -290,7 +310,7 @@ int menu()
 {
 	cout << "1 - Cargar"                    << endl
 	     << "2 - Barajar"                   << endl
-	     << "3 - Añadir"                    << endl
+	     << "3 - Agregar otro mazo"         << endl
 	     << "4 - Cortar"                    << endl
 	     << "5 - Guardar"                   << endl
 	     << "0 - Salir"                     << endl;
