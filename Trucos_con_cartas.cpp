@@ -301,6 +301,22 @@ void mostrar(tMazo mazo)
 	cout << endl;
 }
 
+void mostrar(tCarta carta)
+{
+	tPalo p = palo(carta);
+	tNumero n = numero(carta);
+	
+	if (n == A) cout << "A";
+	else if (n == J) cout << "J";
+	//...
+
+	cout << " ";
+
+	if (p == picas) cout << "♠";
+	//...
+	//♠ ♣ ♥ ♦
+}
+
 void vaciar(tMazo mazo)
 {
 	mazo[0] = CENTINELA;
