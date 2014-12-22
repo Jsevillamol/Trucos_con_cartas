@@ -279,7 +279,13 @@ void barajar(tMazo mazo)
 
 void intercambiar(tMazo mazo, int pos1, int pos2)
 {
-
+	tCarta aux;
+	
+	mazo[posicion1] = aux;
+	
+	mazo[posicion2] = mazo[posicion1];
+	
+	aux = mazo[posicion2];
 }
 
 int randint(int max)
