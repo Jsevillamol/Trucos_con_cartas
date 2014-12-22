@@ -288,6 +288,25 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 	aux = mazo[posicion2];
 }
 
+void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
+{	
+	int j=0, k=0;
+
+	for(i=0; mazo[i]<CENTINELA; i++)
+	{
+		if     (numero(mazo[i])<8) 
+		{
+			mazoBajas[j] = mazo[i];
+			j += 1;
+		}
+		else if(numero(mazo[i])>7) 
+		{
+			mazoAltas[k] = mazo[i];
+			k += 1;
+		}
+	}
+}
+
 int randint(int max)
 {
 	return rand() % (max + 1);
