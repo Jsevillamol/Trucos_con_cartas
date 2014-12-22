@@ -52,6 +52,7 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
 bool unir(tMazo mazo, const tMazo otroMazo);
 
 void mostrar(tMazo mazo);
+void mostrar(tCarta carta);
 void vaciar(tMazo mazo);
 
 int main()
@@ -59,7 +60,7 @@ int main()
 	int opcion, cantidad;
 	tMazo mazo;
 	string nomb;
-	
+
 	srand(time(NULL));
 	vaciar(mazo);
 
@@ -296,7 +297,7 @@ void mostrar(tMazo mazo)
 {
 	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
 	{
-		cout << traducir(mazo[i]) << " ";
+		mostrar(mazo[i]);
 	}
 	cout << endl;
 }
@@ -310,6 +311,7 @@ void mostrar(tCarta carta)
 	else if (n == J) cout << "J";
 	else if (n == Q) cout << "Q";
 	else if (n == K) cout << "K";
+	else cout << n+1;
 
 	cout << " ";
 
@@ -317,6 +319,8 @@ void mostrar(tCarta carta)
 	else if (p == treboles) cout << "♣";
 	else if (p == diamantes) cout << "♦";
 	else if (p == diamantes) cout << "♥";
+
+	cout << " ";
 }
 
 void vaciar(tMazo mazo)
