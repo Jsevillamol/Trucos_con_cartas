@@ -44,7 +44,7 @@ string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
 void barajar(tMazo mazo);
-void intercambiar (tMazo mazo, int posicion1, int posicion2);
+void intercambiar (tMazo mazo, int pos1, int pos2);
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 int randint(int max);
@@ -283,18 +283,18 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 {
 	tCarta aux;
 	
-	mazo[posicion1] = aux;
+	aux = mazo[pos1];
 	
-	mazo[posicion2] = mazo[posicion1];
+	mazo[pos1] = mazo[pos2];
 	
-	aux = mazo[posicion2];
+	mazo[pos2] = aux;
 }
 
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 {	
 	int j=0, k=0;
 
-	for(i=0; mazo[i]<CENTINELA; i++)
+	for(int i=0; mazo[i]<CENTINELA; i++)
 	{
 		if     (numero(mazo[i])<8) 
 		{
@@ -313,7 +313,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 {
 	int j=0, k=0;
 
-	for(i=0; mazo[i]<CENTINELA; i++)
+	for(int i=0; mazo[i]<CENTINELA; i++)
 	{
 		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
 		{
