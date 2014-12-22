@@ -55,6 +55,8 @@ void mostrar(tMazo mazo);
 void mostrar(tCarta carta);
 void vaciar(tMazo mazo);
 
+void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
+
 int main()
 {
 	int opcion, cantidad;
@@ -406,4 +408,14 @@ int digitoEntre(int a, int b)
 	while (digito == -1);
 
 	return digito;
+}
+
+void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
+{
+	int j=0;
+	for (int i = queMazo; i<cuantas(mazo); i+=enCuantos, j++)
+	{
+		mazoNuevo[j] = mazo[i];
+	}
+	mazoNuevo[j] = CENTINELA;
 }
