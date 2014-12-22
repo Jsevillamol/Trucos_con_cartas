@@ -45,6 +45,8 @@ tCarta traducir(char p, int n);
 
 void barajar(tMazo mazo);
 void intercambiar (tMazo mazo, int posicion1, int posicion2);
+void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
+void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 int randint(int max);
 
 void cortar(tMazo mazo, int cuantasCartas);
@@ -302,6 +304,25 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 		else if(numero(mazo[i])>7) 
 		{
 			mazoAltas[k] = mazo[i];
+			k += 1;
+		}
+	}
+}
+
+void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
+{
+	int j=0, k=0;
+
+	for(i=0; mazo[i]<CENTINELA; i++)
+	{
+		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
+		{
+			mazoNegro[j] = mazo[i];
+			j += 1;
+		}
+		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
+		{
+			mazoRojo[k] = mazo[i];
 			k += 1;
 		}
 	}
