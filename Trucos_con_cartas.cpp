@@ -308,13 +308,15 @@ void mostrar(tCarta carta)
 	
 	if (n == A) cout << "A";
 	else if (n == J) cout << "J";
-	//...
+	else if (n == Q) cout << "Q";
+	else if (n == K) cout << "K";
 
 	cout << " ";
 
 	if (p == picas) cout << "♠";
-	//...
-	//♠ ♣ ♥ ♦
+	else if (p == treboles) cout << "♣";
+	else if (p == diamantes) cout << "♦";
+	else if (p == diamantes) cout << "♥";
 }
 
 void vaciar(tMazo mazo)
