@@ -114,12 +114,39 @@ int cuantas(const tMazo mazo)
 
 tPalo palo(tCarta carta)
 {
+	int seccionPalo;
+	
+	seccionPalo = (carta / CARTASxPALO);
+	
+	if(seccionPalo = 0)
+	{
+	cout << "picas" << endl; 
 	return picas;
+	}
+	else if(seccionPalo = 1) 
+	{
+	cout << "treboles" << endl; 
+	return treboles;
+	}
+	else if(seccionPalo = 2) 
+	{
+	cout << "diamantes" << endl; 
+	return diamantes;
+	}
+	else if(seccionPalo = 3)
+	{
+	cout << "corazones" << endl;
+	return corazones;
+	}
 }
 
 tNumero numero(tCarta carta)
 {
-	return A;
+	int seccionNumero;
+	
+	seccionNumero = (carta % CARTASxPALO);
+	
+	return tNumero (seccionNumero+1);
 }
 
 //Carga un mazo de un archivo a elección del usuario.
