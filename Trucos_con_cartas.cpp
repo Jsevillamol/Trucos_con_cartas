@@ -59,7 +59,7 @@ int main()
 	int opcion, cantidad;
 	tMazo mazo;
 	string nomb;
-	
+
 	srand(time(NULL));
 	vaciar(mazo);
 
@@ -118,26 +118,14 @@ tPalo palo(tCarta carta)
 	
 	seccionPalo = (carta / CARTASxPALO);
 	
-	if(seccionPalo = 0)
-	{
-	cout << "picas" << endl; 
-	return picas;
-	}
-	else if(seccionPalo = 1) 
-	{
-	cout << "treboles" << endl; 
-	return treboles;
-	}
-	else if(seccionPalo = 2) 
-	{
-	cout << "diamantes" << endl; 
-	return diamantes;
-	}
-	else if(seccionPalo = 3)
-	{
-	cout << "corazones" << endl;
-	return corazones;
-	}
+	if(seccionPalo == 0)
+		return picas;
+	else if(seccionPalo == 1)
+		return treboles;
+	else if(seccionPalo == 2)
+		return diamantes;
+	else //if(seccionPalo == 3)
+		return corazones;
 }
 
 tNumero numero(tCarta carta)
