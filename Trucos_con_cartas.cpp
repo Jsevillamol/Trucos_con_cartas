@@ -346,18 +346,17 @@ void mostrar(tCarta carta)
 	tPalo p = palo(carta);
 	tNumero n = numero(carta);
 	
-	if (n == A) cout << "A";
+	if      (n == A) cout << "A";
 	else if (n == J) cout << "J";
 	else if (n == Q) cout << "Q";
 	else if (n == K) cout << "K";
-	else cout << n+1;
 
 	cout << " ";
 
-	if (p == picas) cout << "♠";
-	else if (p == treboles) cout << "♣";
-	else if (p == diamantes) cout << "♦";
-	else if (p == diamantes) cout << "♥";
+	if      (p == picas)     cout <<     "de picas";
+	else if (p == treboles)  cout <<  "de treboles";
+	else if (p == diamantes) cout << "de diamantes";
+	else if (p == diamantes) cout << "de corazones";
 
 	cout << " ";
 }
