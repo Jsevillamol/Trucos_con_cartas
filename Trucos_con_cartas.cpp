@@ -141,6 +141,7 @@ bool cargar(tMazo mazo, string &nomb)
 			cont++;
 		}
 		mazo[cont] = CENTINELA;
+		archivo.close();
 		return true;
 	}
 	else return false;
@@ -187,7 +188,30 @@ bool agregar(tMazo mazo)
 
 bool guardar(const tMazo mazo, string &nomb)
 {
-	return true; //Placeholder
+	string response;
+	ofstream archivo;
+	
+	cout << "En que archivo quieres guardar el mazo? (intro para " << nomb << ")" << endl;
+	cin.sync();
+	getline(cin, response);
+
+	if (response == "") archivo.open(nomb);
+	else 
+	{
+		archivo.open(response);
+		nomb == response;
+	}
+
+	if (archivo.is_open())
+	{
+		for(int i = 0; mazo[i] != CENTINELA; i++)
+		{
+			archivo << traducir(mazo[i]) << endl;
+		}
+		archivo << "x";
+		return true;
+	}
+	else return false;
 }
 
 string traducir(tCarta carta)
