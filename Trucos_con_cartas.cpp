@@ -47,6 +47,7 @@ tCarta traducir(char p, int n);
 
 void barajar(tMazo mazo);
 void intercambiar (tMazo mazo, int pos1, int pos2);
+bool desplazar(tMazo mazo, int numero);
 int randint(int max);
 
 void cortar(tMazo mazo, int cuantasCartas);
@@ -292,6 +293,18 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 	mazo[pos2] = aux;
 }
 
+bool desplazar(tMazo mazo, int numero)
+{
+	int total = cuantas(mazo);
+	if (total+numero < MAX_CARTAS)
+	{
+		for (int i= 0; i < total; i++)
+			mazo[i+numero] = mazo[i];
+		return true;
+	}
+	else return false;
+}
+
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 {	
 	int j=0, k=0;
@@ -364,20 +377,19 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
-	int total = cuantas(mazo), i;
+	int total = cuantas(mazo);
+	int otroTotal = cuantas(otroMazo);
 
-	if (total + cuantas(otroMazo) > MAX_CARTAS) return false;
-	else
+	if (desplazar(mazo, otroTotal))
 	{
-		for (i = 0; otroMazo[i] != CENTINELA; i++)
+		for (int i = 0; otroMazo[i] != CENTINELA; i++)
 		{
-			mazo[total + i] = otroMazo[i];
+			mazo[i] = otroMazo[i];
 		}
 
-		mazo[total+i] = CENTINELA;
-		
 		return true;
 	}
+	else return false;
 }
 
 void mostrar(tMazo mazo)
