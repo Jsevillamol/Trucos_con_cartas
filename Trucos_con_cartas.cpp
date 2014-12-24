@@ -32,6 +32,8 @@ typedef tCarta tMazo[MAX_CARTAS+1];
 int menu();
 int digitoEntre(int a, int b);
 
+void vaciar(tMazo mazo);
+
 int cuantas(const tMazo mazo);
 tPalo palo(tCarta carta);
 tNumero numero(tCarta carta);
@@ -45,8 +47,6 @@ tCarta traducir(char p, int n);
 
 void barajar(tMazo mazo);
 void intercambiar (tMazo mazo, int pos1, int pos2);
-void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
-void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 int randint(int max);
 
 void cortar(tMazo mazo, int cuantasCartas);
@@ -55,8 +55,9 @@ bool unir(tMazo mazo, const tMazo otroMazo);
 
 void mostrar(tMazo mazo);
 void mostrar(tCarta carta);
-void vaciar(tMazo mazo);
 
+void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
+void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
 
 int main()
@@ -151,13 +152,12 @@ bool cargar(tMazo mazo, string &nomb)
 	if (abrir(nomb, archivo))
 	{
 		archivo >> p;
-		archivo >> n;
 		while (p != 'x' && cont < MAX_CARTAS)
 		{
-			mazo[cont] = traducir(p,n);
-			archivo >> p;
 			archivo >> n;
+			mazo[cont] = traducir(p,n);
 			cont++;
+			archivo >> p;
 		}
 		mazo[cont] = CENTINELA;
 		archivo.close();
@@ -296,17 +296,17 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 {	
 	int j=0, k=0;
 
-	for(int i=0; mazo[i]<CENTINELA; i++)
+	for(int i=0; mazo[i] != CENTINELA; i++)
 	{
 		if     (numero(mazo[i])<8) 
 		{
 			mazoBajas[j] = mazo[i];
-			j += 1;
+			j++;
 		}
 		else if(numero(mazo[i])>7) 
 		{
 			mazoAltas[k] = mazo[i];
-			k += 1;
+			k++;
 		}
 	}
 }
@@ -315,17 +315,17 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 {
 	int j=0, k=0;
 
-	for(int i=0; mazo[i]<CENTINELA; i++)
+	for(int i=0; mazo[i] != CENTINELA; i++)
 	{
 		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
 		{
 			mazoNegro[j] = mazo[i];
-			j += 1;
+			j++;
 		}
 		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
 		{
 			mazoRojo[k] = mazo[i];
-			k += 1;
+			k++;
 		}
 	}
 }
@@ -398,15 +398,16 @@ void mostrar(tCarta carta)
 	else if (n == J) cout << "J";
 	else if (n == Q) cout << "Q";
 	else if (n == K) cout << "K";
+	else             cout << n;
 
 	cout << " ";
 
 	if      (p == picas)     cout <<     "de picas";
 	else if (p == treboles)  cout <<  "de treboles";
 	else if (p == diamantes) cout << "de diamantes";
-	else if (p == diamantes) cout << "de corazones";
+	else if (p == corazones) cout << "de corazones";
 
-	cout << " ";
+	cout << endl;
 }
 
 void vaciar(tMazo mazo)
