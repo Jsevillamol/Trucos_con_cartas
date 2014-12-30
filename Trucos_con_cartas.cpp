@@ -39,6 +39,7 @@ tPalo palo(tCarta carta);
 tNumero numero(tCarta carta);
 
 bool cargar(tMazo mazo, string &nomb);
+bool cargar_auto(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
 bool agregar(tMazo mazo);
 bool guardar(const tMazo mazo, string &nomb);
@@ -60,6 +61,8 @@ void mostrar(tCarta carta);
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
+
+void truco_de_los_tres_montones();
 
 int main()
 {
@@ -104,6 +107,10 @@ int main()
 			if (guardar(mazo, nomb)) 
 				 cout << "Guardado exitoso!" << endl;
 			else cout << "Fallo al guardar" << endl;
+		}
+		else if (opcion == 10)
+		{
+			truco_de_los_tres_montones();
 		}
 	}while(opcion != 0);
 
@@ -151,6 +158,28 @@ bool cargar(tMazo mazo, string &nomb)
 	int cont=0, n;
 	ifstream archivo;
 	if (abrir(nomb, archivo))
+	{
+		archivo >> p;
+		while (p != 'x' && cont < MAX_CARTAS)
+		{
+			archivo >> n;
+			mazo[cont] = traducir(p,n);
+			cont++;
+			archivo >> p;
+		}
+		mazo[cont] = CENTINELA;
+		archivo.close();
+		return true;
+	}
+	else return false;
+}
+
+bool cargar_auto(tMazo mazo, string &nomb)
+{
+	char p;
+	int cont=0, n;
+	ifstream archivo(nomb);
+	if (archivo.is_open())
 	{
 		archivo >> p;
 		while (p != 'x' && cont < MAX_CARTAS)
@@ -476,4 +505,64 @@ void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo ma
 		mazoNuevo[j] = mazo[i];
 	}
 	mazoNuevo[j] = CENTINELA;
+}
+
+void truco_de_los_tres_montones()
+{
+	tMazo mazo1, mazo2, mazo3;
+	string nomb = "3montones.txt";
+	int mazo;
+
+	//generamos el mazo de 21 cartas
+	cargar_auto(mazo1, nomb);
+
+	for (int i=0; i<3; i++)
+	{
+		//Repartir alternamente
+		repartirIntercalando(mazo1, 3, 1, mazo2);
+		repartirIntercalando(mazo1, 3, 2, mazo3);
+		repartirIntercalando(mazo1, 3, 0, mazo1);
+
+		//Mostrar
+		cout << "Mazo 1:" << endl;
+		mostrar(mazo1);
+		cout << endl;
+
+		cout << "Mazo 2:" << endl;
+		mostrar(mazo2);
+		cout << endl;
+
+		cout << "Mazo 3:" << endl;
+		mostrar(mazo3);
+		cout << endl;
+
+		//El usuario elije mazo
+		cout << "En que mazo esta tu carta?" << endl;
+		mazo = digitoEntre(1,3);
+
+		//Juntamos los mazos
+		if (mazo == 1)
+		{
+			unir(mazo1, mazo3);
+			unir(mazo2, mazo1);
+
+			//El mazo en el que debe acabar todo es el 1
+			vaciar(mazo1);
+			unir(mazo1, mazo2);
+		}
+		else if (mazo == 2)
+		{
+			unir(mazo2, mazo3);
+			unir(mazo1, mazo2);
+		}
+		else //if (mazo == 3)
+		{
+			unir(mazo3, mazo2);
+			unir(mazo1, mazo2);
+		}
+	}
+
+	//Adivinamos la carta
+	cout << "Tu carta era el..." << endl;
+	mostrar(mazo1[11]);
 }
