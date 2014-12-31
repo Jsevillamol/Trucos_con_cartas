@@ -61,8 +61,11 @@ void mostrar(tCarta carta);
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
+void repartir_en_tres(tMazo mazo1, tMazo mazo2, tMazo mazo3);
+void repartir_en_cuatro(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 
 void truco_de_los_tres_montones();
+void truco_de_la_posada();
 
 int main()
 {
@@ -115,6 +118,56 @@ int main()
 	}while(opcion != 0);
 
 	return 1;
+}
+
+int menu()
+{
+	cout << "1 - Cargar"                     << endl
+	     << "2 - Barajar"                    << endl
+	     << "3 - Agregar otro mazo"          << endl
+	     << "4 - Cortar"                     << endl
+	     << "5 - Guardar"                    << endl
+	     << "6 - Separar en negras y rojas"  << endl
+	     << "7 - Separar en altas y bajas"   << endl
+	     << "8 - Separar en tres montones"   << endl
+	     << "9 - Separar en cuatro montones" << endl 
+	     << "0 - Salir"                      << endl;
+	
+	int seleccionar = digitoEntre(0,6);
+
+	return seleccionar;
+}
+
+int digitoEntre(int a, int b)
+{
+	int digito = -1;
+
+	do
+	{
+		cin.sync(); //Por si quedan datos basura en el buffer
+		cin >> digito;
+
+		if (cin.fail())
+		{
+			cout << "Error! Introduce un digito" << endl;
+			cin.clear();
+		}
+
+		else if (digito < a || digito > b)
+		{
+			cout << "Error! Introduce un digito entre " << a << " y " << b << endl;
+			digito = -1;
+		}
+		
+	}
+	while (digito == -1);
+
+	return digito;
+}
+
+void vaciar(tMazo mazo)
+{
+	mazo[0] = CENTINELA;
 }
 
 int cuantas(const tMazo mazo)
@@ -334,44 +387,6 @@ bool desplazar(tMazo mazo, int numero)
 	else return false;
 }
 
-void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
-{	
-	int j=0, k=0;
-
-	for(int i=0; mazo[i] != CENTINELA; i++)
-	{
-		if     (numero(mazo[i])<8) 
-		{
-			mazoBajas[j] = mazo[i];
-			j++;
-		}
-		else if(numero(mazo[i])>7) 
-		{
-			mazoAltas[k] = mazo[i];
-			k++;
-		}
-	}
-}
-
-void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
-{
-	int j=0, k=0;
-
-	for(int i=0; mazo[i] != CENTINELA; i++)
-	{
-		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
-		{
-			mazoNegro[j] = mazo[i];
-			j++;
-		}
-		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
-		{
-			mazoRojo[k] = mazo[i];
-			k++;
-		}
-	}
-}
-
 int randint(int max)
 {
 	return rand() % (max + 1);
@@ -451,54 +466,42 @@ void mostrar(tCarta carta)
 	cout << endl;
 }
 
-void vaciar(tMazo mazo)
-{
-	mazo[0] = CENTINELA;
-}
+void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
+{	
+	int j=0, k=0;
 
-int menu()
-{
-	cout << "1 - Cargar"                     << endl
-	     << "2 - Barajar"                    << endl
-	     << "3 - Agregar otro mazo"          << endl
-	     << "4 - Cortar"                     << endl
-	     << "5 - Guardar"                    << endl
-	     << "6 - Separar en negras y rojas"  << endl
-	     << "7 - Separar en altas y bajas"   << endl
-	     << "8 - Separar en tres montones"   << endl
-	     << "9 - Separar en cuatro montones" << endl 
-	     << "0 - Salir"                      << endl;
-	
-	int seleccionar = digitoEntre(0,6);
-
-	return seleccionar;
-}
-
-int digitoEntre(int a, int b)
-{
-	int digito = -1;
-
-	do
+	for(int i=0; mazo[i] != CENTINELA; i++)
 	{
-		cin.sync(); //Por si quedan datos basura en el buffer
-		cin >> digito;
-
-		if (cin.fail())
+		if     (numero(mazo[i])<8) 
 		{
-			cout << "Error! Introduce un digito" << endl;
-			cin.clear();
+			mazoBajas[j] = mazo[i];
+			j++;
 		}
-
-		else if (digito < a || digito > b)
+		else if(numero(mazo[i])>7) 
 		{
-			cout << "Error! Introduce un digito entre " << a << " y " << b << endl;
-			digito = -1;
+			mazoAltas[k] = mazo[i];
+			k++;
 		}
-		
 	}
-	while (digito == -1);
+}
 
-	return digito;
+void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
+{
+	int j=0, k=0;
+
+	for(int i=0; mazo[i] != CENTINELA; i++)
+	{
+		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
+		{
+			mazoNegro[j] = mazo[i];
+			j++;
+		}
+		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
+		{
+			mazoRojo[k] = mazo[i];
+			k++;
+		}
+	}
 }
 
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
@@ -509,6 +512,55 @@ void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo ma
 		mazoNuevo[j] = mazo[i];
 	}
 	mazoNuevo[j] = CENTINELA;
+}
+
+void repartir_en_tres(tMazo mazo1, tMazo mazo2, tMazo mazo3)
+{
+	//Repartir alternamente
+	repartirIntercalando(mazo1, 3, 1, mazo2);
+	repartirIntercalando(mazo1, 3, 2, mazo3);
+	repartirIntercalando(mazo1, 3, 0, mazo1);
+
+	//Mostrar
+	cout << "Mazo 1:" << endl;
+	mostrar(mazo1);
+	cout << endl;
+
+	cout << "Mazo 2:" << endl;
+	mostrar(mazo2);
+	cout << endl;
+
+	cout << "Mazo 3:" << endl;
+	mostrar(mazo3);
+	cout << endl;
+}
+
+void repartir_en_cuatro(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4;)
+{
+	tMazo mazo1, mazo2, mazo3, mazo4;
+	
+	//Repartir alternamente
+	repartirIntercalando(mazo1, 4, 1, mazo2);
+	repartirIntercalando(mazo1, 4, 2, mazo3);
+	repartirIntercalando(mazo1, 4, 3, mazo4);
+	repartirIntercalando(mazo1, 4, 0, mazo1);
+	
+	//Mostrar
+	cout << "Mazo 1:" << endl;
+	mostrar(mazoBajasNegro);
+	cout << endl;
+
+	cout << "Mazo 2:" << endl;
+	mostrar(mazoAltasRojo);
+	cout << endl;
+
+	cout << "Mazo 3:" << endl;
+	mostrar(mazoBajasNegro);
+	cout << endl;
+	
+	cout << "Mazo 4:" << endl;
+	mostrar(mazoBajasRojo);
+	cout << endl;
 }
 
 void truco_de_los_tres_montones()
@@ -522,23 +574,7 @@ void truco_de_los_tres_montones()
 
 	for (int i=0; i<3; i++)
 	{
-		//Repartir alternamente
-		repartirIntercalando(mazo1, 3, 1, mazo2);
-		repartirIntercalando(mazo1, 3, 2, mazo3);
-		repartirIntercalando(mazo1, 3, 0, mazo1);
-
-		//Mostrar
-		cout << "Mazo 1:" << endl;
-		mostrar(mazo1);
-		cout << endl;
-
-		cout << "Mazo 2:" << endl;
-		mostrar(mazo2);
-		cout << endl;
-
-		cout << "Mazo 3:" << endl;
-		mostrar(mazo3);
-		cout << endl;
+		repartir_en_tres(mazo1, mazo2, mazo3);
 
 		//El usuario elije mazo
 		cout << "En que mazo esta tu carta?" << endl;
@@ -579,27 +615,7 @@ void truco_de_la_posada()
 	
 	cargar_auto(mazo1, nomb);
 	
-	//Repartir alternamente
-	repartirIntercalando(mazo1, 4, 1, mazo2);
-	repartirIntercalando(mazo1, 4, 2, mazo3);
-	repartirIntercalando(mazo1, 4, 3, mazo4);
-	repartirIntercalando(mazo1, 4, 0, mazo1);
-	//Mostrar
-	cout << "Mazo 1:" << endl;
-	mostrar(mazo1);
-	cout << endl;
-	
-	cout << "Mazo 2:" << endl;
-	mostrar(mazo2);
-	cout << endl;
-
-	cout << "Mazo 3:" << endl;
-	mostrar(mazo3);
-	cout << endl;
-		
-	cout << "Mazo 4:" << endl;
-	mostrar(mazo4);
-	cout << endl;
+	repartir_en_cuatro(mazo1, mazo2, mazo3, mazo4);
 		
 	//Juntamos los mazos
 	unir(mazo1, mazo2);
@@ -617,91 +633,5 @@ void truco_de_la_posada()
 	repartirIntercalando(mazo1, 4, 3, mazo4);
 	repartirIntercalando(mazo1, 4, 0, mazo1);
 
-	//Mostrar
-	cout << "Mazo 1:" << endl;
-	mostrar(mazo1);
-	cout << endl;
-
-	cout << "Mazo 2:" << endl;
-	mostrar(mazo2);
-	cout << endl;
-
-	cout << "Mazo 3:" << endl;
-	mostrar(mazo3);
-	cout << endl;
-	
-	cout << "Mazo 4:" << endl;
-	mostrar(mazo4);
-	cout << endl;
-}
-
-void repartir_en_tres()
-{
-	//Repartir alternamente
-	repartirIntercalando(mazo1, 3, 1, mazo2);
-	repartirIntercalando(mazo1, 3, 2, mazo3);
-	repartirIntercalando(mazo1, 3, 0, mazo1);
-
-	//Mostrar
-	cout << "Mazo 1:" << endl;
-	mostrar(mazo1);
-	cout << endl;
-
-	cout << "Mazo 2:" << endl;
-	mostrar(mazo2);
-	cout << endl;
-
-	cout << "Mazo 3:" << endl;
-	mostrar(mazo3);
-	cout << endl;
-}
-
-void repartir_en_cuatro()
-{
-	tMazo mazo, mazoAltas, mazoBajas, mazoRojas, mazoNegras, 
-	tMazo mazoAltasNegro, mazoAltasRojo, mazoBajasNegro, mazoBajasRojo;
-	int k = 0, q = 0, j = 0, a = 0;
-	
-	repartirBajaAlta(mazo, mazoBajas, mazoAltas);
-	repartirNegroRojo(mazo, mazoNegro, mazoRojo);
-	
-	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
-	{
-		if      (mazo[i] == mazoAltas && mazo[i] == mazoNegro)
-		{
-			mazo[i] = mazoAltasNegro[k];
-			k++;
-		}
-		else if (mazo[i] == mazoAltas && mazo[i] == mazoRojo)
-		{
-			mazo[i] = mazoAltasRojo[q];
-			q++;
-		}
-		else if (mazo[i] == mazoBajas && mazo[i] == mazoNegro)
-		{
-			mazo[i] = mazoBajasNegro[j];
-			j++;
-		}
-		else if (mazo[i] == mazoBajas && mazo[i] == mazoRojo)
-		{
-			mazo[i] == mazoBajasRojo[a];
-			a++;
-		}
-	}
-	
-	cout << "Mazo 1:" << endl;
-	mostrar(mazoBajasNegro);
-	cout << endl;
-
-	cout << "Mazo 2:" << endl;
-	mostrar(mazoAltasRojo);
-	cout << endl;
-
-	cout << "Mazo 3:" << endl;
-	mostrar(mazoBajasNegro);
-	cout << endl;
-	
-	cout << "Mazo 4:" << endl;
-	mostrar(mazoBajasRojo);
-	cout << endl;
+	repartir_en_cuatro(mazo1, mazo2, mazo3, mazo4);
 }
