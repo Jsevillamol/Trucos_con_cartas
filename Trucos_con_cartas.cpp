@@ -585,7 +585,7 @@ void truco_de_la_posada()
 		repartirIntercalando(mazo1, 4, 2, mazo3);
 		repartirIntercalando(mazo1, 4, 3, mazo4);
 		repartirIntercalando(mazo1, 4, 0, mazo1);
-
+	}
 		//Mostrar
 		cout << "Mazo 1:" << endl;
 		mostrar(mazo1);
@@ -611,7 +611,6 @@ void truco_de_la_posada()
 		unir(mazo1, mazo2);
 		unir(mazo1, mazo3);
 		unir(mazo1, mazo4);
-	}
 	
 	//Cortamos el mazo
 	cout << "Por que numero de carta quieres cortar?"
@@ -625,7 +624,7 @@ void truco_de_la_posada()
 		repartirIntercalando(mazo1, 4, 2, mazo3);
 		repartirIntercalando(mazo1, 4, 3, mazo4);
 		repartirIntercalando(mazo1, 4, 0, mazo1);
-
+	}
 		//Mostrar
 		cout << "Mazo 1:" << endl;
 		mostrar(mazo1);
@@ -642,9 +641,4 @@ void truco_de_la_posada()
 		cout << "Mazo 4:" << endl;
 		mostrar(mazo4);
 		cout << endl;
-
-		//El usuario elije mazo
-		cout << "En que mazo esta tu carta?" << endl;
-		mazo = digitoEntre(1,3);
-	}
 }
