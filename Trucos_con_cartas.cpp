@@ -602,10 +602,6 @@ void truco_de_la_posada()
 		cout << "Mazo 4:" << endl;
 		mostrar(mazo4);
 		cout << endl;
-
-		//El usuario elije mazo
-		cout << "En que mazo esta tu carta?" << endl;
-		mazo = digitoEntre(1,3);
 		
 		//Juntamos los mazos
 		unir(mazo1, mazo2);
