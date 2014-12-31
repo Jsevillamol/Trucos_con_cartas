@@ -634,3 +634,74 @@ void truco_de_la_posada()
 	mostrar(mazo4);
 	cout << endl;
 }
+
+void repartir_en_tres()
+{
+	//Repartir alternamente
+	repartirIntercalando(mazo1, 3, 1, mazo2);
+	repartirIntercalando(mazo1, 3, 2, mazo3);
+	repartirIntercalando(mazo1, 3, 0, mazo1);
+
+	//Mostrar
+	cout << "Mazo 1:" << endl;
+	mostrar(mazo1);
+	cout << endl;
+
+	cout << "Mazo 2:" << endl;
+	mostrar(mazo2);
+	cout << endl;
+
+	cout << "Mazo 3:" << endl;
+	mostrar(mazo3);
+	cout << endl;
+}
+
+void repartir_en_cuatro()
+{
+	tMazo mazo, mazoAltas, mazoBajas, mazoRojas, mazoNegras, 
+	tMazo mazoAltasNegro, mazoAltasRojo, mazoBajasNegro, mazoBajasRojo;
+	int k = 0, q = 0, j = 0, a = 0;
+	
+	repartirBajaAlta(mazo, mazoBajas, mazoAltas);
+	repartirNegroRojo(mazo, mazoNegro, mazoRojo);
+	
+	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
+	{
+		if      (mazo[i] == mazoAltas && mazo[i] == mazoNegro)
+		{
+			mazo[i] = mazoAltasNegro[k];
+			k++;
+		}
+		else if (mazo[i] == mazoAltas && mazo[i] == mazoRojo)
+		{
+			mazo[i] = mazoAltasRojo[q];
+			q++;
+		}
+		else if (mazo[i] == mazoBajas && mazo[i] == mazoNegro)
+		{
+			mazo[i] = mazoBajasNegro[j];
+			j++;
+		}
+		else if (mazo[i] == mazoBajas && mazo[i] == mazoRojo)
+		{
+			mazo[i] == mazoBajasRojo[a];
+			a++;
+		}
+	}
+	
+	cout << "Mazo 1:" << endl;
+	mostrar(mazoBajasNegro);
+	cout << endl;
+
+	cout << "Mazo 2:" << endl;
+	mostrar(mazoAltasRojo);
+	cout << endl;
+
+	cout << "Mazo 3:" << endl;
+	mostrar(mazoBajasNegro);
+	cout << endl;
+	
+	cout << "Mazo 4:" << endl;
+	mostrar(mazoBajasRojo);
+	cout << endl;
+}
