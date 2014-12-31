@@ -537,8 +537,6 @@ void repartir_en_tres(tMazo mazo1, tMazo mazo2, tMazo mazo3)
 
 void repartir_en_cuatro(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4;)
 {
-	tMazo mazo1, mazo2, mazo3, mazo4;
-	
 	//Repartir alternamente
 	repartirIntercalando(mazo1, 4, 1, mazo2);
 	repartirIntercalando(mazo1, 4, 2, mazo3);
@@ -626,12 +624,6 @@ void truco_de_la_posada()
 	cout << "Por que numero de carta quieres cortar?";
 	cin >> corte;
 	cortar(mazo1, corte);
-	
-	//Repartir alternamente
-	repartirIntercalando(mazo1, 4, 1, mazo2);
-	repartirIntercalando(mazo1, 4, 2, mazo3);
-	repartirIntercalando(mazo1, 4, 3, mazo4);
-	repartirIntercalando(mazo1, 4, 0, mazo1);
 
 	repartir_en_cuatro(mazo1, mazo2, mazo3, mazo4);
 }
