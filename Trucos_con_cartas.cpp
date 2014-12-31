@@ -458,12 +458,16 @@ void vaciar(tMazo mazo)
 
 int menu()
 {
-	cout << "1 - Cargar"                    << endl
-	     << "2 - Barajar"                   << endl
-	     << "3 - Agregar otro mazo"         << endl
-	     << "4 - Cortar"                    << endl
-	     << "5 - Guardar"                   << endl
-	     << "0 - Salir"                     << endl;
+	cout << "1 - Cargar"                     << endl
+	     << "2 - Barajar"                    << endl
+	     << "3 - Agregar otro mazo"          << endl
+	     << "4 - Cortar"                     << endl
+	     << "5 - Guardar"                    << endl
+	     << "6 - Separar en negras y rojas"  << endl
+	     << "7 - Separar en altas y bajas"   << endl
+	     << "8 - Separar en tres montones"   << endl
+	     << "9 - Separar en cuatro montones" << endl 
+	     << "0 - Salir"                      << endl;
 	
 	int seleccionar = digitoEntre(0,6);
 
