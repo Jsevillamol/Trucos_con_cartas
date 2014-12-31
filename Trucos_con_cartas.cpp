@@ -570,3 +570,81 @@ void truco_de_los_tres_montones()
 	cout << "Tu carta era el..." << endl;
 	mostrar(mazo1[11]);
 }
+
+void truco_de_la_posada()
+{
+	tMazo mazo1, mazo2, mazo3, mazo4;
+	strin nomb = "posada.txt";
+	int corte;
+	
+	cargar_auto(mazo1, nomb);
+	for (int i=0; i<3; i++)
+	{
+		//Repartir alternamente
+		repartirIntercalando(mazo1, 4, 1, mazo2);
+		repartirIntercalando(mazo1, 4, 2, mazo3);
+		repartirIntercalando(mazo1, 4, 3, mazo4);
+		repartirIntercalando(mazo1, 4, 0, mazo1);
+
+		//Mostrar
+		cout << "Mazo 1:" << endl;
+		mostrar(mazo1);
+		cout << endl;
+
+		cout << "Mazo 2:" << endl;
+		mostrar(mazo2);
+		cout << endl;
+
+		cout << "Mazo 3:" << endl;
+		mostrar(mazo3);
+		cout << endl;
+		
+		cout << "Mazo 4:" << endl;
+		mostrar(mazo4);
+		cout << endl;
+
+		//El usuario elije mazo
+		cout << "En que mazo esta tu carta?" << endl;
+		mazo = digitoEntre(1,3);
+		
+		//Juntamos los mazos
+		unir(mazo1, mazo2);
+		unir(mazo1, mazo3);
+		unir(mazo1, mazo4);
+	}
+	
+	//Cortamos el mazo
+	cout << "Por que numero de carta quieres cortar?"
+	cin >> corte;
+	cortar(mazo1, corte);
+	
+	for (int i=0; i<3; i++)
+	{
+		//Repartir alternamente
+		repartirIntercalando(mazo1, 4, 1, mazo2);
+		repartirIntercalando(mazo1, 4, 2, mazo3);
+		repartirIntercalando(mazo1, 4, 3, mazo4);
+		repartirIntercalando(mazo1, 4, 0, mazo1);
+
+		//Mostrar
+		cout << "Mazo 1:" << endl;
+		mostrar(mazo1);
+		cout << endl;
+
+		cout << "Mazo 2:" << endl;
+		mostrar(mazo2);
+		cout << endl;
+
+		cout << "Mazo 3:" << endl;
+		mostrar(mazo3);
+		cout << endl;
+		
+		cout << "Mazo 4:" << endl;
+		mostrar(mazo4);
+		cout << endl;
+
+		//El usuario elije mazo
+		cout << "En que mazo esta tu carta?" << endl;
+		mazo = digitoEntre(1,3);
+	}
+}
