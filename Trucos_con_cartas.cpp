@@ -327,7 +327,7 @@ bool desplazar(tMazo mazo, int numero)
 	int total = cuantas(mazo);
 	if (total+numero < MAX_CARTAS)
 	{
-		for (int i= 0; i < total; i++)
+		for (int i = total; i >= 0; i--)
 			mazo[i+numero] = mazo[i];
 		return true;
 	}
@@ -471,7 +471,7 @@ int menu()
 	     << "11 - Truco de la Posada"         << endl
 	     << "0  - Salir"                      << endl;
 	
-	int seleccionar = digitoEntre(0,6);
+	int seleccionar = digitoEntre(0,11);
 
 	return seleccionar;
 }
