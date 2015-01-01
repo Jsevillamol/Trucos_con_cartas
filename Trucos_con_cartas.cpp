@@ -515,20 +515,20 @@ void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo ma
 
 void truco_de_los_tres_montones()
 {
-	tMazo mazo1, mazo2, mazo3;
+	tMazo mazoU, mazo1, mazo2, mazo3;
 	string nomb = "3montones.txt";
 	int mazo;
 
 	//generamos el mazo de 21 cartas
-	cargar_auto(mazo1, nomb);
+	cargar_auto(mazoU, nomb);
 
 	for (int i=0; i<3; i++)
 	{
 		//Repartir alternamente
-		repartirIntercalando(mazo1, 3, 1, mazo2);
-		repartirIntercalando(mazo1, 3, 2, mazo3);
-		repartirIntercalando(mazo1, 3, 0, mazo1);
-
+		repartirIntercalando(mazoU, 3, 1, mazo2);
+		repartirIntercalando(mazoU, 3, 2, mazo3);
+		repartirIntercalando(mazoU, 3, 0, mazo1);
+		vaciar(mazoU);
 		//Mostrar
 		cout << "Mazo 1:" << endl;
 		mostrar(mazo1);
@@ -549,26 +549,25 @@ void truco_de_los_tres_montones()
 		//Juntamos los mazos
 		if (mazo == 1)
 		{
-			unir(mazo1, mazo3);
-			unir(mazo2, mazo1);
-
-			//El mazo en el que debe acabar todo es el 1
-			vaciar(mazo1);
-			unir(mazo1, mazo2);
+			unir(mazoU, mazo3);
+			unir(mazoU, mazo1);
+			unir(mazoU, mazo2);
 		}
 		else if (mazo == 2)
 		{
-			unir(mazo2, mazo3);
-			unir(mazo1, mazo2);
+			unir(mazoU, mazo3);
+			unir(mazoU, mazo2);
+			unir(mazoU, mazo1);
 		}
 		else //if (mazo == 3)
 		{
-			unir(mazo3, mazo2);
-			unir(mazo1, mazo2);
+			unir(mazoU, mazo2);
+			unir(mazoU, mazo3);
+			unir(mazoU, mazo1);
 		}
 	}
 
 	//Adivinamos la carta
 	cout << "Tu carta era el..." << endl;
-	mostrar(mazo1[11]);
+	mostrar(mazoU[10]);
 }
