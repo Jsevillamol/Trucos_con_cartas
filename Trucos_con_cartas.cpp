@@ -108,6 +108,28 @@ int main()
 				 cout << "Guardado exitoso!" << endl;
 			else cout << "Fallo al guardar" << endl;
 		}
+		else if (opcion == 6) 
+		{
+			tMazo negro, rojo;
+			repartirNegroRojo(mazo, negro, rojo);
+			
+			cout << "Negras: " << endl;
+			mostrar(negro);
+			
+			cout << "Rojas: " << endl;
+			mostrar(rojo);
+		} 
+		else if (opcion == 7) 
+		{
+			tMazo alto, bajo;
+			repartirBajaAlta(mazo,bajo,alto);
+			
+			cout << "Bajas: " << endl;
+			mostrar(bajo);
+			
+			cout << "Altas: " << endl;
+			mostrar(alto);
+		} 
 		else if (opcion == 10)
 		{
 			truco_de_los_tres_montones();
@@ -351,6 +373,8 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 			k++;
 		}
 	}
+	mazoBajas[j] = CENTINELA;
+	mazoAltas[k] = CENTINELA;
 }
 
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
@@ -370,6 +394,8 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 			k++;
 		}
 	}
+	mazoNegro[j] = CENTINELA;
+	mazoRojo [k] = CENTINELA;
 }
 
 int randint(int max)
