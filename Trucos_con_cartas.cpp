@@ -67,6 +67,8 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 
+void pausa();
+
 int main()
 {
 	int opcion, cantidad;
@@ -654,6 +656,18 @@ void truco_de_la_posada()
 	
 	cargar_auto(mazo1, nomb);
 	
+	//Contamos la historia
+	cout << "Habia una vez una posada con cuatro habitaciones."   << endl
+	     << "Un dia llegaron cuatro caballeros y cada uno se" 
+	     << "puso en una habitacion diferente."                   << endl
+	     << "Luego llegaron cuatro senioras, y para no dejarlas" 
+	     << "sin habitacion, ubicaron a cada una en una de dichas"
+	     << "habitaciones, con los caballeros."                   << endl
+	     << "Luego llegaron cuatro reyes con sus cuatro peones,"
+	     << "y pusieron cada rey y cada peon en alguna de dichas" << endl
+	     << "cuatro habitaciones. "                               << endl;
+		 	 
+	pausa();
 	repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
 		
 	//Juntamos los mazos
@@ -665,6 +679,17 @@ void truco_de_la_posada()
 	cout << "Por que numero de carta quieres cortar?";
 	cin >> corte;
 	cortar(mazo1, corte);
-
+	
+	cout << "Sin embargo, a la maniana siguiente..." << endl;
+	
+	pausa();
 	repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+	
+	cout << "Los cuatro reyes amanecieron en la misma habitacion, "
+         << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+}
+
+void pausa()
+{
+	system("pause");
 }
