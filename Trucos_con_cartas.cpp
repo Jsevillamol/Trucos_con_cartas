@@ -61,8 +61,11 @@ void mostrar(tCarta carta);
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
+void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3);
+void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 
 void truco_de_los_tres_montones();
+void truco_de_la_posada();
 
 int main()
 {
@@ -130,13 +133,54 @@ int main()
 			cout << "Altas: " << endl;
 			mostrar(alto);
 		} 
+		else if (opcion == 8) 
+		{
+			tMazo mazo1, mazo2, mazo3;
+			repartir_en_tres(mazo, mazo1, mazo2, mazo3);
+		}
+		else if (opcion == 9) 
+		{
+			tMazo mazo1, mazo2, mazo3, mazo4;
+			repartir_en_cuatro(mazo, mazo1, mazo2, mazo3, mazo4);
+		}
 		else if (opcion == 10)
 		{
 			truco_de_los_tres_montones();
 		}
+		else if (opcion == 11)
+		{
+			truco_de_la_posada();
+		}
 	}while(opcion != 0);
 
 	return 1;
+}
+
+int digitoEntre(int a, int b)
+{
+	int digito = -1;
+
+	do
+	{
+		cin.sync(); //Por si quedan datos basura en el buffer
+		cin >> digito;
+
+		if (cin.fail())
+		{
+			cout << "Error! Introduce un digito" << endl;
+			cin.clear();
+		}
+
+		else if (digito < a || digito > b)
+		{
+			cout << "Error! Introduce un digito entre " << a << " y " << b << endl;
+			digito = -1;
+		}
+		
+	}
+	while (digito == -1);
+
+	return digito;
 }
 
 int cuantas(const tMazo mazo)
@@ -497,36 +541,7 @@ int menu()
 	     << "11 - Truco de la Posada"         << endl
 	     << "0  - Salir"                      << endl;
 	
-	int seleccionar = digitoEntre(0,11);
-
-	return seleccionar;
-}
-
-int digitoEntre(int a, int b)
-{
-	int digito = -1;
-
-	do
-	{
-		cin.sync(); //Por si quedan datos basura en el buffer
-		cin >> digito;
-
-		if (cin.fail())
-		{
-			cout << "Error! Introduce un digito" << endl;
-			cin.clear();
-		}
-
-		else if (digito < a || digito > b)
-		{
-			cout << "Error! Introduce un digito entre " << a << " y " << b << endl;
-			digito = -1;
-		}
-		
-	}
-	while (digito == -1);
-
-	return digito;
+	return digitoEntre(0,11);
 }
 
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
@@ -537,6 +552,53 @@ void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo ma
 		mazoNuevo[j] = mazo[i];
 	}
 	mazoNuevo[j] = CENTINELA;
+}
+
+void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3)
+{
+	//Repartir alternamente
+	repartirIntercalando(mazo, 3, 1, mazo2);
+	repartirIntercalando(mazo, 3, 2, mazo3);
+	repartirIntercalando(mazo, 3, 0, mazo1);
+
+	//Mostrar
+	cout << "Mazo 1:" << endl;
+	mostrar(mazo1);
+	cout << endl;
+
+	cout << "Mazo 2:" << endl;
+	mostrar(mazo2);
+	cout << endl;
+
+	cout << "Mazo 3:" << endl;
+	mostrar(mazo3);
+	cout << endl;
+}
+
+void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4)
+{
+	//Repartir alternamente
+	repartirIntercalando(mazo, 4, 1, mazo2);
+	repartirIntercalando(mazo, 4, 2, mazo3);
+	repartirIntercalando(mazo, 4, 3, mazo4);
+	repartirIntercalando(mazo, 4, 0, mazo1);
+	
+	//Mostramos los mazos
+	cout << "Mazo 1:" << endl;
+	mostrar(mazo1);
+	cout << endl;
+
+	cout << "Mazo 2:" << endl;
+	mostrar(mazo2);
+	cout << endl;
+
+	cout << "Mazo 3:" << endl;
+	mostrar(mazo3);
+	cout << endl;
+
+	cout << "Mazo 4:" << endl;
+	mostrar(mazo4);
+	cout << endl;
 }
 
 void truco_de_los_tres_montones()
@@ -551,22 +613,7 @@ void truco_de_los_tres_montones()
 	for (int i=0; i<3; i++)
 	{
 		//Repartir alternamente
-		repartirIntercalando(mazoU, 3, 1, mazo2);
-		repartirIntercalando(mazoU, 3, 2, mazo3);
-		repartirIntercalando(mazoU, 3, 0, mazo1);
-		vaciar(mazoU);
-		//Mostrar
-		cout << "Mazo 1:" << endl;
-		mostrar(mazo1);
-		cout << endl;
-
-		cout << "Mazo 2:" << endl;
-		mostrar(mazo2);
-		cout << endl;
-
-		cout << "Mazo 3:" << endl;
-		mostrar(mazo3);
-		cout << endl;
+		repartir_en_tres(mazoU, mazo1, mazo2, mazo3);	
 
 		//El usuario elije mazo
 		cout << "En que mazo esta tu carta?" << endl;
@@ -596,4 +643,27 @@ void truco_de_los_tres_montones()
 	//Adivinamos la carta
 	cout << "Tu carta era el..." << endl;
 	mostrar(mazoU[10]);
+}
+
+void truco_de_la_posada()
+{
+	tMazo mazo1, mazo2, mazo3, mazo4;
+	string nomb = "posada.txt";
+	int corte;
+	
+	cargar_auto(mazo1, nomb);
+	
+	repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+		
+	//Juntamos los mazos
+	unir(mazo1, mazo2);
+	unir(mazo1, mazo3);
+	unir(mazo1, mazo4);
+	
+	//Cortamos el mazo
+	cout << "Por que numero de carta quieres cortar?";
+	cin >> corte;
+	cortar(mazo1, corte);
+
+	repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
 }
