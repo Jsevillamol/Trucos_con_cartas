@@ -613,7 +613,8 @@ void truco_de_los_tres_montones()
 	for (int i=0; i<3; i++)
 	{
 		//Repartir alternamente
-		repartir_en_tres(mazoU, mazo1, mazo2, mazo3);	
+		repartir_en_tres(mazoU, mazo1, mazo2, mazo3);
+		vaciar(mazoU);
 
 		//El usuario elije mazo
 		cout << "En que mazo esta tu carta?" << endl;
