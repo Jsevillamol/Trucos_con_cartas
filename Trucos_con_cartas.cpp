@@ -46,8 +46,8 @@ void mostrar(tCarta carta);
 
 //Funciones de carga y guardado de mazos
 bool cargar(tMazo mazo, string &nomb);
-bool abrir(string &nomb, ifstream &archivo);
 bool cargar_auto(tMazo mazo, string &nomb);
+bool abrir(string &nomb, ifstream &archivo);
 bool agregar(tMazo mazo);
 
 bool guardar(const tMazo mazo, string &nomb);
@@ -171,6 +171,26 @@ int main()
 	return 1;
 }
 
+int menu()
+{
+	cout << setfill('-') << setw(79) <<  '-'  << endl
+		 << setfill(' ')
+		 << "1  - Cargar"                     << endl
+	     << "2  - Barajar"                    << endl
+	     << "3  - Agregar otro mazo"          << endl
+	     << "4  - Cortar"                     << endl
+	     << "5  - Guardar"                    << endl
+	     << "6  - Separar en negras y rojas"  << endl
+	     << "7  - Separar en altas y bajas"   << endl
+	     << "8  - Separar en tres montones"   << endl
+	     << "9  - Separar en cuatro montones" << endl
+	     << "10 - Truco de los tres montones" << endl
+	     << "11 - Truco de la Posada"         << endl
+	     << "0  - Salir"                      << endl;
+	
+	return digitoEntre(0,11);
+}
+
 int digitoEntre(int a, int b)
 {
 	int digito = -1;
@@ -230,6 +250,36 @@ tNumero numero(tCarta carta)
 	seccionNumero = (carta % CARTASxPALO);
 	
 	return tNumero (seccionNumero+1);
+}
+
+void mostrar(tMazo mazo)
+{
+	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
+	{
+		mostrar(mazo[i]);
+	}
+	cout << endl;
+}
+
+void mostrar(tCarta carta)
+{
+	tPalo p = palo(carta);
+	tNumero n = numero(carta);
+	
+	if      (n == A) cout << "A";
+	else if (n == J) cout << "J";
+	else if (n == Q) cout << "Q";
+	else if (n == K) cout << "K";
+	else             cout << n;
+
+	cout << " ";
+
+	if      (p == picas)     cout <<     "de picas";
+	else if (p == treboles)  cout <<  "de treboles";
+	else if (p == diamantes) cout << "de diamantes";
+	else if (p == corazones) cout << "de corazones";
+
+	cout << endl;
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -378,7 +428,10 @@ tCarta traducir(char p, int n)
 
 	return (n-1 + int (suit) * CARTASxPALO);
 }
-
+void vaciar(tMazo mazo)
+{
+	mazo[0] = CENTINELA;
+}
 
 //Baraja el mazo, intercambiando aleatoriemente cartas
 void barajar(tMazo mazo)
@@ -390,6 +443,11 @@ void barajar(tMazo mazo)
 		pos2 = randint(nCartas);
 		intercambiar(mazo, pos1, pos2);
 	}
+}
+
+int randint(int max)
+{
+	return rand() % (max);
 }
 
 void intercambiar(tMazo mazo, int pos1, int pos2)
@@ -413,53 +471,6 @@ bool desplazar(tMazo mazo, int numero)
 		return true;
 	}
 	else return false;
-}
-
-void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
-{	
-	int j=0, k=0;
-
-	for(int i=0; mazo[i] != CENTINELA; i++)
-	{
-		if     (numero(mazo[i])<8) 
-		{
-			mazoBajas[j] = mazo[i];
-			j++;
-		}
-		else if(numero(mazo[i])>7) 
-		{
-			mazoAltas[k] = mazo[i];
-			k++;
-		}
-	}
-	mazoBajas[j] = CENTINELA;
-	mazoAltas[k] = CENTINELA;
-}
-
-void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
-{
-	int j=0, k=0;
-
-	for(int i=0; mazo[i] != CENTINELA; i++)
-	{
-		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
-		{
-			mazoNegro[j] = mazo[i];
-			j++;
-		}
-		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
-		{
-			mazoRojo[k] = mazo[i];
-			k++;
-		}
-	}
-	mazoNegro[j] = CENTINELA;
-	mazoRojo [k] = CENTINELA;
-}
-
-int randint(int max)
-{
-	return rand() % (max);
 }
 
 void cortar(tMazo mazo, int cuantasCartas)
@@ -506,59 +517,46 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 	else return false;
 }
 
-void mostrar(tMazo mazo)
-{
-	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
+void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
+{	
+	int j=0, k=0;
+
+	for(int i=0; mazo[i] != CENTINELA; i++)
 	{
-		mostrar(mazo[i]);
+		if     (numero(mazo[i])<8) 
+		{
+			mazoBajas[j] = mazo[i];
+			j++;
+		}
+		else if(numero(mazo[i])>7) 
+		{
+			mazoAltas[k] = mazo[i];
+			k++;
+		}
 	}
-	cout << endl;
+	mazoBajas[j] = CENTINELA;
+	mazoAltas[k] = CENTINELA;
 }
 
-void mostrar(tCarta carta)
+void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 {
-	tPalo p = palo(carta);
-	tNumero n = numero(carta);
-	
-	if      (n == A) cout << "A";
-	else if (n == J) cout << "J";
-	else if (n == Q) cout << "Q";
-	else if (n == K) cout << "K";
-	else             cout << n;
+	int j=0, k=0;
 
-	cout << " ";
-
-	if      (p == picas)     cout <<     "de picas";
-	else if (p == treboles)  cout <<  "de treboles";
-	else if (p == diamantes) cout << "de diamantes";
-	else if (p == corazones) cout << "de corazones";
-
-	cout << endl;
-}
-
-void vaciar(tMazo mazo)
-{
-	mazo[0] = CENTINELA;
-}
-
-int menu()
-{
-	cout << setfill('-') << setw(79) <<  '-'  << endl
-		 << setfill(' ')
-		 << "1  - Cargar"                     << endl
-	     << "2  - Barajar"                    << endl
-	     << "3  - Agregar otro mazo"          << endl
-	     << "4  - Cortar"                     << endl
-	     << "5  - Guardar"                    << endl
-	     << "6  - Separar en negras y rojas"  << endl
-	     << "7  - Separar en altas y bajas"   << endl
-	     << "8  - Separar en tres montones"   << endl
-	     << "9  - Separar en cuatro montones" << endl
-	     << "10 - Truco de los tres montones" << endl
-	     << "11 - Truco de la Posada"         << endl
-	     << "0  - Salir"                      << endl;
-	
-	return digitoEntre(0,11);
+	for(int i=0; mazo[i] != CENTINELA; i++)
+	{
+		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
+		{
+			mazoNegro[j] = mazo[i];
+			j++;
+		}
+		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
+		{
+			mazoRojo[k] = mazo[i];
+			k++;
+		}
+	}
+	mazoNegro[j] = CENTINELA;
+	mazoRojo [k] = CENTINELA;
 }
 
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
