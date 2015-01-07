@@ -96,25 +96,33 @@ int main()
 		opcion = menu();
 		if (opcion == 1) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			if (cargar(mazo, nomb))
 				mostrar(mazo);
 			else cout << "El archivo no pudo cargarse." << endl;
 		}
 		else if (opcion == 2) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			barajar(mazo);
 			cout << "Mazo barajado:" << endl;
 			mostrar(mazo);
 		}
 		else if (opcion == 3) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			agregar(mazo);
 			cout << "Mazo actual:" << endl;
 			mostrar(mazo);
 		}
 		else if (opcion == 4) 
 		{
-			cout << "Cuantas?";
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ')
+		         << "Cuantas?";
 			cin >> cantidad;
 			cortar(mazo, cantidad);
 			cout << "Mazo actual:" << endl;
@@ -122,12 +130,16 @@ int main()
 		}
 		else if (opcion == 5) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			if (guardar(mazo, nomb)) 
 				 cout << "Guardado exitoso!" << endl;
 			else cout << "Fallo al guardar" << endl;
 		}
 		else if (opcion == 6) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			tMazo negro, rojo;
 			repartirNegroRojo(mazo, negro, rojo);
 			
@@ -139,6 +151,8 @@ int main()
 		} 
 		else if (opcion == 7) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			tMazo alto, bajo;
 			repartirBajaAlta(mazo,bajo,alto);
 			
@@ -150,20 +164,28 @@ int main()
 		} 
 		else if (opcion == 8) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			tMazo mazo1, mazo2, mazo3;
 			repartir_en_tres(mazo, mazo1, mazo2, mazo3);
 		}
 		else if (opcion == 9) 
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			tMazo mazo1, mazo2, mazo3, mazo4;
 			repartir_en_cuatro(mazo, mazo1, mazo2, mazo3, mazo4);
 		}
 		else if (opcion == 10)
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			truco_de_los_tres_montones();
 		}
 		else if (opcion == 11)
 		{
+			cout << setfill('-') << setw(79) <<  '-'  << endl
+		         << setfill(' ');
 			truco_de_la_posada();
 		}
 	}while(opcion != 0);
