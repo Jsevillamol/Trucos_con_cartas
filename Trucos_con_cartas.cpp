@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <cstdlib>
 #include <ctime>
@@ -29,44 +30,56 @@ typedef int tCarta;
 typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
+//Menus
 int menu();
 int digitoEntre(int a, int b);
 
-void vaciar(tMazo mazo);
-
+//Funciones de obtencion de datos
 int cuantas(const tMazo mazo);
+
 tPalo palo(tCarta carta);
 tNumero numero(tCarta carta);
 
+//Funciones de output
+void mostrar(tMazo mazo);
+void mostrar(tCarta carta);
+
+//Funciones de carga y guardado de mazos
 bool cargar(tMazo mazo, string &nomb);
-bool cargar_auto(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
+bool cargar_auto(tMazo mazo, string &nomb);
 bool agregar(tMazo mazo);
+
 bool guardar(const tMazo mazo, string &nomb);
+
 string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
+//Funciones de manipulacion de un mazo individual
+void vaciar(tMazo mazo);
+
 void barajar(tMazo mazo);
+int randint(int max);
 void intercambiar (tMazo mazo, int pos1, int pos2);
 bool desplazar(tMazo mazo, int numero);
-int randint(int max);
 
 void cortar(tMazo mazo, int cuantasCartas);
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
 bool unir(tMazo mazo, const tMazo otroMazo);
 
-void mostrar(tMazo mazo);
-void mostrar(tCarta carta);
-
+//Funciones para repartir en varios mazos
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
+
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
 void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3);
 void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 
+//Trucos de magia
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 
+//System
 void pausa();
 
 int main()
@@ -446,7 +459,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 
 int randint(int max)
 {
-	return rand() % (max + 1);
+	return rand() % (max);
 }
 
 void cortar(tMazo mazo, int cuantasCartas)
@@ -530,7 +543,9 @@ void vaciar(tMazo mazo)
 
 int menu()
 {
-	cout << "1  - Cargar"                     << endl
+	cout << setfill('-') << setw(79) <<  '-'  << endl
+		 << setfill(' ')
+		 << "1  - Cargar"                     << endl
 	     << "2  - Barajar"                    << endl
 	     << "3  - Agregar otro mazo"          << endl
 	     << "4  - Cortar"                     << endl
@@ -610,42 +625,47 @@ void truco_de_los_tres_montones()
 	int mazo;
 
 	//generamos el mazo de 21 cartas
-	cargar_auto(mazoU, nomb);
-
-	for (int i=0; i<3; i++)
+	if(cargar_auto(mazoU, nomb))
 	{
-		//Repartir alternamente
-		repartir_en_tres(mazoU, mazo1, mazo2, mazo3);
-		vaciar(mazoU);
+		for (int i=0; i<3; i++)
+		{
+			//Repartir alternamente
+			repartir_en_tres(mazoU, mazo1, mazo2, mazo3);
+			vaciar(mazoU);
 
-		//El usuario elije mazo
-		cout << "En que mazo esta tu carta?" << endl;
-		mazo = digitoEntre(1,3);
+			//El usuario elije mazo
+			cout << "En que mazo esta tu carta?" << endl;
+			mazo = digitoEntre(1,3);
 
-		//Juntamos los mazos
-		if (mazo == 1)
-		{
-			unir(mazoU, mazo3);
-			unir(mazoU, mazo1);
-			unir(mazoU, mazo2);
+			//Juntamos los mazos
+			if (mazo == 1)
+			{
+				unir(mazoU, mazo3);
+				unir(mazoU, mazo1);
+				unir(mazoU, mazo2);
+			}
+			else if (mazo == 2)
+			{
+				unir(mazoU, mazo3);
+				unir(mazoU, mazo2);
+				unir(mazoU, mazo1);
+			}
+			else //if (mazo == 3)
+			{
+				unir(mazoU, mazo2);
+				unir(mazoU, mazo3);
+				unir(mazoU, mazo1);
+			}
 		}
-		else if (mazo == 2)
-		{
-			unir(mazoU, mazo3);
-			unir(mazoU, mazo2);
-			unir(mazoU, mazo1);
-		}
-		else //if (mazo == 3)
-		{
-			unir(mazoU, mazo2);
-			unir(mazoU, mazo3);
-			unir(mazoU, mazo1);
-		}
+
+		//Adivinamos la carta
+		cout << "Tu carta era el..." << endl;
+		mostrar(mazoU[10]);
 	}
-
-	//Adivinamos la carta
-	cout << "Tu carta era el..." << endl;
-	mostrar(mazoU[10]);
+	else
+	{
+		cout << "Archivo \"3montones.txt\" no encontrado" << endl;
+	}
 }
 
 void truco_de_la_posada()
@@ -654,39 +674,44 @@ void truco_de_la_posada()
 	string nomb = "posada.txt";
 	int corte;
 	
-	cargar_auto(mazo1, nomb);
+	if (cargar_auto(mazo1, nomb)){
 	
-	//Contamos la historia
-	cout << "Habia una vez una posada con cuatro habitaciones."   << endl
-	     << "Un dia llegaron cuatro caballeros y cada uno se" 
-	     << "puso en una habitacion diferente."                   << endl
-	     << "Luego llegaron cuatro senioras, y para no dejarlas" 
-	     << "sin habitacion, ubicaron a cada una en una de dichas"
-	     << "habitaciones, con los caballeros."                   << endl
-	     << "Luego llegaron cuatro reyes con sus cuatro peones,"
-	     << "y pusieron cada rey y cada peon en alguna de dichas" << endl
-	     << "cuatro habitaciones. "                               << endl;
+		//Contamos la historia
+		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
+			 << "Un dia llegaron cuatro caballeros y cada uno se" 
+			 << "puso en una habitacion diferente."                   << endl
+			 << "Luego llegaron cuatro senioras, y para no dejarlas" 
+			 << "sin habitacion, ubicaron a cada una en una de dichas"
+			 << "habitaciones, con los caballeros."                   << endl
+			 << "Luego llegaron cuatro reyes con sus cuatro peones,"
+			 << "y pusieron cada rey y cada peon en alguna de dichas" << endl
+			 << "cuatro habitaciones. "                               << endl;
 		 	 
-	pausa();
-	repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+		pausa();
+		repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
 		
-	//Juntamos los mazos
-	unir(mazo1, mazo2);
-	unir(mazo1, mazo3);
-	unir(mazo1, mazo4);
+		//Juntamos los mazos
+		unir(mazo1, mazo2);
+		unir(mazo1, mazo3);
+		unir(mazo1, mazo4);
 	
-	//Cortamos el mazo
-	cout << "Por que numero de carta quieres cortar?";
-	cin >> corte;
-	cortar(mazo1, corte);
+		//Cortamos el mazo
+		cout << "Por que numero de carta quieres cortar?";
+		cin >> corte;
+		cortar(mazo1, corte);
 	
-	cout << "Sin embargo, a la maniana siguiente..." << endl;
+		cout << "Sin embargo, a la maniana siguiente..." << endl;
 	
-	pausa();
-	repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+		pausa();
+		repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
 	
-	cout << "Los cuatro reyes amanecieron en la misma habitacion, "
-         << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
+			 << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+	}
+	else
+	{
+		cout << "Archivo \"posada.txt\" no encontrado." << endl;
+	}
 }
 
 void pausa()
