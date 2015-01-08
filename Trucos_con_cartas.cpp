@@ -86,6 +86,10 @@ void cortar(tMazo mazo, int cuantasCartas);
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
 bool unir(tMazo mazo, const tMazo otroMazo);
 void carta_concreta(tMazo mazo);
+tCarta elegir_carta();
+int elegir_numero();
+char elegir_palo();
+bool agregar_carta(tMazo mazo, tCarta carta, tCarta elegir_carta());
 
 //Funciones para repartir en varios mazos
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
@@ -103,7 +107,7 @@ inline void pausa();
 
 int main()
 {
-	int opcion, seleccionar;
+	int opcion;
 	tMazo mazo;
 	string nomb;
 
@@ -117,45 +121,47 @@ int main()
 		{
 			do
 			{
-				seleccionar = menu_de_carga_y_guardado();
-				if (seleccionar == 1)
+				oopcion = menu_de_carga_y_guardado();
+				if      (opcion == 1)
 				{
 					linea();
 					if (cargar(mazo, nomb))
 						mostrar(mazo);
 					else cout << "El archivo no pudo cargarse." << endl;
 				}
-				else if (seleccionar == 2)
+				else if (opcion == 2)
 				{
 					linea();
 					if (guardar(mazo, nomb)) 
 						cout << "Guardado exitoso!" << endl;
 					else cout << "Fallo al guardar" << endl;
 				}
-				else if (seleccionar == 3)
+				else if (opcion == 3)
 				{
 					linea();
 					agregar(mazo);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-			}while (seleccionar != 0);
+			}while (opcion != 0);
 			opcion = menu_principal();
 		}
 		else if (opcion == 2) 
 		{
 			do
 			{
-				seleccionar = menu_de_manipulacion_de_mazos();
-				if (manipulacion == 1)
+				opcion = menu_de_manipulacion_de_mazos();
+				if      (opcion == 1)
 				{
 					linea();
 					barajar(mazo);
 					cout << "Mazo barajado:" << endl;
 					mostrar(mazo);
 				}
-				else if (manipulacion == 2)
+				else if (opcion == 2)
 				{
+					int cantidad;
+					
 					linea();
 					cout << "Cuantas?";
 					cin >> cantidad;
@@ -163,7 +169,7 @@ int main()
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-				else if (manipulacion == 3)
+				else if (opcion == 3)
 				{
 					linea();
 					tMazo negro, rojo;
@@ -175,7 +181,7 @@ int main()
 					cout << "Rojas: " << endl;
 					mostrar(rojo);
 				}
-				else if (manipulacion == 4)
+				else if (opcion == 4)
 				{
 					linea();
 					tMazo alto, bajo;
@@ -187,7 +193,7 @@ int main()
 					cout << "Altas: " << endl;
 					mostrar(alto);	
 				}
-				else if (manipulacion == 5)
+				else if (opcion == 5)
 				{
 					linea();
 
@@ -203,69 +209,69 @@ int main()
 
 					delete mazos;
 				}
-				else if (manipulacion == 6)
+				else if (opcion == 6)
 				{
 					linea();
 					cout << "Mazo:" << endl;
 					mostrar(mazo);
 				}
-				else if (manipulacion == 7)
+				else if (opcion == 7)
 				{
 					linea();
 					carta_concreta(mazo);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-				/*else if (manipulacion == 8)
+				/*else if (opcion == 8)
 				{
 					linea();
 					//agregar_mazo();
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}*/
-				else if (manipulacion == 9)
+				else if (opcion == 9)
 				{
 					vaciar(mazo);
 				}
-			}while (manipulacion != 0);
+			}while (opcion != 0);
 			opcion = menu_principal();
 		}
 		/*else if (opcion == 3) 
 		{
 			do
 			{
-				juegos = menu_de_juegos();
-				if (juegos == 1)
+				opcion = menu_de_juegos();
+				if      (opcion == 1)
 				{
 					//blackjack();
 				}
-				else if (juegos == 2)
+				else if (opcion == 2)
 				{
 					//poker();
 				}
-				else if (juegos == 3)
+				else if (opcion == 3)
 				{
 					//canasta();
 				}
-			}while (juegos != 0) opcion = menu_principal();
+			}while (opcion != 0) 
+			opcion = menu_principal();
 		}*/
 		else if (opcion == 4) 
 		{
 			do
 			{
-				magia = menu_de_magia();
-				if (magia == 1)
+				opcion = menu_de_magia();
+				if      (opcion == 1)
 				{
 					linea();
 					truco_de_los_tres_montones();
 				}
-				else if (magia == 2)
+				else if (opcion == 2)
 				{
 					linea();
 					truco_de_la_posada();
 				}
-			}while (magia != 0);
-
+			}while (opcion != 0);
 			opcion = menu_principal();
 		}
 	}while(opcion != 0);
@@ -654,26 +660,52 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 
 void carta_concreta(tMazo mazo)
 {
+	elegir_carta();
+	agregar_carta(mazo, carta, elegir_carta())
+}
+
+tCarta elegir_carta()
+{
+	elegir_numero();
+	elegir_palo();
+	
+	return traducir(simboloPalo, numeroCarta);
+}
+
+int elegir_numero()
+{
 	int numeroCarta;
+	
+	cout << "Que numero de carta te gustaria aniadir?"
+	     << " (debe estar entre 1 y 13) " << endl;
+	numeroCarta = digitoEntre(1,13);
+	
+	return numeroCarta;
+}
+
+char elegir_palo()
+{
 	char simboloPalo;
 	
-	int i = cuantas(mazo);
+	cout << "De que palo te gustaria que fuese?"
+	     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
+	cin >> simboloPalo;
 	
-	if (i == MAX_CARTAS)
+	return simboloPalo;
+}
+
+bool agregar_carta(tMazo mazo, tCarta carta, tCarta elegir_carta())
+{
+	if (cuantas(mazo) == MAX_CARTAS)
 	{
 		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
+		return false;
 	}
 	else
 	{
-		cout << "Que numero de carta te gustaria aniadir?"
-		     << " (debe estar entre 1 y 13) " << endl;
-		numeroCarta = digitoEntre(1,13);
-		cout << "De que palo te gustaria que fuese?"
-		     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
-		cin >> simboloPalo;
-		
 		mazo[i] = traducir(simboloPalo, numeroCarta);
 		mazo[i+1] = CENTINELA;
+		return true;
 	}
 }
 
