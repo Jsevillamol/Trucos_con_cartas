@@ -88,7 +88,7 @@ void pausa();
 
 int main()
 {
-	int opcion, cantidad, seleccionar, manipulacion, en_cuantos, juegos, magia;
+	int opcion, seleccionar;
 	tMazo mazo;
 	string nomb;
 
@@ -124,13 +124,14 @@ int main()
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-			}while (seleccionar != 0) opcion = menu_principal();
+			}while (seleccionar != 0);
+			opcion = menu_principal();
 		}
 		else if (opcion == 2) 
 		{
 			do
 			{
-				manipulacion = menu_de_manipulacion_de_mazos();
+				seleccionar = menu_de_manipulacion_de_mazos();
 				if (manipulacion == 1)
 				{
 					linea();
@@ -174,10 +175,18 @@ int main()
 				else if (manipulacion == 5)
 				{
 					linea();
+
+					int en_cuantos;
 					cout << "En cuantos mazos quieres separar este mazo?" << endl;
 					cin >> en_cuantos;
-					repartir_en_n(mazoI, mazo[], en_cuantos);
-					mostrar(tMazo mazo[], en_cuantos);
+
+					tMazo *mazos;
+					mazos = new tMazo[en_cuantos];
+					repartir_en_n(mazo, mazos, en_cuantos);
+
+					mostrar(mazos, en_cuantos);
+
+					delete mazos;
 				}
 				else if (manipulacion == 6)
 				{
@@ -203,7 +212,8 @@ int main()
 				{
 					vaciar(mazo);
 				}
-			}while (manipulacion != 0) opcion = menu_principal();
+			}while (manipulacion != 0);
+			opcion = menu_principal();
 		}
 		/*else if (opcion == 3) 
 		{
@@ -239,7 +249,9 @@ int main()
 					linea();
 					truco_de_la_posada();
 				}
-			}while (magia != 0) opcion = menu_principal();
+			}while (magia != 0);
+
+			opcion = menu_principal();
 		}
 	}while(opcion != 0);
 
