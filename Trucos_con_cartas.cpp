@@ -565,10 +565,7 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
-	int total = cuantas(mazo);
-	int otroTotal = cuantas(otroMazo);
-
-	if (desplazar(mazo, otroTotal))
+	if (desplazar(mazo, cuantas(otroMazo)))
 	{
 		for (int i = 0; otroMazo[i] != CENTINELA; i++)
 		{
