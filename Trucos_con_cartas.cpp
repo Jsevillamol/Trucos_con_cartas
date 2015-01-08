@@ -31,9 +31,13 @@ typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
 //Menus
-int menu();
+int menu_principal();
+int menu_de_carga_y_guardado();
+int menu_de_manipulacion_de_mazos();
+int menu_de_juegos_de_cartas();
+int menu_de_magia_de_cartas();
 int digitoEntre(int a, int b);
-void linea();
+inline void linea();
 
 //Funciones de obtencion de datos
 int cuantas(const tMazo mazo);
@@ -357,7 +361,7 @@ int digitoEntre(int a, int b)
 	return digito;
 }
 
-void linea()
+inline void linea()
 {
 	cout << setfill('-') << setw(79) <<  '-'  << endl << setfill(' ');
 }
