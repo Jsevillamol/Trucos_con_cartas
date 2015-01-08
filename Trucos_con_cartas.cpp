@@ -121,7 +121,7 @@ int main()
 		{
 			do
 			{
-				oopcion = menu_de_carga_y_guardado();
+				opcion = menu_de_carga_y_guardado();
 				if      (opcion == 1)
 				{
 					linea();
@@ -727,31 +727,31 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 {
 	int j=0, k=0;
 
-	for(int i=0; mazo[i] != CENTINELA; i++)
+	for(int i=0; i < mazo.cuantas; i++)
 	{
-		if     ((palo(mazo[i]) == picas)||(palo(mazo[i]) == treboles)) 
+		if     (mazo.cartas[i].palo == picas)||mazo.cartas[i].palo == treboles)) 
 		{
-			mazoNegro[j] = mazo[i];
+			mazoNegro.cartas[j] = mazo.cartas[i];
 			j++;
 		}
-		else //if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
+		else //if(mazo.cartas[i].palo== diamantes)||(mazo.cartas[i].palo == corazones)) 
 		{
-			mazoRojo[k] = mazo[i];
+			mazoRojo.cartas[k] = mazo.cartas[i];
 			k++;
 		}
 	}
-	mazoNegro[j] = CENTINELA;
-	mazoRojo [k] = CENTINELA;
+	mazoNegro.cuantas = j;
+	mazoRojo.cuantas = k;
 }
 
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
 {
 	int j=0;
-	for (int i = queMazo; i<cuantas(mazo); i+=enCuantos, j++)
+	for (int i = queMazo; i < mazo.cuantas; i+=enCuantos, j++)
 	{
-		mazoNuevo[j] = mazo[i];
+		mazoNuevo.cartas[j] = mazo.cartas[i];
 	}
-	mazoNuevo[j] = CENTINELA;
+	mazoNuevo.cuantas = j;
 }
 
 void repartir_en_n(tMazo mazoI, tMazo mazo[], int n)
