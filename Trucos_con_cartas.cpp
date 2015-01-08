@@ -640,7 +640,6 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
-
 	if (desplazar(mazo, otroMazo.cuantas))
 	{
 		for (int i = 0; otroMazo[i] != CENTINELA; i++)
@@ -682,21 +681,21 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 {	
 	int j=0, k=0;
 
-	for(int i=0; mazo[i] != CENTINELA; i++)
+	for(int i=0; i < mazo.cuantas; i++)
 	{
-		if     (numero(mazo[i])<8) 
+		if     (mazo.cartas[i].numero < 8) 
 		{
-			mazoBajas[j] = mazo[i];
+			mazoBajas.cartas[j] = mazo.cartas[i];
 			j++;
 		}
-		else //if(numero(mazo[i])>7) 
+		else //(mazo.cartas[i].numero > 7) 
 		{
-			mazoAltas[k] = mazo[i];
+			mazoAltas.cartas[k] = mazo.cartas[i];
 			k++;
 		}
 	}
-	mazoBajas[j] = CENTINELA;
-	mazoAltas[k] = CENTINELA;
+	mazoBajas.cuantas = j;
+	mazoAltas.cuantas = k;
 }
 
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
