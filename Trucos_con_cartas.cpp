@@ -74,6 +74,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
 void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3);
 void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
+void repartir_en_n(tMazo mazos[], int n);
 
 //Trucos de magia
 void truco_de_los_tres_montones();
@@ -636,6 +637,14 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 	cout << "Mazo 4:" << endl;
 	mostrar(mazo4);
 	cout << endl;
+}
+
+void repartir_en_n(tMazo mazoI, tMazo mazos[], int n)
+{
+	for(int i=0; i<n; i++)
+	{
+		repartirIntercalando(mazoI, n, i, mazos[i]);
+	}
 }
 
 void truco_de_los_tres_montones()
