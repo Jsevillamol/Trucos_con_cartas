@@ -29,6 +29,13 @@ struct tCarta
 {
 	tPalo palo;
 	tNumero num;
+
+	//Constructor
+	tCarta(tPalo p, tnumero n)
+	{
+		palo = p;
+		num = n;
+	}
 };
 
 struct tMazo
@@ -422,11 +429,11 @@ bool cargar(tMazo mazo, string &nomb)
 		while (p != 'x' && cont < MAX_CARTAS)
 		{
 			archivo >> n;
-			mazo[cont] = traducir(p,n);
+			mazo.cartas[cont] = traducir(p,n);
 			cont++;
 			archivo >> p;
 		}
-		mazo[cont] = CENTINELA;
+		mazo.cuantas = cont;
 		archivo.close();
 		return true;
 	}
@@ -444,11 +451,11 @@ bool cargar_auto(tMazo mazo, string &nomb)
 		while (p != 'x' && cont < MAX_CARTAS)
 		{
 			archivo >> n;
-			mazo[cont] = traducir(p,n);
+			mazo.cartas[cont] = traducir(p,n);
 			cont++;
 			archivo >> p;
 		}
-		mazo[cont] = CENTINELA;
+		mazo.cuantas = cont;
 		archivo.close();
 		return true;
 	}
@@ -512,9 +519,9 @@ bool guardar(const tMazo mazo, string &nomb)
 
 	if (archivo.is_open())
 	{
-		for(int i = 0; mazo[i] != CENTINELA; i++)
+		for(int i = 0; i < mazo.cuantas; i++)
 		{
-			archivo << traducir(mazo[i]) << endl;
+			archivo << traducir(mazo.cartas[i]) << endl;
 		}
 		archivo << "x";
 		return true;
@@ -525,7 +532,7 @@ bool guardar(const tMazo mazo, string &nomb)
 string traducir(tCarta carta)
 {
 	string s="";
-	switch (palo(carta))
+	switch (carta.palo)
 	{
 		case picas: 
 			s+="p";
@@ -541,7 +548,7 @@ string traducir(tCarta carta)
 			break;
 	}
 	s += " ";
-	s += to_string(numero(carta));
+	s += to_string(carta.num);
 	return s;
 }
 
@@ -554,22 +561,24 @@ tCarta traducir(char p, int n)
 	else if (p == 'p') suit = picas;
 	else /*if (p == 'd')*/ suit = diamantes;
 
-	return (n-1 + int (suit) * CARTASxPALO);
+	tCarta carta(suit, num);
+
+	return carta;
 }
 
 inline void vaciar(tMazo mazo)
 {
-	mazo[0] = CENTINELA;
+	mazo.cuantas = 0;
 }
 
 //Baraja el mazo, intercambiando aleatoriemente cartas
 void barajar(tMazo mazo)
 {
-	int nCartas = cuantas(mazo), pos1, pos2;
-	for (int i=0; i<3*nCartas; i++)
+	int pos1, pos2;
+	for (int i=0; i<3*mazo.cuantas; i++)
 	{
-		pos1 = randint(nCartas);
-		pos2 = randint(nCartas);
+		pos1 = randint(mazo.cuantas);
+		pos2 = randint(mazo.cuantas);
 		intercambiar(mazo, pos1, pos2);
 	}
 }
@@ -583,20 +592,20 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 {
 	tCarta aux;
 	
-	aux = mazo[pos1];
+	aux = mazo.cartas[pos1];
 	
-	mazo[pos1] = mazo[pos2];
+	mazo.cartas[pos1] = mazo.cartas[pos2];
 	
-	mazo[pos2] = aux;
+	mazo.cartas[pos2] = aux;
 }
 
 bool desplazar(tMazo mazo, int numero)
 {
-	int total = cuantas(mazo);
-	if (total+numero < MAX_CARTAS)
+	if (mazo.cuantas + numero < MAX_CARTAS)
 	{
-		for (int i = total; i >= 0; i--)
-			mazo[i+numero] = mazo[i];
+		for (int i = mazo.cuantas; i >= 0; i--)
+			mazo.cartas[i+numero] = mazo.cartas[i];
+		mazo.cuantas += numero;
 		return true;
 	}
 	else return false;
@@ -614,16 +623,16 @@ void cortar(tMazo mazo, int cuantasCartas)
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 {
 	int i;
-	if (cuantasCoger > cuantas(mazo)) return false;
+	if (cuantasCoger > mazo.cuantas) return false;
 	else
 	{
-		for (i = 0; mazo[cuantasCoger + i] != CENTINELA; i++)
+		for (i = 0; cuantasCoger + i < mazo.cuantas; i++)
 		{
-			otroMazo[i] = mazo[cuantasCoger + i];
+			otroMazo.cartas[i] = mazo.cartas[cuantasCoger + i];
 		}
 
-		mazo[cuantasCoger] = CENTINELA;
-		otroMazo[i] = CENTINELA;
+		mazo.cuantas = cuantasCoger;
+		otroMazo.cuantas = i;
 
 		return true;
 	}
@@ -631,10 +640,8 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
-	int total = cuantas(mazo);
-	int otroTotal = cuantas(otroMazo);
 
-	if (desplazar(mazo, otroTotal))
+	if (desplazar(mazo, otroMazo.cuantas))
 	{
 		for (int i = 0; otroMazo[i] != CENTINELA; i++)
 		{
