@@ -689,15 +689,15 @@ char elegir_palo()
 
 bool agregar_carta(tMazo mazo, tCarta carta, tCarta elegir_carta())
 {
-	if (cuantas(mazo) == MAX_CARTAS)
+	if (mazo.cuantas == MAX_CARTAS)
 	{
 		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
 		return false;
 	}
 	else
 	{
-		mazo[i] = traducir(simboloPalo, numeroCarta);
-		mazo[i+1] = CENTINELA;
+		mazo.cartas[i] = carta;
+		mazo.cuantas++;
 		return true;
 	}
 }
