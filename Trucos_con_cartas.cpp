@@ -31,7 +31,7 @@ struct tCarta
 	tNumero num;
 
 	//Constructor
-	tCarta(tPalo p, tnumero n)
+	tCarta(tPalo p, tNumero n)
 	{
 		palo = p;
 		num = n;
