@@ -315,7 +315,7 @@ void mostrar(tPalo p)
 	if      (p == picas)     cout <<     "de picas";
 	else if (p == treboles)  cout <<  "de treboles";
 	else if (p == diamantes) cout << "de diamantes";
-	else if (p == corazones) cout << "de corazones";
+	else /*if (p == corazones)*/ cout << "de corazones";
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -624,7 +624,7 @@ void truco_de_los_tres_montones()
 		for (int i=0; i<3; i++)
 		{
 			//Repartir alternamente
-			repartir_en_tres(mazoU, mazo);
+			repartir_en_n(mazoU, mazo, 3);
 			vaciar(mazoU);
 
 			//El usuario elije mazo
