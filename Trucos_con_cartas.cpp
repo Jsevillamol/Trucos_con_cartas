@@ -305,10 +305,10 @@ void mostrar(tNumero n)
 
 void mostrar(tPalo p)
 {
-	if      (p == picas)     cout <<     "de picas";
-	else if (p == treboles)  cout <<  "de treboles";
-	else if (p == diamantes) cout << "de diamantes";
-	else if (p == corazones) cout << "de corazones";
+	if      (p == picas)         cout <<     "de picas";
+	else if (p == treboles)      cout <<  "de treboles";
+	else if (p == diamantes)     cout << "de diamantes";
+	else /*if (p == corazones)*/ cout << "de corazones";
 }
 
 void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3)
