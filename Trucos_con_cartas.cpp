@@ -9,8 +9,7 @@ using namespace std;
 
 //VARIABLES GLOBALES
 const int CARTASxPALO=13,
-          MAX_CARTAS=52,
-          CENTINELA=52;
+          MAX_CARTAS=52;
 
 //TIPOS PROPIOS
 typedef enum
@@ -26,20 +25,29 @@ typedef enum
 	A=1, J=11, Q, K
 } tNumero;
 
-typedef int tCarta;
-typedef tCarta tMazo[MAX_CARTAS+1];
+struct tCarta
+{
+	tPalo palo;
+	tNumero num;
+};
+
+struct tMazo
+{
+	tCarta cartas[MAX_CARTAS];
+	int cuantas;
+
+	//Constructor
+	tMazo()
+	{
+		cuantas = 0;
+	}
+};
 
 //FUNCIONES
 //Menus
 int menu();
 int digitoEntre(int a, int b);
-void linea();
-
-//Funciones de obtencion de datos
-int cuantas(const tMazo mazo);
-
-tPalo palo(tCarta carta);
-tNumero numero(tCarta carta);
+inline void linea();
 
 //Funciones de output
 void mostrar(tMazo mazo[], int n);
@@ -60,7 +68,7 @@ string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
 //Funciones de manipulacion de un mazo individual
-void vaciar(tMazo mazo);
+inline void vaciar(tMazo mazo);
 
 void barajar(tMazo mazo);
 int randint(int max);
@@ -84,7 +92,7 @@ void truco_de_los_tres_montones();
 void truco_de_la_posada();
 
 //System
-void pausa();
+inline void pausa();
 
 int main()
 {
@@ -351,43 +359,9 @@ int digitoEntre(int a, int b)
 	return digito;
 }
 
-void linea()
+inline void linea()
 {
 	cout << setfill('-') << setw(79) <<  '-'  << endl << setfill(' ');
-}
-
-int cuantas(const tMazo mazo)
-{
-	int i;
-	
-	for(i=0; mazo[i] != CENTINELA; i++);
-	
-	return i;
-}
-
-tPalo palo(tCarta carta)
-{
-	int seccionPalo;
-	
-	seccionPalo = (carta / CARTASxPALO);
-	
-	if(seccionPalo == 0)
-		return picas;
-	else if(seccionPalo == 1)
-		return treboles;
-	else if(seccionPalo == 2)
-		return diamantes;
-	else //if(seccionPalo == 3)
-		return corazones;
-}
-
-tNumero numero(tCarta carta)
-{
-	int seccionNumero;
-	
-	seccionNumero = (carta % CARTASxPALO);
-	
-	return tNumero (seccionNumero+1);
 }
 
 void mostrar(tMazo mazo[], int n)
@@ -401,20 +375,20 @@ void mostrar(tMazo mazo[], int n)
 
 void mostrar(tMazo mazo)
 {
-	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
+	for(int i=0; i < mazo.cuantas; i++)
 	{
-		mostrar(mazo[i]);
+		mostrar(mazo.cartas[i]);
 	}
 	cout << endl;
 }
 
 void mostrar(tCarta carta)
 {
-	mostrar(numero(carta));
+	mostrar(carta.num);
 
 	cout << " ";
 
-	mostrar(palo(carta));
+	mostrar(carta.palo);
 
 	cout << endl;
 }
@@ -582,7 +556,8 @@ tCarta traducir(char p, int n)
 
 	return (n-1 + int (suit) * CARTASxPALO);
 }
-void vaciar(tMazo mazo)
+
+inline void vaciar(tMazo mazo)
 {
 	mazo[0] = CENTINELA;
 }
@@ -855,7 +830,7 @@ void truco_de_la_posada()
 	}
 }
 
-void pausa()
+inline void pausa()
 {
 	system("pause");
 }
