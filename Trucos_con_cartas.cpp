@@ -591,7 +591,7 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 			mazoBajas[j] = mazo[i];
 			j++;
 		}
-		else if(numero(mazo[i])>7) 
+		else //if(numero(mazo[i])>7) 
 		{
 			mazoAltas[k] = mazo[i];
 			k++;
@@ -612,7 +612,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 			mazoNegro[j] = mazo[i];
 			j++;
 		}
-		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
+		else //if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
 		{
 			mazoRojo[k] = mazo[i];
 			k++;
