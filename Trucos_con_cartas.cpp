@@ -648,39 +648,32 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 {
 	if (desplazar(mazo, otroMazo.cuantas))
 	{
-		for (int i = 0; otroMazo[i] != CENTINELA; i++)
+		for (int i = 0; i < otroMazo.cuantas; i++)
 		{
-			mazo[i] = otroMazo[i];
+			mazo.cartas[i] = otroMazo.cartas[i];
 		}
-
+		mazo.cuantas += otroMazo.cuantas;
 		return true;
 	}
 	else return false;
 }
 
-void carta_concreta(tMazo mazo)
+inline void carta_concreta(tMazo mazo)
 {
-	elegir_carta();
-	agregar_carta(mazo, carta, elegir_carta())
+	agregar_carta(mazo, elegir_carta());
 }
 
-tCarta elegir_carta()
+inline tCarta elegir_carta()
 {
-	elegir_numero();
-	elegir_palo();
-	
-	return traducir(simboloPalo, numeroCarta);
+	return traducir(elegir_palo(), elegir_numero());
 }
 
-int elegir_numero()
+tNumero elegir_numero()
 {
-	int numeroCarta;
-	
 	cout << "Que numero de carta te gustaria aniadir?"
 	     << " (debe estar entre 1 y 13) " << endl;
-	numeroCarta = digitoEntre(1,13);
 	
-	return numeroCarta;
+	return digitoEntre(1,13);
 }
 
 char elegir_palo()
@@ -824,7 +817,7 @@ void truco_de_la_posada()
 	string nomb = "posada.txt";
 	int corte;
 	
-	if (cargar_auto(mazo[0], nomb)){
+	if (cargar_auto(mazoU, nomb)){
 	
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
