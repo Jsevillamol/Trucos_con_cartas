@@ -46,6 +46,8 @@ void mostrar(tMazo mazo);
 void mostrar(tCarta carta);
 void mostrar(tNumero n);
 void mostrar(tPalo p);
+void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3);
+void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 
 //Funciones de carga y guardado de mazos
 bool cargar(tMazo mazo, string &nomb);
@@ -704,7 +706,7 @@ void truco_de_la_posada()
 	string nomb = "posada.txt";
 	int corte;
 	
-	if (cargar_auto(mazo1, nomb)){
+	if (cargar_auto(mazoU, nomb)){
 	
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
@@ -731,12 +733,12 @@ void truco_de_la_posada()
 		//Cortamos el mazo
 		cout << "Por que numero de carta quieres cortar?";
 		cin >> corte;
-		cortar(mazo1, corte);
+		cortar(mazoU, corte);
 	
 		cout << "Sin embargo, a la maniana siguiente..." << endl;
 	
 		pausa();
-		repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+		repartir_en_cuatro(mazoU, mazo1, mazo2, mazo3, mazo4);
 		mostrar(mazo1, mazo2, mazo3, mazo4);
 	
 		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
