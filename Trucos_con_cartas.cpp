@@ -134,7 +134,7 @@ inline void pausa();
 
 int main()
 {
-	int opcion;
+	int opcion, eleccion;
 	tMazo mazo;
 	string nomb;
 
@@ -143,8 +143,8 @@ int main()
 
 	do
 	{
-		opcion = menu_principal();
-		if (opcion == 1) 
+		eleccion = menu_principal();
+		if (eleccion == 1) 
 		{
 			do
 			{
@@ -171,9 +171,8 @@ int main()
 					mostrar(mazo);
 				}
 			}while (opcion != 0);
-			opcion = menu_principal();
 		}
-		else if (opcion == 2) 
+		else if (eleccion == 2) 
 		{
 			do
 			{
@@ -292,9 +291,8 @@ int main()
 					vaciar(mazo);
 				}
 			}while (opcion != 0);
-			opcion = menu_principal();
 		}
-		/*else if (opcion == 3) 
+		/*else if (eleccion == 3) 
 		{
 			do
 			{
@@ -312,9 +310,8 @@ int main()
 					//canasta();
 				}
 			}while (opcion != 0) 
-			opcion = menu_principal();
 		}*/
-		else if (opcion == 4) 
+		else if (eleccion == 4) 
 		{
 			do
 			{
@@ -335,9 +332,8 @@ int main()
 					truco_del_jugador_desconfiado();
 				}
 			}while (opcion != 0);
-			opcion = menu_principal();
 		}
-	}while(opcion != 0);
+	}while(eleccion != 0);
 
 	return 1;
 }
@@ -889,6 +885,7 @@ void truco_de_los_tres_montones()
 			//Repartir alternamente
 			repartir_en_n(mazoU, mazo, 3);
 			vaciar(mazoU);
+			mostrar(mazo, 3);
 
 			//El usuario elije mazo
 			cout << "En que mazo esta tu carta?" << endl;
@@ -1034,11 +1031,16 @@ void truco_del_jugador_desconfiado()
 			repartirParImpar(mazo[2], mazoPar, mazoImpar);
 			repartirFigurasNumeros(mazo[3], mazoFiguras, mazoNumeros);
 			
-			//Unir(mazo1, mazo2) une mazo1 y mazo2 y guarda el resultado en mazo1
-			/*mazo[0] = unir(mazoNumeros, mazoBajas);
-			mazo[1] = unir(mazoRojo, mazoPar);
-			mazo[2] = unir(mazoAltas, mazoFiguras);
-			mazo[3] = unir(mazoImpar, mazoNegro);*/
+			unir(mazoNumeros, mazoBajas);
+			unir(mazoRojo, mazoPar);
+			unir(mazoAltas, mazoFiguras);
+			unir(mazoImpar, mazoNegro);
+			
+			mazo[0] = mazoNumeros;
+			mazo[1] = mazoRojo;
+			mazo[2] = mazoAltas;
+			mazo[3] = mazoImpar;
+			
 			
 			mostrar(mazo, 4);
 			pausa();
@@ -1054,11 +1056,15 @@ void truco_del_jugador_desconfiado()
 		repartirParImpar(mazo[2], mazoPar, mazoImpar);
 		repartirFigurasNumeros(mazo[3], mazoFiguras, mazoNumeros);
 		
-		//Mas de lo mismo
-		/*mazo[0] = unir(mazoRojo, mazoBajas);
-		mazo[1] = unir(mazoAltas, mazoPar);
-		mazo[2] = unir(mazoImpar, mazoFiguras);
-		mazo[3] = unir(mazoNumeros, mazoNegro);*/
+		unir(mazoRojo, mazoBajas);
+		unir(mazoAltas, mazoPar);
+		unir(mazoImpar, mazoFiguras);
+		unir(mazoNumeros, mazoNegro);
+		
+		mazo[0] = mazoRojo;
+		mazo[1] = mazoAltas;
+		mazo[2] = mazoImpar;
+		mazo[3] = mazoNumeros;
 		
 		cout << "Entonces los jugadores miran sus mazos, y descubren que..." << endl;
 		pausa();
