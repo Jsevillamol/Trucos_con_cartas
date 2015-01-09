@@ -25,30 +25,31 @@ typedef enum
 	A=1, J=11, Q, K
 } tNumero;
 
-struct tCarta
+typedef struct
 {
 	tPalo palo;
 	tNumero num;
 
-	//Constructor
-	tCarta(tPalo p, tNumero n)
-	{
-		palo = p;
-		num = n;
-	}
-};
+	//Constructores
+	tCarta() :
+		palo(picas),
+		num(A)
+	{}
 
-struct tMazo
+	tCarta(tPalo p, tNumero n) :
+		palo (p),
+		num (n)
+	{}
+} tCarta;
+
+typedef struct
 {
 	tCarta cartas[MAX_CARTAS];
 	int cuantas;
 
 	//Constructor
-	tMazo()
-	{
-		cuantas = 0;
-	}
-};
+	tMazo(): cuantas(0){}
+} tMazo;
 
 //FUNCIONES
 //Menus
@@ -57,52 +58,57 @@ int menu_de_carga_y_guardado();
 int menu_de_manipulacion_de_mazos();
 int menu_de_juegos_de_cartas();
 int menu_de_magia_de_cartas();
-int digitoEntre(int a, int b);
+
 inline void linea();
 
+int digitoEntre(int a, int b);
+
+tCarta elegir_carta();
+int elegir_numero();
+char elegir_palo();
+
 //Funciones de output
-void mostrar(tMazo mazo[], int n);
-void mostrar(tMazo mazo);
-void mostrar(tCarta carta);
-void mostrar(tNumero n);
-void mostrar(tPalo p);
+void mostrar(const tMazo &mazo[], int n);
+void mostrar(const tMazo &mazo);
+void mostrar(const tCarta carta);
+void mostrar(const tNumero n);
+void mostrar(const tPalo p);
 
 //Funciones de carga y guardado de mazos
-bool cargar(tMazo mazo, string &nomb);
-bool cargar_auto(tMazo mazo, string &nomb);
+bool cargar(tMazo &mazo, string &nomb);
+bool cargar_auto(tMazo &mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
-bool agregar(tMazo mazo);
+bool agregar(tMazo &mazo);
 
-bool guardar(const tMazo mazo, string &nomb);
+bool guardar(const tMazo &mazo, string &nomb);
 
 string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
 //Funciones de manipulacion de un mazo individual
-inline void vaciar(tMazo mazo);
+inline void vaciar(tMazo &mazo);
 
-void barajar(tMazo mazo);
+void barajar(tMazo &mazo);
 int randint(int max);
-void intercambiar (tMazo mazo, int pos1, int pos2);
-bool desplazar(tMazo mazo, int numero);
+void intercambiar (tMazo &mazo, int pos1, int pos2);
+bool desplazar(tMazo &mazo, int numero);
 
-void cortar(tMazo mazo, int cuantasCartas);
-bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
-bool unir(tMazo mazo, const tMazo otroMazo);
-void carta_concreta_dentro(tMazo mazo);
-void carta_concreta_fuera(tMazo mazo);
-tCarta elegir_carta();
-int elegir_numero();
-char elegir_palo();
-bool agregar_carta(tMazo mazo, tCarta carta, tCarta elegir_carta());
-void quitar_carta(tMazo mazo, tCarta elegir_carta());
+void cortar(tMazo &mazo, int cuantasCartas);
+bool partir(tMazo &mazo, tMazo &otroMazo, int cuantasCoger);
+bool unir(tMazo &mazo, const tMazo &otroMazo);
+
+void carta_concreta_dentro(tMazo &mazo);
+void carta_concreta_fuera(tMazo &mazo);
+
+bool agregar_carta(tMazo &mazo, tCarta carta);
+bool quitar_carta(tMazo &mazo, tCarta carta);
 
 //Funciones para repartir en varios mazos
-void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
-void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo);
+void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas);
+void repartirNegroRojo(const tMazo &mazo, tMazo &mazoNegro, tMazo &mazoRojo);
 
-void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo);
-void repartir_en_n(tMazo mazoI, tMazo mazo[], int n);
+void repartirIntercalando(const tMazo &mazo, int enCuantos, int queMazo, tMazo &mazoNuevo);
+void repartir_en_n(tMazo &mazoI, tMazo &mazo[], int n);
 
 //Trucos de magia
 void truco_de_los_tres_montones();
