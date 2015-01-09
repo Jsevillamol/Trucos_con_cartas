@@ -110,7 +110,13 @@ bool agregar_carta(tMazo &mazo, tCarta carta);
 bool quitar_carta(tMazo &mazo, tCarta carta);
 
 //Funciones para repartir en varios mazos
+bool pares(tCarta carta);
+void repartirParImpar(const tMazo &mazo, tMazo &mazoPar, tMazo &mazoImpar);
+bool figuras(tCarta carta);
+void repartirFigurasNumeros(const tMazo &mazo, tMazo &mazoFiguras, tMazo &mazoNumeros);
+bool bajas(tCartas carta);
 void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas);
+bool negro(tCarta carta);
 void repartirNegroRojo(const tMazo &mazo, tMazo &mazoNegro, tMazo &mazoRojo);
 
 void repartir_segun_criterio(const tMazo &mazo, tMazo &mazo1, tMazo &mazo2, bool (*criterio)(tCarta));
@@ -121,6 +127,7 @@ void repartir_en_n(tMazo &mazoI, tMazo mazo[], int n);
 //Trucos de magia
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
+void truco_del_jugador_desconfiado();
 
 //System
 inline void pausa();
@@ -216,6 +223,30 @@ int main()
 				else if (opcion == 5)
 				{
 					linea();
+					tMazo par, impar;
+					repartirParImpar(mazo, par, impar);
+					
+					cout << "Pares: " << endl;
+					mostrar(par);
+					
+					cout << "Impares: " << endl;
+					mostrar(impar);
+				}
+				else if (opcion == 6)
+				{
+					linea();
+					tMazo figura, numero;
+					repartirFigurasNumeros(mazo, figura, numero);
+					
+					cout << "Figuras:" << endl;
+					mostrar(figura);
+					
+					cout << "Numeros:" << endl;
+					mostrar(numero);
+				}
+				else if (opcion == 7)
+				{
+					linea();
 
 					int en_cuantos;
 					cout << "En cuantos mazos quieres separar este mazo?" << endl;
@@ -229,34 +260,34 @@ int main()
 
 					delete mazos;
 				}
-				else if (opcion == 6)
+				else if (opcion == 8)
 				{
 					linea();
 					cout << "Mazo:" << endl;
 					mostrar(mazo);
 				}
-				else if (opcion == 7)
+				else if (opcion == 9)
 				{
 					linea();
 					carta_concreta_dentro(mazo);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-				else if (opcion == 8)
+				else if (opcion == 10)
 				{
 					linea();
 					carta_concreta_fuera(mazo);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-				/*else if (opcion == 9)
+				/*else if (opcion == 11)
 				{
 					linea();
 					//agregar_mazo();
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}*/
-				else if (opcion == 10)
+				else if (opcion == 12)
 				{
 					vaciar(mazo);
 				}
@@ -298,6 +329,11 @@ int main()
 					linea();
 					truco_de_la_posada();
 				}
+				else if (opcion == 3)
+				{
+					linea();
+					truco_del_jugador_desconfiado();
+				}
 			}while (opcion != 0);
 			opcion = menu_principal();
 		}
@@ -334,20 +370,22 @@ int menu_de_carga_y_guardado()
 int menu_de_manipulacion_de_mazos()
 {
 	linea();
- 	cout << "Menu de manipulacion de mazos:"   << endl
- 	     << "1  - Barajar"                     << endl
-	     << "2  - Cortar"                      << endl
- 	     << "3  - Separar en negras y rojas"   << endl
-	     << "4  - Separar en altas y bajas"    << endl
-	     << "5  - Separar en n montones"       << endl
-	     << "6  - Mostrar mazo actual"         << endl
- 	     << "7  - Aniadir una carta concreta"  << endl
- 	     << "8  - Eliminar una carta concreta" << endl
- 	     << "9  - Aniadir mazo ordenado"       << endl
- 	     << "10 - Vaciar mazo actual"          << endl
- 	     << "0  - Volver al menu principal"    << endl;
+ 	cout << "Menu de manipulacion de mazos:"    << endl
+ 	     << "1  - Barajar"                      << endl
+	     << "2  - Cortar"                       << endl
+ 	     << "3  - Separar en negras y rojas"    << endl
+	     << "4  - Separar en altas y bajas"     << endl
+	     << "5  - Separar en pares e impares"   << endl
+	     << "6  - Separar en figuras y numeros" << endl
+	     << "7  - Separar en n montones"        << endl
+	     << "8  - Mostrar mazo actual"          << endl
+ 	     << "9  - Aniadir una carta concreta"   << endl
+ 	     << "10 - Eliminar una carta concreta"  << endl
+ 	     << "11 - Aniadir mazo ordenado"        << endl
+ 	     << "12 - Vaciar mazo actual"           << endl
+ 	     << "0  - Volver al menu principal"     << endl;
 	
-	return digitoEntre(0,10);
+	return digitoEntre(0,12);
 }
 
 int menu_de_juegos()
@@ -365,12 +403,13 @@ int menu_de_juegos()
 int menu_de_magia()
 {
 	linea();
-	cout << "Menu de magia de cartas:"       << endl
-	     << "1 - Truco de los tres montones" << endl
-	     << "2 - Truco de la posada"         << endl
-	     << "0 - Volver al menu principal"   << endl;
+	cout << "Menu de magia de cartas:"         << endl
+	     << "1 - Truco de los tres montones"   << endl
+	     << "2 - Truco de la posada"           << endl
+	     << "3 - Truco del jugador despistado" << endl
+	     << "0 - Volver al menu principal"     << endl;
 		 
-	return digitoEntre(0,2);
+	return digitoEntre(0,3);
 }
 
 int digitoEntre(int a, int b)
@@ -757,25 +796,34 @@ bool quitar_carta(tMazo &mazo, tCarta carta)
 	}
 }
 
-void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas)
-{	
-	int j=0, k=0;
+bool pares(tCarta carta)
+{
+	return ((carta.num % 2) = 0);
+}
 
-	for(int i=0; i < mazo.cuantas; i++)
-	{
-		if     (mazo.cartas[i].num < 8) 
-		{
-			mazoBajas.cartas[j] = mazo.cartas[i];
-			j++;
-		}
-		else //(mazo.cartas[i].numero > 7) 
-		{
-			mazoAltas.cartas[k] = mazo.cartas[i];
-			k++;
-		}
-	}
-	mazoBajas.cuantas = j;
-	mazoAltas.cuantas = k;
+void repartirParImpar(const tMazo &mazo, tMazo &mazoPar, tMazo &mazoImpar)
+{
+	repartir_segun_criterio(mazo, mazoPar, mazoImpar, pares);
+}
+
+bool figuras(tCarta carta)
+{
+	return (carta.num > 10 || carta.num == A);
+}
+
+void repartirFigurasNumeros(const tMazo &mazo, tMazo &mazoFiguras, tMazo &mazoNumeros)
+{
+	repartir_segun_criterio(mazo, mazoFiguras, mazoNumeros, figuras);
+}
+
+bool bajas(tCartas carta)
+{
+	return (carta.num < 8);
+}
+
+void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas)
+{
+	repartir_segun_criterio(mazo, mazoBajas, mazoAltas, altas;
 }
 
 bool negro(tCarta carta)
@@ -924,6 +972,102 @@ void truco_de_la_posada()
 	else
 	{
 		cout << "Archivo \"posada.txt\" no encontrado." << endl;
+	}
+}
+
+void truco_del_jugador_desconfiado()
+{
+	tMazo mazoD, mazo[4], mazoNegro, mazoRojo, mazoBajas, mazoAltas; 
+	tMazo mazoPar, mazoImpar, mazoFiguras, mazoNumeros;
+	string nomb = "desconfiado.txt";
+	
+
+	
+	if (cargar_auto(mazoD, nomb))
+	{
+		cout << "En una partida de poker de mesa redonda, con cuatro jugadores sentados "
+		     << "en ella, un jugador dice que desconfia de que los jugadores sentados en "
+		     << "la mesa le hagan trampas. Por ello propone que las 20 cartas que se van "
+		     << "a repartir sean visibles para todos antes de repartirse." << endl;
+	     	     pausa();
+	     	     
+		cout << "Mazo:" << endl;
+		mostrar(mazoD);
+		pausa();
+		
+		cout << "El mazo se baraja y se reparte entre los cuatro jugadores." << endl;
+		pausa();
+		
+		repartir_en_n(mazoD, mazo, 4);
+		mostrar(mazo, 4);
+		pausa();
+		
+		cout << "El jugador dice que no se fia del que ha repartido, asi que propone "
+		     << "seguir unos pasos para asegurarse de que el reparto ha sido aleatorio "
+		     << "y justo:" << endl;
+		pausa();
+		
+		for (int i=0; i<2; i++) 
+		{
+			if      (i == 0)
+			{
+				cout << "Cada jugador debe dividir su mazo en dos, pero cada jugador "
+				     << "con un criterio distinto: El jugador que desconfia "
+				     << "(jugador 1) debe separar su mazo por colores (negro a la izquierda, "
+				     << "rojo a la derecha). El jugador situado a su derecha debera separar el "
+				     << "suyo segun sea el numero de su carta inferior (izquierda) o superior "
+				     << "(derecha) a 7. El siguiente jugador separara su mazo en cartas pares "
+				     << "(izquierda) e impares (derecha). Y el ultimo jugador habra de separar "
+				     << "su mazo en figuras (izquierda) y numeros (derecha)." << endl
+				     << "A continuacion cada jugador pasara su mazo izquierdo al jugador de su "
+				     << "izquierda, y su mazo derecho al jugador de su derecha. Ahora los jugadores "
+				     << "tendran un solo mazo formado por los dos que les pasaron sus compañeros." << endl;
+				pausa();
+			}
+			else if (i == 1)
+			{
+				cout << "El proceso se repetira una vez mas" << endl;
+				pausa();
+			}
+			repartirNegroRojo(mazo[0], mazoNegro, mazoRojo);
+			repartirBajaAlta(mazo[1], mazoBajas, mazoAltas);
+			repartirParImpar(mazo[2], mazoPar, mazoImpar);
+			repartirFigurasNumeros(mazo[3], mazoFiguras, mazoNumeros);
+			
+			mazo[0] = unir(mazoNumeros, mazoBajas);
+			mazo[1] = unir(mazoRojo, mazoPar);
+			mazo[2] = unir(mazoAltas, mazoFiguras);
+			mazo[3] = unir(mazoImpar, mazoNegro);
+			
+			mostrar(mazo, 4);
+			pausa();
+		}
+		
+		cout << "Y otra mas, con la excepcion de que ahora cada jugador se quedara con su mazo "
+		     << "derecho, y pasan su izquierdo al jugador de su izquierda, despues los vuelven "
+		     << "a juntar." << endl;
+		pausa();
+		
+		repartirNegroRojo(mazo[0], mazoNegro, mazoRojo);
+		repartirBajaAlta(mazo[1], mazoBajas, mazoAltas);
+		repartirParImpar(mazo[2], mazoPar, mazoImpar);
+		repartirFigurasNumeros(mazo[3], mazoFiguras, mazoNumeros);
+		
+		mazo[0] = unir(mazoRojo, mazoBajas);
+		mazo[1] = unir(mazoAltas, mazoPar);
+		mazo[2] = unir(mazoImpar, mazoFiguras);
+		mazo[3] = unir(mazoNumeros, mazoNegro);
+		
+		cout << "Entonces los jugadores miran sus mazos, y descubren que..." << endl;
+		pausa();
+		mostrar(mazo, 4);
+		
+		cout << "El jugador desconfiado tiene escalera de color. El de su izquierda full. El siguiente, "
+		     << "poker. Y el ultimo, color";
+	}
+	else
+	{
+		cout << "Error, archivo \"desconfiado.txt\" no encontrado";
 	}
 }
 
