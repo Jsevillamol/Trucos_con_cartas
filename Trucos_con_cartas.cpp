@@ -25,7 +25,7 @@ typedef enum
 	A=1, J=11, Q, K
 } tNumero;
 
-typedef struct
+struct tCarta //Usaría typedef, pero entonces me quedo sin constructores
 {
 	tPalo palo;
 	tNumero num;
@@ -40,16 +40,22 @@ typedef struct
 		palo (p),
 		num (n)
 	{}
-} tCarta;
+};
 
-typedef struct
+//Esto no tengo muy claro donde ponerlo
+bool operator != (tCarta a, tCarta b)
+{
+	return ((a.palo==b.palo) && (a.num == b.num));
+}
+
+struct tMazo
 {
 	tCarta cartas[MAX_CARTAS];
 	int cuantas;
 
 	//Constructor
 	tMazo(): cuantas(0){}
-} tMazo;
+};
 
 //FUNCIONES
 //Menus
@@ -57,7 +63,7 @@ int menu_principal();
 int menu_de_carga_y_guardado();
 int menu_de_manipulacion_de_mazos();
 int menu_de_juegos_de_cartas();
-int menu_de_magia_de_cartas();
+int menu_de_magia();
 
 inline void linea();
 
@@ -68,7 +74,7 @@ int elegir_numero();
 char elegir_palo();
 
 //Funciones de output
-void mostrar(const tMazo &mazo[], int n);
+void mostrar(const tMazo mazo[], int n);
 void mostrar(const tMazo &mazo);
 void mostrar(const tCarta carta);
 void mostrar(const tNumero n);
@@ -108,7 +114,7 @@ void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas);
 void repartirNegroRojo(const tMazo &mazo, tMazo &mazoNegro, tMazo &mazoRojo);
 
 void repartirIntercalando(const tMazo &mazo, int enCuantos, int queMazo, tMazo &mazoNuevo);
-void repartir_en_n(tMazo &mazoI, tMazo &mazo[], int n);
+void repartir_en_n(tMazo &mazoI, tMazo mazo[], int n);
 
 //Trucos de magia
 void truco_de_los_tres_montones();
@@ -236,7 +242,7 @@ int main()
 				}
 				else if (opcion == 8)
 				{
-					liena();
+					linea();
 					carta_concreta_fuera(mazo);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
@@ -408,9 +414,8 @@ int elegir_numero()
 	
 	cout << "Que numero de carta escoges?"
 	     << " (debe estar entre 1 y 13) " << endl;
-	number = digitoEntre(1,13)
 	
-	return number;
+	return digitoEntre(1,13);
 }
 
 char elegir_palo()
@@ -433,7 +438,7 @@ void mostrar(const tMazo mazo[], int n)
 	}
 }
 
-void mostrar(const tMazo mazo)
+void mostrar(const tMazo &mazo)
 {
 	for(int i=0; i < mazo.cuantas; i++)
 	{
@@ -614,12 +619,12 @@ tCarta traducir(char p, int n)
 	else if (p == 'p') suit = picas;
 	else /*if (p == 'd')*/ suit = diamantes;
 
-	tCarta carta(suit, num);
+	tCarta carta(suit, (tNumero) n);
 
 	return carta;
 }
 
-inline void vaciar(tMazo mazo)
+inline void vaciar(tMazo &mazo)
 {
 	mazo.cuantas = 0;
 }
@@ -668,12 +673,12 @@ void cortar(tMazo &mazo, int cuantasCartas)
 {
 	tMazo otroMazo;
 	//Corta...
-	if (partir(mazo,cuantasCartas,otroMazo))
+	if (partir(mazo,otroMazo, cuantasCartas))
 		//...y completa.
 		unir(mazo, otroMazo);
 }
 
-bool partir(tMazo &mazo, int cuantasCoger, tMazo &otroMazo)
+bool partir(tMazo &mazo, tMazo &otroMazo, int cuantasCoger)
 {
 	int i;
 	if (cuantasCoger > mazo.cuantas) return false;
@@ -715,7 +720,7 @@ inline void carta_concreta_fuera(tMazo &mazo)
 	quitar_carta(mazo, elegir_carta());
 }
 
-bool agregar_carta(tMazo &mazo, tCarta carta, tCarta elegir_carta())
+bool agregar_carta(tMazo &mazo, tCarta carta)
 {
 	if (mazo.cuantas == MAX_CARTAS)
 	{
@@ -724,20 +729,19 @@ bool agregar_carta(tMazo &mazo, tCarta carta, tCarta elegir_carta())
 	}
 	else
 	{
-		mazo.cartas[i] = carta;
+		mazo.cartas[mazo.cuantas] = carta;
 		mazo.cuantas++;
 		return true;
 	}
 }
 
-bool quitar_carta(tMazo &mazo, tCarta elegir_carta())
+bool quitar_carta(tMazo &mazo, tCarta carta)
 {
 	int i;
-	tCarta carta = elegir_carta();
 	
-	for(i=0; mazo.cartas[i] != carta && i < cuantas; i++){}
+	for(i=0; mazo.cartas[i] != carta && i < mazo.cuantas; i++){}
 	
-	if (i == cuantas)
+	if (i == mazo.cuantas)
 	{
 		cout << "Error, no se encontro la carta seleccionada" << endl;
 		return false;
@@ -757,7 +761,7 @@ void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas)
 
 	for(int i=0; i < mazo.cuantas; i++)
 	{
-		if     (mazo.cartas[i].numero < 8) 
+		if     (mazo.cartas[i].num < 8) 
 		{
 			mazoBajas.cartas[j] = mazo.cartas[i];
 			j++;
@@ -778,7 +782,7 @@ void repartirNegroRojo(const tMazo &mazo, tMazo &mazoNegro, tMazo &mazoRojo)
 
 	for(int i=0; i < mazo.cuantas; i++)
 	{
-		if     (mazo.cartas[i].palo == picas)||mazo.cartas[i].palo == treboles)) 
+		if     ((mazo.cartas[i].palo == picas)||(mazo.cartas[i].palo == treboles)) 
 		{
 			mazoNegro.cartas[j] = mazo.cartas[i];
 			j++;
@@ -803,7 +807,7 @@ void repartirIntercalando(const tMazo &mazo, int enCuantos, int queMazo, tMazo &
 	mazoNuevo.cuantas = j;
 }
 
-void repartir_en_n(tMazo &mazoI, tMazo &mazo[], int n)
+void repartir_en_n(tMazo &mazoI, tMazo mazo[], int n)
 {
 	//Repartir alternamente
 	for(int i=0; i<n; i++)
@@ -852,7 +856,7 @@ void truco_de_los_tres_montones()
 
 		//Adivinamos la carta
 		cout << "Tu carta era el..." << endl;
-		mostrar(mazoU[10]);
+		mostrar(mazoU.cartas[10]);
 	}
 	else
 	{
