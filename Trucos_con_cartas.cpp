@@ -868,7 +868,7 @@ void repartir_en_n(tMazo &mazoI, tMazo mazo[], int n)
 {
 	//Repartir alternamente
 	for(int i=0; i<n; i++)
-		repartirIntercalando(mazoI, i, 0, mazo[i]);
+		repartirIntercalando(mazoI, n, i, mazo[i]);
 }
 
 void truco_de_los_tres_montones()
