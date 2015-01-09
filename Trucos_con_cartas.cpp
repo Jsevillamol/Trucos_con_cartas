@@ -113,6 +113,8 @@ bool quitar_carta(tMazo &mazo, tCarta carta);
 void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas);
 void repartirNegroRojo(const tMazo &mazo, tMazo &mazoNegro, tMazo &mazoRojo);
 
+void repartir_segun_criterio(const tMazo &mazo, tMazo &mazo1, tMazo &mazo2, bool (*criterio)(tCarta));
+
 void repartirIntercalando(const tMazo &mazo, int enCuantos, int queMazo, tMazo &mazoNuevo);
 void repartir_en_n(tMazo &mazoI, tMazo mazo[], int n);
 
@@ -776,25 +778,36 @@ void repartirBajaAlta(const tMazo &mazo, tMazo &mazoBajas, tMazo &mazoAltas)
 	mazoAltas.cuantas = k;
 }
 
+bool negro(tCarta carta)
+{
+	return ((carta.palo == picas)||(carta.palo == treboles));
+}
+
 void repartirNegroRojo(const tMazo &mazo, tMazo &mazoNegro, tMazo &mazoRojo)
+{
+	repartir_segun_criterio(mazo, mazoNegro, mazoRojo, negro);
+}
+
+//Generalizar es mejor. Para que tener cuatro funciones practicamente iguales?
+void repartir_segun_criterio(const tMazo &mazo, tMazo &mazo1, tMazo &mazo2, bool (*criterio)(tCarta))
 {
 	int j=0, k=0;
 
 	for(int i=0; i < mazo.cuantas; i++)
 	{
-		if     ((mazo.cartas[i].palo == picas)||(mazo.cartas[i].palo == treboles)) 
+		if     (criterio(mazo.cartas[i]))
 		{
-			mazoNegro.cartas[j] = mazo.cartas[i];
+			mazo1.cartas[j] = mazo.cartas[i];
 			j++;
 		}
-		else //if(mazo.cartas[i].palo== diamantes)||(mazo.cartas[i].palo == corazones)) 
+		else
 		{
-			mazoRojo.cartas[k] = mazo.cartas[i];
+			mazo2.cartas[k] = mazo.cartas[i];
 			k++;
 		}
 	}
-	mazoNegro.cuantas = j;
-	mazoRojo.cuantas = k;
+	mazo1.cuantas = j;
+	mazo2.cuantas = k;
 }
 
 void repartirIntercalando(const tMazo &mazo, int enCuantos, int queMazo, tMazo &mazoNuevo)
