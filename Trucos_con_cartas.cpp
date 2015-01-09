@@ -470,7 +470,7 @@ void mostrar(const tMazo mazo[], int n)
 {
 	for(int i=0; i<n; i++)
 	{
-		cout << "Mazo " << i << ":" << endl;
+		cout << "Mazo " << (i+1) << ":" << endl;
 		mostrar(mazo[i]);
 	}
 }
