@@ -89,11 +89,13 @@ bool desplazar(tMazo mazo, int numero);
 void cortar(tMazo mazo, int cuantasCartas);
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo);
 bool unir(tMazo mazo, const tMazo otroMazo);
-void carta_concreta(tMazo mazo);
+void carta_concreta_dentro(tMazo mazo);
+void carta_concreta_fuera(tMazo mazo);
 tCarta elegir_carta();
 int elegir_numero();
 char elegir_palo();
 bool agregar_carta(tMazo mazo, tCarta carta, tCarta elegir_carta());
+void quitar_carta(tMazo mazo, tCarta elegir_carta());
 
 //Funciones para repartir en varios mazos
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas);
@@ -222,18 +224,25 @@ int main()
 				else if (opcion == 7)
 				{
 					linea();
-					carta_concreta(mazo);
+					carta_concreta_dentro(mazo);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-				/*else if (opcion == 8)
+				else if (opcion == 8)
+				{
+					liena();
+					carta_concreta_fuera(mazo);
+					cout << "Mazo actual:" << endl;
+					mostrar(mazo);
+				}
+				/*else if (opcion == 9)
 				{
 					linea();
 					//agregar_mazo();
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}*/
-				else if (opcion == 9)
+				else if (opcion == 10)
 				{
 					vaciar(mazo);
 				}
@@ -299,11 +308,11 @@ int menu_principal()
 int menu_de_carga_y_guardado()
 {
 	linea();
-	cout << "Menu de carga y guardado:"      << endl
-	     << "1 - Cargar"                     << endl
-	     << "2 - Guardar"                    << endl
-	     << "3 - Agregar mazo"               << endl
-	     << "0 - Volver al menu principal"   << endl;
+	cout << "Menu de carga y guardado:"    << endl
+	     << "1 - Cargar"                   << endl
+	     << "2 - Guardar"                  << endl
+	     << "3 - Agregar mazo"             << endl
+	     << "0 - Volver al menu principal" << endl;
 
 	return digitoEntre(0,2);
 }
@@ -311,17 +320,18 @@ int menu_de_carga_y_guardado()
 int menu_de_manipulacion_de_mazos()
 {
 	linea();
- 	cout << "Menu de manipulacion de mazos:"  << endl
- 	     << "1  - Barajar"                    << endl
-	     << "2  - Cortar"                     << endl
- 	     << "3  - Separar en negras y rojas"  << endl
-	     << "4  - Separar en altas y bajas"   << endl
-	     << "5  - Separar en n montones"      << endl
-	     << "6  - Mostrar mazo actual"        << endl
- 	     << "7  - Aniadir una carta concreta" << endl
- 	     << "8  - Aniadir mazo ordenado"      << endl
- 	     << "9  - Vaciar mazo actual"         << endl
- 	     << "0  - Volver al menu principal"   << endl;
+ 	cout << "Menu de manipulacion de mazos:"   << endl
+ 	     << "1  - Barajar"                     << endl
+	     << "2  - Cortar"                      << endl
+ 	     << "3  - Separar en negras y rojas"   << endl
+	     << "4  - Separar en altas y bajas"    << endl
+	     << "5  - Separar en n montones"       << endl
+	     << "6  - Mostrar mazo actual"         << endl
+ 	     << "7  - Aniadir una carta concreta"  << endl
+ 	     << "8  - Eliminar una carta concreta" << endl
+ 	     << "9  - Aniadir mazo ordenado"       << endl
+ 	     << "10 - Vaciar mazo actual"          << endl
+ 	     << "0  - Volver al menu principal"    << endl;
 	
 	return digitoEntre(0,10);
 }
@@ -329,11 +339,11 @@ int menu_de_manipulacion_de_mazos()
 int menu_de_juegos()
 {
 	linea();
-	cout << "Menu de juegos de cartas:"       << endl
-	     << "1 - Blackjack"                   << endl
-	     << "2 - Poker Texas Hold'em"         << endl
-	     << "3 - Canasta"                     << endl
-	     << "0 - Volver al menu principal"    << endl;
+	cout << "Menu de juegos de cartas:"    << endl
+	     << "1 - Blackjack"                << endl
+	     << "2 - Poker Texas Hold'em"      << endl
+	     << "3 - Canasta"                  << endl
+	     << "0 - Volver al menu principal" << endl;
 		 
 	return digitoEntre(0,3);
 }
@@ -662,9 +672,14 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 	else return false;
 }
 
-inline void carta_concreta(tMazo mazo)
+inline void carta_concreta_dentro(tMazo mazo)
 {
 	agregar_carta(mazo, elegir_carta());
+}
+
+inline void carta_concreta_fuera(tMazo mazo)
+{
+	quitar_carta(mazo, elegir_carta());
 }
 
 inline tCarta elegir_carta()
@@ -704,6 +719,16 @@ bool agregar_carta(tMazo mazo, tCarta carta, tCarta elegir_carta())
 		mazo.cuantas++;
 		return true;
 	}
+}
+
+void quitar_carta(tMazo mazo, tCarta elegir_carta())
+{
+	int i;
+	for(i=0; mazo.cartas[i].palo != elegir_palo() && mazo.cartas[i].numero != elegir_numero(); i++){}
+
+	for(i; i < mazo.cuantas; i++)
+		mazo.cartas[i-1] = mazo.cartas[i];
+	mazo.cuantas--;
 }
 
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
