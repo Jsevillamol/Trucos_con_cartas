@@ -251,13 +251,12 @@ int main()
 					cout << "En cuantos mazos quieres separar este mazo?" << endl;
 					cin >> en_cuantos;
 
-					tMazo *mazos;
-					mazos = new tMazo[en_cuantos];
+					tMazo *mazos = new tMazo[en_cuantos];
 					repartir_en_n(mazo, mazos, en_cuantos);
 
 					mostrar(mazos, en_cuantos);
 
-					delete mazos;
+					delete[] mazos;
 				}
 				else if (opcion == 8)
 				{
