@@ -694,6 +694,7 @@ void intercambiar(tMazo &mazo, int pos1, int pos2)
 	mazo.cartas[pos2] = aux;
 }
 
+//Desplaza las cartas del mazo a la derecha, para hacer hueco para nuevas cartas
 bool desplazar(tMazo &mazo, int numero)
 {
 	if (mazo.cuantas + numero < MAX_CARTAS)
@@ -741,7 +742,6 @@ bool unir(tMazo &mazo, const tMazo &otroMazo)
 		{
 			mazo.cartas[i] = otroMazo.cartas[i];
 		}
-		mazo.cuantas += otroMazo.cuantas;
 		return true;
 	}
 	else return false;
