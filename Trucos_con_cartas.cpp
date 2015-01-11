@@ -816,7 +816,7 @@ bool quitar_carta(tMazo &mazo, tCarta carta)
 	else
 	{
 		//Desplazamos el mazo hacia la izquierda, cubriendo la carta objetivo
-		for(; i <= mazo.cuantas; i++)
+		for(; i < mazo.cuantas-1; i++)
 			mazo.cartas[i] = mazo.cartas[i+1];
 		mazo.cuantas--;
 		return true;
