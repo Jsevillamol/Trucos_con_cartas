@@ -83,6 +83,7 @@ void mostrar(const tPalo p);
 //Funciones de carga y guardado de mazos
 bool cargar(tMazo &mazo, string &nomb);
 bool cargar_auto(tMazo &mazo, string &nomb);
+void cargar_mazo_completo(tMazo &mazo);
 bool abrir(string &nomb, ifstream &archivo);
 bool agregar(tMazo &mazo);
 
@@ -153,17 +154,28 @@ int main()
 				{
 					linea();
 					if (cargar(mazo, nomb))
+						{
+						cout << "Mazo:" << endl;
 						mostrar(mazo);
+						}
 					else cout << "El archivo no pudo cargarse." << endl;
 				}
 				else if (opcion == 2)
+				{
+					linea();
+					cargar_mazo_completo(mazo);
+					
+					cout << "Mazo actual:" << endl;
+					mostrar(mazo);
+				}
+				else if (opcion == 3)
 				{
 					linea();
 					if (guardar(mazo, nomb)) 
 						cout << "Guardado exitoso!" << endl;
 					else cout << "Fallo al guardar" << endl;
 				}
-				else if (opcion == 3)
+				else if (opcion == 4)
 				{
 					linea();
 					agregar(mazo);
@@ -354,12 +366,13 @@ int menu_de_carga_y_guardado()
 {
 	linea();
 	cout << "Menu de carga y guardado:"    << endl
-	     << "1 - Cargar"                   << endl
-	     << "2 - Guardar"                  << endl
-	     << "3 - Agregar mazo"             << endl
+	     << "1 - Cargar mazo a elegir"     << endl
+	     << "2 - Cargar mazo completo"     << endl
+	     << "3 - Guardar"                  << endl
+	     << "4 - Agregar mazo"             << endl
 	     << "0 - Volver al menu principal" << endl;
 
-	return digitoEntre(0,2);
+	return digitoEntre(0,4);
 }
 
 int menu_de_manipulacion_de_mazos()
@@ -376,11 +389,10 @@ int menu_de_manipulacion_de_mazos()
 	     << "8  - Mostrar mazo actual"          << endl
  	     << "9  - Aniadir una carta concreta"   << endl
  	     << "10 - Eliminar una carta concreta"  << endl
- 	     << "11 - Aniadir mazo ordenado"        << endl
- 	     << "12 - Vaciar mazo actual"           << endl
+ 	     << "11 - Vaciar mazo actual"           << endl
  	     << "0  - Volver al menu principal"     << endl;
 	
-	return digitoEntre(0,12);
+	return digitoEntre(0,11);
 }
 
 int menu_de_juegos()
@@ -554,6 +566,21 @@ bool cargar_auto(tMazo &mazo, string &nomb)
 		return true;
 	}
 	else return false;
+}
+
+void cargar_mazo_completo(tMazo &mazo)
+{
+	int k=0;
+	
+	for (int j=0; j<4; j++)
+	{
+		for (int i=1; i<14; i++)
+		{
+			mazo.cartas[k] = tCarta((tPalo) j, (tNumero) i);
+			k++;
+			mazo.cuantas = 52;
+		}
+	}	
 }
 
 //Abre el archivo que indica el usuario. Si el archivo no existe, se pregunta de nuevo, hasta tres veces.
