@@ -45,7 +45,7 @@ struct tCarta //Usaría typedef, pero entonces me quedo sin constructores
 //Esto no tengo muy claro donde ponerlo
 bool operator != (tCarta a, tCarta b)
 {
-	return ((a.palo==b.palo) && (a.num == b.num));
+	return ((a.palo != b.palo) || (a.num != b.num));
 }
 
 struct tMazo
@@ -784,10 +784,10 @@ bool quitar_carta(tMazo &mazo, tCarta carta)
 	}
 	else
 	{
-	for(i; i <= mazo.cuantas; i++)
-		mazo.cartas[i] = mazo.cartas[i+1];
-	mazo.cuantas--;
-	return true;
+		for(; i <= mazo.cuantas; i++)
+			mazo.cartas[i] = mazo.cartas[i+1];
+		mazo.cuantas--;
+		return true;
 	}
 }
 
