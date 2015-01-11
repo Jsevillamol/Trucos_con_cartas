@@ -723,9 +723,9 @@ void intercambiar(tMazo &mazo, int pos1, int pos2)
 //Desplaza las cartas del mazo a la derecha, para hacer hueco para nuevas cartas
 bool desplazar(tMazo &mazo, int numero)
 {
-	if (mazo.cuantas + numero < MAX_CARTAS)
+	if (mazo.cuantas + numero <= MAX_CARTAS)
 	{
-		for (int i = mazo.cuantas; i >= 0; i--)
+		for (int i = mazo.cuantas-1; i >= 0; i--)
 			mazo.cartas[i+numero] = mazo.cartas[i];
 		mazo.cuantas += numero;
 		return true;
@@ -738,8 +738,10 @@ void cortar(tMazo &mazo, int cuantasCartas)
 	tMazo otroMazo;
 	//Corta...
 	if (partir(mazo,otroMazo, cuantasCartas))
+	{
 		//...y completa.
 		unir(mazo, otroMazo);
+	}
 }
 
 bool partir(tMazo &mazo, tMazo &otroMazo, int cuantasCoger)
@@ -768,6 +770,7 @@ bool unir(tMazo &mazo, const tMazo &otroMazo)
 		{
 			mazo.cartas[i] = otroMazo.cartas[i];
 		}
+
 		return true;
 	}
 	else return false;
@@ -802,7 +805,8 @@ bool quitar_carta(tMazo &mazo, tCarta carta)
 {
 	int i;
 	
-	for(i=0; mazo.cartas[i] != carta && i < mazo.cuantas; i++){}
+	//Buscamos la carta objetivo
+	for(i=0; mazo.cartas[i] != carta && i < mazo.cuantas; i++);
 	
 	if (i == mazo.cuantas)
 	{
@@ -811,6 +815,7 @@ bool quitar_carta(tMazo &mazo, tCarta carta)
 	}
 	else
 	{
+		//Desplazamos el mazo hacia la izquierda, cubriendo la carta objetivo
 		for(; i <= mazo.cuantas; i++)
 			mazo.cartas[i] = mazo.cartas[i+1];
 		mazo.cuantas--;
