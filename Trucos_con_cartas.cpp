@@ -527,9 +527,9 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 bool desplazar(tMazo mazo, int numero)
 {
 	int total = cuantas(mazo);
-	if (total+numero < MAX_CARTAS)
+	if (total+numero <= MAX_CARTAS)
 	{
-		for (int i = total; i >= 0; i--)
+		for (int i = total-1; i >= 0; i--)
 			mazo[i+numero] = mazo[i];
 		return true;
 	}
