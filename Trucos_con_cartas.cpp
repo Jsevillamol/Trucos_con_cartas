@@ -65,6 +65,7 @@ int menu_de_manipulacion_de_mazos();
 int menu_de_juegos_de_cartas();
 int menu_de_magia();
 
+int digitoEntre(int a, int b);
 inline void linea();
 
 int digitoEntre(int a, int b);
