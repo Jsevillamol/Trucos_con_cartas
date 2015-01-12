@@ -1057,7 +1057,7 @@ void truco_del_jugador_desconfiado()
 				     << "su mazo en figuras (izquierda) y numeros (derecha)." << endl
 				     << "A continuacion cada jugador pasara su mazo izquierdo al jugador de su "
 				     << "izquierda, y su mazo derecho al jugador de su derecha. Ahora los jugadores "
-				     << "tendran un solo mazo formado por los dos que les pasaron sus compañeros." << endl;
+				     << "tendran un solo mazo formado por los dos que les pasaron sus companieros." << endl;
 				pausa();
 			}
 			else if (i == 1)
@@ -1110,7 +1110,7 @@ void truco_del_jugador_desconfiado()
 		mostrar(mazo, 4);
 		
 		cout << "El jugador desconfiado tiene escalera de color. El de su izquierda full. El siguiente, "
-		     << "poker. Y el ultimo, color";
+		     << "poker. Y el ultimo, color" << endl;
 	}
 	else
 	{
