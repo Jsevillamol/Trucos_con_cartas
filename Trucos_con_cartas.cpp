@@ -278,10 +278,18 @@ int main()
 				}
 				else if (opcion == 9)
 				{
-					linea();
-					carta_concreta_dentro(mazo);
-					cout << "Mazo actual:" << endl;
-					mostrar(mazo);
+					if (mazo.cuantas == MAX_CARTAS)
+					{
+						cout << "Error, el mazo no puede "
+						     << "tener mas de 52 cartas" << endl;
+					}
+					else
+					{
+						linea();
+						carta_concreta_dentro(mazo);
+						cout << "Mazo actual:" << endl;
+						mostrar(mazo);
+					}
 				}
 				else if (opcion == 10)
 				{
