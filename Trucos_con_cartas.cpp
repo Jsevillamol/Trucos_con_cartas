@@ -12,6 +12,7 @@ const int CARTASxPALO=13,
           MAX_CARTAS=52;
 
 //TIPOS PROPIOS
+//Enumerados
 typedef enum
 {
 	picas,
@@ -25,11 +26,10 @@ typedef enum
 	A=1, J=11, Q, K
 } tNumero;
 
-struct tCarta //Usaría typedef, pero entonces me quedo sin constructores
+//Clases
+class tCarta 
 {
-	tPalo palo;
-	tNumero num;
-
+public:
 	//Constructores
 	tCarta() :
 		palo(picas),
@@ -40,21 +40,29 @@ struct tCarta //Usaría typedef, pero entonces me quedo sin constructores
 		palo (p),
 		num (n)
 	{}
+
+	friend bool operator != (tCarta a, tCarta b)
+	{
+		return ((a.palo != b.palo) || (a.num != b.num));
+	}
+
+	tPalo palo;
+	tNumero num;
 };
 
-//Esto no tengo muy claro donde ponerlo
-bool operator != (tCarta a, tCarta b)
+class tMazo
 {
-	return ((a.palo != b.palo) || (a.num != b.num));
-}
-
-struct tMazo
-{
-	tCarta cartas[MAX_CARTAS];
-	int cuantas;
-
+public:
 	//Constructor
 	tMazo(): cuantas(0){}
+
+	//Metodos
+	void barajar();
+	void intercambiar (int pos1, int pos2);
+
+	//Datos
+	tCarta cartas[MAX_CARTAS];
+	int cuantas;
 };
 
 //FUNCIONES
@@ -96,9 +104,8 @@ tCarta traducir(char p, int n);
 //Funciones de manipulacion de un mazo individual
 inline void vaciar(tMazo &mazo);
 
-void barajar(tMazo &mazo);
 int randint(int max);
-void intercambiar (tMazo &mazo, int pos1, int pos2);
+
 bool desplazar(tMazo &mazo, int numero);
 
 void cortar(tMazo &mazo, int cuantasCartas);
@@ -193,7 +200,7 @@ int main()
 				if      (opcion == 1)
 				{
 					linea();
-					barajar(mazo);
+					mazo.barajar();
 					cout << "Mazo barajado:" << endl;
 					mostrar(mazo);
 				}
@@ -702,14 +709,11 @@ inline void vaciar(tMazo &mazo)
 }
 
 //Baraja el mazo, intercambiando aleatoriemente cartas
-void barajar(tMazo &mazo)
+void tMazo::barajar()
 {
-	int pos1, pos2;
-	for (int i=0; i<3*mazo.cuantas; i++)
+	for (int i=0; i<3*cuantas; i++)
 	{
-		pos1 = randint(mazo.cuantas);
-		pos2 = randint(mazo.cuantas);
-		intercambiar(mazo, pos1, pos2);
+		intercambiar(randint(cuantas), randint(cuantas));
 	}
 }
 
@@ -718,15 +722,15 @@ int randint(int max)
 	return rand() % (max);
 }
 
-void intercambiar(tMazo &mazo, int pos1, int pos2)
+void tMazo::intercambiar(int pos1, int pos2)
 {
 	tCarta aux;
 	
-	aux = mazo.cartas[pos1];
+	aux = cartas[pos1];
 	
-	mazo.cartas[pos1] = mazo.cartas[pos2];
+	cartas[pos1] = cartas[pos2];
 	
-	mazo.cartas[pos2] = aux;
+	cartas[pos2] = aux;
 }
 
 //Desplaza las cartas del mazo a la derecha, para hacer hueco para nuevas cartas
