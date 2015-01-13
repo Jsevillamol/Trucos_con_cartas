@@ -56,10 +56,7 @@ public:
 	//Constructor
 	tMazo(): cuantas(0){}
 
-	//Metodos
-	//Funciones de output
-	void mostrar();
-	
+	//Metodos	
 	//Funciones de carga y guardado de mazos
 	bool cargar(string &nomb);
 	bool cargar_auto(string &nomb);
@@ -113,6 +110,7 @@ char elegir_palo();
 
 //Funciones de output
 void mostrar(const tMazo mazo[], int n);
+void mostrar(const tMazo mazo);
 void mostrar(const tCarta carta);
 void mostrar(const tNumero n);
 void mostrar(const tPalo p);
@@ -147,7 +145,7 @@ int main()
 	string nomb;
 
 	srand(time(NULL));
-	vaciar(mazo);
+	mazo.vaciar();
 
 	do
 	{
@@ -160,7 +158,7 @@ int main()
 				if      (opcion == 1)
 				{
 					linea();
-					if (cargar(mazo, nomb))
+					if (mazo.cargar(nomb))
 						{
 						cout << "Mazo:" << endl;
 						mostrar(mazo);
@@ -170,7 +168,7 @@ int main()
 				else if (opcion == 2)
 				{
 					linea();
-					cargar_mazo_completo(mazo);
+					mazo.cargar_mazo_completo();
 					
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
@@ -178,14 +176,14 @@ int main()
 				else if (opcion == 3)
 				{
 					linea();
-					if (guardar(mazo, nomb)) 
+					if (mazo.guardar(nomb)) 
 						cout << "Guardado exitoso!" << endl;
 					else cout << "Fallo al guardar" << endl;
 				}
 				else if (opcion == 4)
 				{
 					linea();
-					agregar(mazo);
+					mazo.agregar();
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
@@ -210,7 +208,7 @@ int main()
 					linea();
 					cout << "Cuantas?";
 					cin >> cantidad;
-					cortar(mazo, cantidad);
+					mazo.cortar(cantidad);
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
@@ -218,7 +216,7 @@ int main()
 				{
 					linea();
 					tMazo negro, rojo;
-					repartirNegroRojo(mazo, negro, rojo);
+					mazo.repartirNegroRojo(negro, rojo);
 			
 					cout << "Negras: " << endl;
 					mostrar(negro);
@@ -230,7 +228,7 @@ int main()
 				{
 					linea();
 					tMazo alto, bajo;
-					repartirBajaAlta(mazo,bajo,alto);
+					mazo.repartirBajaAlta(bajo,alto);
 			
 					cout << "Bajas: " << endl;
 					mostrar(bajo);
@@ -242,7 +240,7 @@ int main()
 				{
 					linea();
 					tMazo par, impar;
-					repartirParImpar(mazo, par, impar);
+					mazo.repartirParImpar(par, impar);
 					
 					cout << "Pares: " << endl;
 					mostrar(par);
@@ -254,7 +252,7 @@ int main()
 				{
 					linea();
 					tMazo figura, numero;
-					repartirFigurasNumeros(mazo, figura, numero);
+					mazo.repartirFigurasNumeros(figura, numero);
 					
 					cout << "Figuras:" << endl;
 					mostrar(figura);
@@ -271,7 +269,7 @@ int main()
 					cin >> en_cuantos;
 
 					tMazo *mazos = new tMazo[en_cuantos];
-					repartir_en_n(mazo, mazos, en_cuantos);
+					mazo.repartir_en_n(mazos, en_cuantos);
 
 					mostrar(mazos, en_cuantos);
 
@@ -293,7 +291,7 @@ int main()
 					else
 					{
 						linea();
-						carta_concreta_dentro(mazo);
+						mazo.carta_concreta_dentro();
 						cout << "Mazo actual:" << endl;
 						mostrar(mazo);
 					}
@@ -301,7 +299,7 @@ int main()
 				else if (opcion == 10)
 				{
 					linea();
-					carta_concreta_fuera(mazo);
+					mazo.carta_concreta_fuera();
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
@@ -314,7 +312,7 @@ int main()
 				}*/
 				else if (opcion == 12)
 				{
-					vaciar(mazo);
+					mazo.vaciar();
 				}
 			}while (opcion != 0);
 		}
@@ -501,11 +499,11 @@ void mostrar(const tMazo mazo[], int n)
 	}
 }
 
-void tMazo::mostrar()
+void mostrar(tMazo mazo)
 {
-	for(int i=0; i < cuantas; i++)
+	for(int i=0; i < mazo.cuantas; i++)
 	{
-		mostrar(cartas[i]);
+		mostrar(mazo.cartas[i]);
 	}
 	cout << endl;
 }
@@ -624,12 +622,12 @@ bool tMazo::agregar()
 {
 	tMazo otroMazo;
 	string nomb;
-	if (!cargar(otroMazo, nomb))
+	if (!otroMazo.cargar(nomb))
 	{
 		cout << "No pudo cargarse el archivo" << endl;
 		return false;
 	}
-	else if (!unir(mazo, otroMazo))
+	else if (!unir(otroMazo))
 	{
 		cout << "El mazo seleccionado junto al actual superan el limite de cartas por mazo" << endl;
 		return false;
@@ -749,10 +747,10 @@ void tMazo::cortar(int cuantasCartas)
 {
 	tMazo otroMazo;
 	//Corta...
-	if (partir(mazo,otroMazo, cuantasCartas))
+	if (partir(otroMazo, cuantasCartas))
 	{
 		//...y completa.
-		unir(mazo, otroMazo);
+		unir(otroMazo);
 	}
 }
 
@@ -776,7 +774,7 @@ bool tMazo::partir(tMazo &otroMazo, int cuantasCoger)
 
 bool tMazo::unir(const tMazo &otroMazo)
 {
-	if (desplazar(mazo, otroMazo.cuantas))
+	if (desplazar(otroMazo.cuantas))
 	{
 		for (int i = 0; i < otroMazo.cuantas; i++)
 		{
@@ -789,12 +787,12 @@ bool tMazo::unir(const tMazo &otroMazo)
 
 inline void tMazo::carta_concreta_dentro()
 {
-	agregar_carta(mazo, elegir_carta());
+	agregar_carta(elegir_carta());
 }
 
 inline void tMazo::carta_concreta_fuera()
 {
-	quitar_carta(mazo, elegir_carta());
+	quitar_carta(elegir_carta());
 }
 
 bool tMazo::agregar_carta(tCarta carta)
@@ -806,7 +804,7 @@ bool tMazo::agregar_carta(tCarta carta)
 	}
 	else
 	{
-		cartas[mazo.cuantas] = carta;
+		cartas[cuantas] = carta;
 		cuantas++;
 		return true;
 	}
@@ -841,7 +839,7 @@ bool pares(tCarta carta)
 
 void tMazo::repartirParImpar(tMazo &mazoPar, tMazo &mazoImpar)
 {
-	repartir_segun_criterio(mazo, mazoPar, mazoImpar, pares);
+	repartir_segun_criterio(mazoPar, mazoImpar, pares);
 }
 
 bool figuras(tCarta carta)
@@ -851,7 +849,7 @@ bool figuras(tCarta carta)
 
 void tMazo::repartirFigurasNumeros(tMazo &mazoFiguras, tMazo &mazoNumeros)
 {
-	repartir_segun_criterio(mazo, mazoFiguras, mazoNumeros, figuras);
+	repartir_segun_criterio(mazoFiguras, mazoNumeros, figuras);
 }
 
 bool bajas(tCarta carta)
@@ -861,7 +859,7 @@ bool bajas(tCarta carta)
 
 void tMazo::repartirBajaAlta(tMazo &mazoBajas, tMazo &mazoAltas)
 {
-	repartir_segun_criterio(mazo, mazoBajas, mazoAltas, bajas);
+	repartir_segun_criterio(mazoBajas, mazoAltas, bajas);
 }
 
 bool negro(tCarta carta)
@@ -871,7 +869,7 @@ bool negro(tCarta carta)
 
 void tMazo::repartirNegroRojo(tMazo &mazoNegro, tMazo &mazoRojo)
 {
-	repartir_segun_criterio(mazo, mazoNegro, mazoRojo, negro);
+	repartir_segun_criterio(mazoNegro, mazoRojo, negro);
 }
 
 //Generalizar es mejor. Para que tener cuatro funciones practicamente iguales?
@@ -906,11 +904,11 @@ void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
 	mazoNuevo.cuantas = j;
 }
 
-void tMazo::repartir_en_n(tMazo &mazoI, tMazo mazo[], int n)
+void tMazo::repartir_en_n(tMazo mazo[], int n)
 {
 	//Repartir alternamente
 	for(int i=0; i<n; i++)
-		repartirIntercalando(mazoI, n, i, mazo[i]);
+		repartirIntercalando( n, i, mazo[i]);
 }
 
 void truco_de_los_tres_montones()
@@ -920,13 +918,13 @@ void truco_de_los_tres_montones()
 	int n;
 
 	//generamos el mazo de 21 cartas
-	if(cargar_auto(mazoU, nomb))
+	if(mazoU.cargar_auto(nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
 			//Repartir alternamente
-			repartir_en_n(mazoU, mazo, 3);
-			vaciar(mazoU);
+			mazoU.repartir_en_n(mazo, 3);
+			mazoU.vaciar();
 			mostrar(mazo, 3);
 
 			//El usuario elije mazo
@@ -936,21 +934,21 @@ void truco_de_los_tres_montones()
 			//Juntamos los mazos
 			if      (n == 1)
 			{
-				unir(mazoU, mazo[2]);
-				unir(mazoU, mazo[0]);
-				unir(mazoU, mazo[1]);
+				mazoU.unir(mazo[2]);
+				mazoU.unir(mazo[0]);
+				mazoU.unir(mazo[1]);
 			}
 			else if (n == 2)
 			{
-				unir(mazoU, mazo[2]);
-				unir(mazoU, mazo[1]);
-				unir(mazoU, mazo[0]);
+				mazoU.unir(mazo[2]);
+				mazoU.unir(mazo[1]);
+				mazoU.unir(mazo[0]);
 			}
 			else //if (n == 3)
 			{
-				unir(mazoU, mazo[1]);
-				unir(mazoU, mazo[2]);
-				unir(mazoU, mazo[0]);
+				mazoU.unir(mazo[1]);
+				mazoU.unir(mazo[2]);
+				mazoU.unir(mazo[0]);
 			}
 		}
 
@@ -970,7 +968,7 @@ void truco_de_la_posada()
 	string nomb = "posada.txt";
 	int corte;
 	
-	if (cargar_auto(mazoU, nomb)){
+	if (mazoU.cargar_auto(nomb)){
 	
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
@@ -984,24 +982,24 @@ void truco_de_la_posada()
 			 << "cuatro habitaciones. "                               << endl;
 		 	 
 		pausa();
-		repartir_en_n(mazoU, mazo, 4);
-		vaciar(mazoU);
+		mazoU.repartir_en_n(mazo, 4);
+		mazoU.vaciar();
 
 		mostrar(mazo, 4);
 
 		//Juntamos los mazos
 		for(int i=0; i<4; i++)
-			unir(mazoU, mazo[i]);
+			mazoU.unir(mazo[i]);
 	
 		//Cortamos el mazo
 		cout << "Por que numero de carta quieres cortar?";
 		cin >> corte;
-		cortar(mazoU, corte);
+		mazoU.cortar(corte);
 	
 		cout << "Sin embargo, a la maniana siguiente..." << endl;
 	
 		pausa();
-		repartir_en_n(mazoU, mazo, 4);
+		mazoU.repartir_en_n(mazo, 4);
 		
 		mostrar(mazo, 4);
 
@@ -1022,7 +1020,7 @@ void truco_del_jugador_desconfiado()
 	
 
 	
-	if (cargar_auto(mazoD, nomb))
+	if (mazoD.cargar_auto(nomb))
 	{
 		cout << "En una partida de poker de mesa redonda, con cuatro jugadores sentados "
 		     << "en ella, un jugador dice que desconfia de que los jugadores sentados en "
@@ -1037,7 +1035,7 @@ void truco_del_jugador_desconfiado()
 		cout << "El mazo se baraja y se reparte entre los cuatro jugadores." << endl;
 		pausa();
 		
-		repartir_en_n(mazoD, mazo, 4);
+		mazoD.repartir_en_n(mazo, 4);
 		mostrar(mazo, 4);
 		pausa();
 		
@@ -1068,15 +1066,15 @@ void truco_del_jugador_desconfiado()
 				cout << "El proceso se repetira una vez mas" << endl;
 				pausa();
 			}
-			repartirNegroRojo(mazo[0], mazoNegro, mazoRojo);
-			repartirBajaAlta(mazo[1], mazoBajas, mazoAltas);
-			repartirParImpar(mazo[2], mazoPar, mazoImpar);
-			repartirFigurasNumeros(mazo[3], mazoFiguras, mazoNumeros);
+			mazo[0].repartirNegroRojo(mazoNegro, mazoRojo);
+			mazo[1].repartirBajaAlta(mazoBajas, mazoAltas);
+			mazo[2].repartirParImpar(mazoPar, mazoImpar);
+			mazo[3].repartirFigurasNumeros(mazoFiguras, mazoNumeros);
 			
-			unir(mazoNumeros, mazoBajas);
-			unir(mazoRojo, mazoPar);
-			unir(mazoAltas, mazoFiguras);
-			unir(mazoImpar, mazoNegro);
+			mazoNumeros.unir(mazoBajas);
+			mazoRojo.unir(mazoPar);
+			mazoAltas.unir(mazoFiguras);
+			mazoImpar.unir(mazoNegro);
 			
 			mazo[0] = mazoNumeros;
 			mazo[1] = mazoRojo;
@@ -1093,15 +1091,15 @@ void truco_del_jugador_desconfiado()
 		     << "a juntar." << endl;
 		pausa();
 		
-		repartirNegroRojo(mazo[0], mazoNegro, mazoRojo);
-		repartirBajaAlta(mazo[1], mazoBajas, mazoAltas);
-		repartirParImpar(mazo[2], mazoPar, mazoImpar);
-		repartirFigurasNumeros(mazo[3], mazoFiguras, mazoNumeros);
+		mazo[0].repartirNegroRojo(mazoNegro, mazoRojo);
+		mazo[1].repartirBajaAlta(mazoBajas, mazoAltas);
+		mazo[2].repartirParImpar(mazoPar, mazoImpar);
+		mazo[3].repartirFigurasNumeros(mazoFiguras, mazoNumeros);
 		
-		unir(mazoRojo, mazoBajas);
-		unir(mazoAltas, mazoPar);
-		unir(mazoImpar, mazoFiguras);
-		unir(mazoNumeros, mazoNegro);
+		mazoRojo.unir(mazoBajas);
+		mazoAltas.unir(mazoPar);
+		mazoImpar.unir(mazoFiguras);
+		mazoNumeros.unir(mazoNegro);
 		
 		mazo[0] = mazoRojo;
 		mazo[1] = mazoAltas;
