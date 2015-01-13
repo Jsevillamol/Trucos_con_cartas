@@ -491,6 +491,7 @@ tCarta traducir(char p, int n)
 
 	return (n-1 + int (suit) * CARTASxPALO);
 }
+
 void vaciar(tMazo mazo)
 {
 	mazo[0] = CENTINELA;
@@ -529,7 +530,7 @@ bool desplazar(tMazo mazo, int numero)
 	int total = cuantas(mazo);
 	if (total+numero <= MAX_CARTAS)
 	{
-		for (int i = total-1; i >= 0; i--)
+		for (int i = total; i >= 0; i--)
 			mazo[i+numero] = mazo[i];
 		return true;
 	}
@@ -568,9 +569,7 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 	if (desplazar(mazo, cuantas(otroMazo)))
 	{
 		for (int i = 0; otroMazo[i] != CENTINELA; i++)
-		{
 			mazo[i] = otroMazo[i];
-		}
 
 		return true;
 	}
