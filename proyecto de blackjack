@@ -1,27 +1,21 @@
-typedef enum tJugador
-{
-	Jugador,
-	Automata
-};
+
 int opciones_de_blackjack()
 {
 	cout << "Que decides hacer?:" << endl
 	     << "1 - Pedir"           << endl
 	     << "2 - Plantarse"       << endl
-		 << "3 - Doblar apuesta"  << endl
-		 << "4 - Dividir "        << endl
-		 << "0 - Abandonar"       << endl;
+	     << "3 - Doblar apuesta"  << endl
+		 //<< "4 - Dividir "        << endl
+	     << "0 - Abandonar"       << endl;
 		 
 	return digitoEntre(0,4);
 }
 
-tMazo repartir_n_cartas(tMazo &mazo, tMazo mazoJugador, int cuantasQuieres)
+void repartir_n_cartas(tMazo &mazo, tMazo &mazoJugador, int cuantasQuieres, int cont) 
+//cont evita que siempre repartamos las mismas cartas.
 {
-	mazo.cuantas == (cuantasQuieres + 1);
-	
-	mazoJugador += mazo;
-
-	return mazoJugador;
+	for (int i=0; i < cuantasQuieres; i++)
+		mazoJugador.cartas[mazoJugador.cuantas++] = mazo[cont++];
 }
 
 int apuesta()
@@ -33,11 +27,13 @@ int apuesta()
 
 void blackjack()
 {
-	tJugador turno;
 	tMazo mazoJugador, mazoBot, mazoJug1, mazoJug2;
-	int queHacer, dinero = DINERO_INI, apu = apuesta();
+	int queHacer, dinero = DINERO_INI, apu;
+	bool pasa_jug=false, pasa_crup=false;
 	
 	cargar_mazo_completo();
+	
+	//Aqui comienza una mano. Un juego se compone de muchas manos, amirite?{
 	barajar(mazo);
 	
 	repartir_n_cartas(mazo, mazoJugador, 2);
@@ -49,73 +45,65 @@ void blackjack()
 	cout << "Mano actual:" << endl;
 	mostrar(mazoJugador);
 	
-	apu;
+	apu = apuesta();
 	dinero -= apu;
 	
-	if (turno == Jugador)
+	//Antes de comenzar a jugar hay que comprobar que ni el crupier ni el jugador tengan 21 o más
+	while((valor(manoJugador) < 21) && (valor(manoCrupier) < 21) && (pasa_jug && pasa_crup))
 	{
-		do
-		{
-			queHacer = opciones_de_blackjack();
-			
-			if      (queHacer == 1)
-			{
-				repartir_n_cartas(mazo, mazoJugador, 1);
-				
-				cout << "Mano actual:" << endl;
-				mostrar(mazoJugador);
-				
-				turno == Automata;
-			}
-			else if (queHacer == 2)
-			{
-				turno == Automata;
-			}
-			else if (queHacer == 3)
-			{
-				if (mazoJugador.cartas > 2)
-				{
-					cout << "Error, no puedes doblar la apuesta si ya has pedido otra carta" << endl;
-				}
-				else 
-				{
-					apu *= 2;
-					dinero -= (apu/2);
-				}
-				turno == Automata;
-			}
-			else if (queHacer == 4)
-			{
-				if (mazoJugador.cartas > 2)
-				{
-					cout << "Error, no puedes dividir la mano si ya has pedido otra carta" << endl;
-				}
-				else if (mazoJugador.cartas[0] != mazoJugador.cartas[1])
-				{
-					cout << "Error, no puedes dividir la mano si tus dos cartas no son iguales" << endl;
-				}
-				else
-				{
-					mazoJug1.cartas[0] = mazoJugador.cartas[0];
-					mazoJug2.cartas[0] = mazoJugador.cartas[1];
-						
-					repartir_n_cartas(mazo, mazoJug1, 1);				
-					repartir_n_cartas(mazo, mazoJug2, 1);
-					
-					apu *= 2;
-				}
-				turno == Automata;
-			}
-		}
-		while (queHacer == 0)
-		{
-			cout << "Abandonas? Ohhh" << endl;
-			
-			turno == Automata
-		}		
-	}
-	else if (turno == Automata)
-	{
+		//Siempre empieza el jugador
 		
+		queHacer = opciones_de_blackjack();
+		
+		if      (queHacer == 1)
+		{
+			repartir_n_cartas(mazo, mazoJugador, 1);
+			
+			cout << "Mano actual:" << endl;
+			mostrar(mazoJugador);
+		}
+		/*else if (queHacer == 2)
+		{
+			pasa_jug = true;
+		}*/
+		else if (queHacer == 3)
+		{
+			if (mazoJugador.cartas > 2)
+			{
+				cout << "Error, no puedes doblar la apuesta si ya has pedido otra carta" << endl;
+			}
+			else 
+			{
+				apu *= 2;
+				dinero -= (apu/2);
+			}
+			
+			if (queHacer == 2) pasa_jug = true; else pasa_jug = false;
+		}
+		/*else if (queHacer == 4)
+		{
+			if (mazoJugador.cartas > 2)
+			{
+				cout << "Error, no puedes dividir la mano si ya has pedido otra carta" << endl;
+			}
+			else if (mazoJugador.cartas[0] != mazoJugador.cartas[1])
+			{
+				cout << "Error, no puedes dividir la mano si tus dos cartas no son iguales" << endl;
+			}
+			else
+			{
+				mazoJug1.cartas[0] = mazoJugador.cartas[0];
+				mazoJug2.cartas[0] = mazoJugador.cartas[1];
+					
+				repartir_n_cartas(mazo, mazoJug1, 1);				
+				repartir_n_cartas(mazo, mazoJug2, 1);
+				
+				apu *= 2;
+			}
+			la division es complicada. dejemosla para luego*/ 
+	
+	//Turno crupier
+	{
+	
 	}
 }
