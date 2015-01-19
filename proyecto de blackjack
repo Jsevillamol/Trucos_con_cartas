@@ -1,4 +1,17 @@
+int valor(tMazo mano)
+{
+	int total = 0;
+	bool hay_un_as = false;
+	for (int i = 0; i < mano.cuantas; i++)
+	{
+		total += (int) mano.cartas[i].num
+		if (mano.cartas[i].num == A) hay_un_as == true;
+	}
+	
+	if (hay_un_as && total <= 11) return total + 10; //El as puede valer 1 o 11, según nos convenga.
+	else return total;
 
+}
 
 
 int opciones_de_blackjack()
