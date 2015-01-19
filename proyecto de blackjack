@@ -51,8 +51,10 @@ void blackjack()
 	//Aqui comienza una mano. Un juego se compone de muchas manos, amirite?{
 	barajar(mazo);
 	
-	repartir_n_cartas(mazo, mazoJugador, 2, 0);
-	repartir_n_cartas(mazo, mazoBot, 2, cont);
+	cont = 0; //La inicialización de cont hay que hacerla aquí
+	
+	repartir_n_cartas(mazo, mazoJugador, 2, cont); //Si aquí le pasas un literal, no se asigna a cont.
+	repartir_n_cartas(mazo, mazoBot, 2, cont);     
 	
 	cout << "Carta del crupier:" << endl;
 	mostrar(mazoBot.carta[1]);
