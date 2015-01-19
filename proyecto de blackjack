@@ -1,4 +1,6 @@
 
+
+
 int opciones_de_blackjack()
 {
 	cout << "Que decides hacer?:" << endl
@@ -11,7 +13,7 @@ int opciones_de_blackjack()
 	return digitoEntre(0,4);
 }
 
-void repartir_n_cartas(tMazo &mazo, tMazo &mazoJugador, int cuantasQuieres, int cont) 
+void repartir_n_cartas(tMazo &mazo, tMazo &mazoJugador, int cuantasQuieres, int &cont) 
 //cont evita que siempre repartamos las mismas cartas.
 {
 	for (int i=0; i < cuantasQuieres; i++)
@@ -36,8 +38,8 @@ void blackjack()
 	//Aqui comienza una mano. Un juego se compone de muchas manos, amirite?{
 	barajar(mazo);
 	
-	repartir_n_cartas(mazo, mazoJugador, 2);
-	repartir_n_cartas(mazo, mazoBot, 2);
+	repartir_n_cartas(mazo, mazoJugador, 2, 0);
+	repartir_n_cartas(mazo, mazoBot, 2, cont);
 	
 	cout << "Carta del crupier:" << endl;
 	mostrar(mazoBot.carta[1]);
@@ -57,7 +59,7 @@ void blackjack()
 		
 		if      (queHacer == 1)
 		{
-			repartir_n_cartas(mazo, mazoJugador, 1);
+			repartir_n_cartas(mazo, mazoJugador, 1, cont);
 			
 			cout << "Mano actual:" << endl;
 			mostrar(mazoJugador);
@@ -95,8 +97,8 @@ void blackjack()
 				mazoJug1.cartas[0] = mazoJugador.cartas[0];
 				mazoJug2.cartas[0] = mazoJugador.cartas[1];
 					
-				repartir_n_cartas(mazo, mazoJug1, 1);				
-				repartir_n_cartas(mazo, mazoJug2, 1);
+				repartir_n_cartas(mazo, mazoJug1, 1, cont);				
+				repartir_n_cartas(mazo, mazoJug2, 1, cont);
 				
 				apu *= 2;
 			}
@@ -104,6 +106,9 @@ void blackjack()
 	
 	//Turno crupier
 	{
-	
+		while (valor(manoCrupier) < 17)
+		{
+			repartir_n_cartas(mazo, mazoBot, 1, cont);
+		}
 	}
 }
