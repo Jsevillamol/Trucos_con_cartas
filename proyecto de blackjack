@@ -121,9 +121,10 @@ void blackjack()
 	
 	//Turno crupier
 	{
-		while (valor(manoCrupier) < 17)
+		if (valor(manoCrupier) < 17)
 		{
 			repartir_n_cartas(mazo, mazoBot, 1, cont);
 		}
+		else pasa_crup = false;
 	}
 }
