@@ -20,7 +20,7 @@ int opciones_de_blackjack()
 	     << "1 - Pedir"           << endl
 	     << "2 - Plantarse"       << endl
 	     << "3 - Doblar apuesta"  << endl
-		 //<< "4 - Dividir "        << endl
+	     //<< "4 - Dividir "        << endl
 	     << "0 - Abandonar"       << endl;
 		 
 	return digitoEntre(0,4);
@@ -31,6 +31,37 @@ void repartir_n_cartas(tMazo &mazo, tMazo &mazoJugador, int cuantasQuieres, int 
 {
 	for (int i=0; i < cuantasQuieres; i++)
 		mazoJugador.cartas[mazoJugador.cuantas++] = mazo[cont++];
+}
+
+bool turno_crupier(bool pasa_crup)
+{
+	if (valor(manoCrupier) < 17)
+	{
+		repartir_n_cartas(mazo, mazoBot, 1, cont);
+	}
+	else return pasa_crup = true;
+}
+
+void recompensa(tMazo mazoJugador, tMazo mazoBot)
+{
+	dinero = DINERO_INI;
+	apu = apuesta();
+	
+	if(valor(mazoBot) <= valor(mazoJugador))
+	{
+		apu == 0;
+		
+		cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl;
+		     << "Saldo actual: " << dinero << endl;
+	}
+	else 
+	{
+		apu *= 3/2;
+		dinero += apu;
+		
+		cout << "Enhorabuena, has ganado" << apu << " dolares" << endl
+		     << "Saldo actual: " << dinero << " dolares" << endl;
+	}
 }
 
 int apuesta()
@@ -48,7 +79,7 @@ void blackjack()
 	
 	cargar_mazo_completo();
 	
-	//Aqui comienza una mano. Un juego se compone de muchas manos, amirite?{
+	//Aqui comienza una mano. Un juego se compone de muchas manos, amirite?
 	barajar(mazo);
 	
 	cont = 0; //La inicialización de cont hay que hacerla aquí
@@ -66,7 +97,7 @@ void blackjack()
 	dinero -= apu;
 	
 	//Antes de comenzar a jugar hay que comprobar que ni el crupier ni el jugador tengan 21 o más
-	while((valor(manoJugador) < 21) && (valor(manoCrupier) < 21) && (pasa_jug && pasa_crup))
+	while((valor(mazoJugador) < 21) && (valor(mazoBot) < 21) && (pasa_jug && pasa_crup))
 	{
 		//Siempre empieza el jugador
 		
@@ -78,11 +109,15 @@ void blackjack()
 			
 			cout << "Mano actual:" << endl;
 			mostrar(mazoJugador);
+			
+			turno_crupier(pasa_crup);
 		}
-		/*else if (queHacer == 2)
+		else if (queHacer == 2)
 		{
 			pasa_jug = true;
-		}*/
+			
+			turno_crupier(pasa_crup);
+		}
 		else if (queHacer == 3)
 		{
 			if (mazoJugador.cartas > 2)
@@ -118,13 +153,7 @@ void blackjack()
 				apu *= 2;
 			}
 			la division es complicada. dejemosla para luego*/ 
-	
-	//Turno crupier
-	{
-		if (valor(manoCrupier) < 17)
-		{
-			repartir_n_cartas(mazo, mazoBot, 1, cont);
 		}
-		else pasa_crup = false;
 	}
+	recompensa();
 }
