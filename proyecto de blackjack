@@ -72,14 +72,29 @@ int apuesta()
 
 void blackjack()
 {
-	tMazo mazoJugador, mazoBot, mazoJug1, mazoJug2;
-	int queHacer, dinero = DINERO_INI, apu;
-	bool pasa_jug=false, pasa_crup=false;
+	
+	int dinero = DINERO_INI;
 	
 	cargar_mazo_completo();
+	do
+	{
+		opcion = menu_opciones();
+		if (opcion == 1)
+		{
+			mano(dinero);
+		}
+	}
+	while(opcion != 0)
+}
+
+void mano(&int dinero)
+{
+	tMazo mazo, mazoJugador, mazoBot;
+	bool pasa_jug=false, pasa_crup=false;
+	int queHacer, apu;
 	
-	//Aqui comienza una mano. Un juego se compone de muchas manos, amirite?
-	barajar(mazo);
+	mazo.cargar_mazo_completo();
+	mazo.barajar();
 	
 	cont = 0; //La inicialización de cont hay que hacerla aquí
 	
@@ -96,7 +111,7 @@ void blackjack()
 	dinero -= apu;
 	
 	//Antes de comenzar a jugar hay que comprobar que ni el crupier ni el jugador tengan 21 o más
-	while((valor(mazoJugador) < 21) && (valor(mazoBot) < 21) && (pasa_jug && pasa_crup))
+	while((valor(mazoJugador) < 21) && (valor(mazoBot) < 21) && !(pasa_jug && pasa_crup))
 	{
 		//Siempre empieza el jugador
 		
