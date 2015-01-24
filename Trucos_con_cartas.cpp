@@ -17,7 +17,7 @@ const int CARTASxPALO=13,
 //TIPOS PROPIOS
 typedef enum
 {
-	picas,
+	picas,8
 	treboles,
 	diamantes,
 	corazones
@@ -1280,12 +1280,7 @@ void mano(&int dinero)
 		
 		if      (queHacer == 1)
 		{
-			repartir_n_cartas(mazo, mazoJugador, 1, cont);
-			
-			cout << "Mano actual:" << endl;
-			mostrar(mazoJugador);
-			
-			turno_crupier(pasa_crup);
+			repartir_n_cartas(mazo, mazoJugador, 1, cont)
 		}
 		else if (queHacer == 2)
 		{
@@ -1335,7 +1330,7 @@ void mano(&int dinero)
 
 void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int cont)
 {
-	if (valor(mazoBot) < 17)
+	while (valor(mazoBot) < 17)
 	{
 		cout << "El crupier pide otra carta" << endl;
 		repartir_n_cartas(mazo, mazoBot, 1, cont);
