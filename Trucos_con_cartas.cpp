@@ -1288,13 +1288,17 @@ void blackjack()
 	
 }
 
-bool turno_crupier(bool pasa_crup, tMazo &mazo, tMazo &mazoBot, int cont)
+void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int cont)
 {
-	while (valor(mazoBot) < 17)
+	if (valor(mazoBot) < 17)
 	{
+		cout << "El crupier pide otra carta" << endl;
 		repartir_n_cartas(mazo, mazoBot, 1, cont);
+		cout << "Ahora tiene " << mazoBot.cuantas << " cartas." << endl
+			<< "Su carta visible es: " << mazoBot.cartas[0].mostrar << endl;
+		pasa_crup = false;
 	}
-	return pasa_crup = true;
+	else  pasa_crup = true;
 }
 
 inline void pausa()
