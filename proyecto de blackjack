@@ -10,7 +10,6 @@ int valor(tMazo mano)
 	
 	if (hay_un_as && total <= 11) return total + 10; //El as puede valer 1 o 11, según nos convenga.
 	else return total;
-
 }
 
 
