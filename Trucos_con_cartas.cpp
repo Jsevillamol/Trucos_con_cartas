@@ -1337,7 +1337,7 @@ void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int cont)
 		pasa_crup =  false;
 	}
         cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-	         << "Su carta visible es: " << mazoBot.cartas[0].mostrar << endl;   
+             << "Su carta visible es: " << mazoBot.cartas[0].mostrar << endl;   
 	pasa_crup = true;
 }
 
