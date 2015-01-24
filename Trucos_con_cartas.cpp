@@ -1332,13 +1332,13 @@ void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int cont)
 {
 	while (valor(mazoBot) < 17)
 	{
-		cout << "El crupier pide otra carta" << endl;
 		repartir_n_cartas(mazo, mazoBot, 1, cont);
-		cout << "Ahora tiene " << mazoBot.cuantas << " cartas." << endl
-			<< "Su carta visible es: " << mazoBot.cartas[0].mostrar << endl;
-		pasa_crup = false;
+		
+		pasa_crup =  false;
 	}
-	else  pasa_crup = true;
+        cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
+	         << "Su carta visible es: " << mazoBot.cartas[0].mostrar << endl;   
+	pasa_crup = true;
 }
 
 inline void pausa()
