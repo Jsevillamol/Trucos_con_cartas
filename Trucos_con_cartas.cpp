@@ -164,7 +164,7 @@ inline void pausa();
 
 int main()
 {
-	int opcion, eleccion;
+	int opcion, eleccion, cont = 0;
 	tMazo mazo;
 	string nomb;
 
@@ -302,10 +302,26 @@ int main()
 				else if (opcion == 8)
 				{
 					linea();
+					
+					int cuantas;
+					tMazo mazoExtra;
+					
+					cout << "Cuantas cartas quieres?" << endl;
+					cin >> cuantas;
+					mazo.repartir_n_cartas(mazoExtra, cuantas, cont);
+					mazo.vaciar();
+					mazo.unir(mazoExtra);
+					
 					cout << "Mazo:" << endl;
 					mostrar(mazo);
 				}
 				else if (opcion == 9)
+				{
+					linea();
+					cout << "Mazo:" << endl;
+					mostrar(mazo);
+				}
+				else if (opcion == 10)
 				{
 					if (mazo.cuantas == MAX_CARTAS)
 					{
@@ -320,14 +336,14 @@ int main()
 						mostrar(mazo);
 					}
 				}
-				else if (opcion == 10)
+				else if (opcion == 11)
 				{
 					linea();
 					mazo.carta_concreta_fuera();
 					cout << "Mazo actual:" << endl;
 					mostrar(mazo);
 				}
-				else if (opcion == 11)
+				else if (opcion == 12)
 				{
 					mazo.vaciar();
 				}
@@ -408,13 +424,14 @@ int menu_de_manipulacion_de_mazos()
 	     << "5  - Separar en pares e impares"   << endl
 	     << "6  - Separar en figuras y numeros" << endl
 	     << "7  - Separar en n montones"        << endl
-	     << "8  - Mostrar mazo actual"          << endl
- 	     << "9  - Aniadir una carta concreta"   << endl
- 	     << "10 - Eliminar una carta concreta"  << endl
- 	     << "11 - Vaciar mazo actual"           << endl
+		 << "8  - Repartir n cartas"            << endl
+	     << "9  - Mostrar mazo actual"          << endl
+ 	     << "10 - Aniadir una carta concreta"   << endl
+ 	     << "11 - Eliminar una carta concreta"  << endl
+ 	     << "12 - Vaciar mazo actual"           << endl
  	     << "0  - Volver al menu principal"     << endl;
 	
-	return digitoEntre(0,11);
+	return digitoEntre(0,12);
 }
 
 int menu_de_juegos()
@@ -952,8 +969,19 @@ void tMazo::repartir_en_n(tMazo mazo[], int n)
 void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont) 
 //cont evita que siempre repartamos las mismas cartas.
 {
-	for (int i=0; i < cuantasQuieres; i++)
-		mazoJugador[mazoJugador.cuantas++] = cartas[cont++];
+	if (cuantasQuieres > (*this).cuantas)
+	{
+		cout << "Error, no puedes coger mas cartas de las que tiene el mazo" << endl;
+	}
+	else if (cuantasQuieres + mazoJugador.cuantas > MAX_CARTAS)
+	{
+		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
+	}
+	else
+	{
+		for (int i=0; i < cuantasQuieres; i++)
+			mazoJugador[mazoJugador.cuantas++] = cartas[cont++];
+	}
 }
 
 void truco_de_los_tres_montones()
@@ -1362,7 +1390,6 @@ void mano(int &dinero)
 				
 				apu *= 2;
 			}
-		}
 			la division es complicada. dejemosla para luego*/ 
 		
 	}
