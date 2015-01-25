@@ -93,7 +93,7 @@ public:
 	
 	//Operadores
 	tCarta& operator[](const int index){return cartas[index];}
-
+	const tCarta& operator[](const int index) const {return cartas[index];}
 	//Datos
 	tCarta cartas[MAX_CARTAS];
 	int cuantas;
