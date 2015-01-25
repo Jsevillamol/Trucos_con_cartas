@@ -1,0 +1,17 @@
+Blackjack:
+
+Se trata de un juego en el que participan el crupier, y uno o mas jugadores.
+Las reglas son sencillas:
+
+El crupier se reparte a si mismo dos cartas, de las cuales deja una de ellas boca arriba sobre la mesa, a la vista 
+de todos; a continuacion reparte a cada jugador dos cartas.
+A continuacion el jugador de su izquierda debe poner la apuesta inicial, y el resto de los jugadores debes decidir 
+si ven la apuesta, la suben, o abandonan la partida. La apuesta de cada jugador debe sesiempre mayor o igual que la 
+del jugador que aposto anteriormente
+Ahora cada jugador debe decidir que hacer, si pedir otra carta, plantarse con las cartas que tenga, doblar la apuesta 
+(esto solo puede hacerse si no se han pedido mas cartas), o abandonar la partida; el cuyo caso el crupier se queda con 
+la apuesta de dicho jugador.
+El valor de las cartas se va sumando, teniendo cada carta del 2 al 10 el valor de su numero, las figuras valen 10 todas, 
+y los ases tienen un valos ambiguo de 1 u 11, que queda determinado por lo que al jugador mas le convenga.
+Si alguno de los jugadores supera la sumade 21 habra perdido la partida, y por tanto su apuesta; ganara el jugador que tenga 
+una mayor mano sin sobrepasar los 21, y recibira 3/2 de la mayor de las apuestas.
