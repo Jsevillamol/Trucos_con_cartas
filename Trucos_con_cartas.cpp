@@ -122,6 +122,7 @@ void mostrar(const tMazo mazo);
 void mostrar(const tCarta carta);
 void mostrar(const tNumero n);
 void mostrar(const tPalo p);
+bool mostrar(string archivo);
 
 //Funciones de carga y guardado de mazos
 bool abrir(string &nomb, ifstream &archivo);
@@ -509,7 +510,7 @@ void mostrar(tMazo mazo)
 {
 	for(int i=0; i < mazo.cuantas; i++)
 	{
-		mostrar(mazo.cartas[i]);
+		mostrar(mazo[i]);
 	}
 	cout << endl;
 }
@@ -539,7 +540,37 @@ void mostrar(const tPalo p)
 	if            (p == picas)   cout <<     "de picas";
 	else if    (p == treboles)   cout <<  "de treboles";
 	else if   (p == diamantes)   cout << "de diamantes";
-	else /*if (p == corazones)*/ cout << "de corazones";
+	else /*if (c == corazones)*/ cout << "de corazones";
+}
+
+bool mostrar(string archivo)
+{
+	bool ok;
+	ifstream acerca;
+	char c;
+	
+	cout << setfill('-') << setw(79) << '-' << endl;
+	cout << setfill(' ');
+	
+	acerca.open(archivo);
+	
+	if(acerca.is_open())
+	{
+		acerca.get(c); //Lee el primer caracter
+
+		while(!acerca.fail()) //Mientras la lectura no falle
+		{
+			cout << c;
+			acerca.get(c); //Lee el siguiente caracter
+		}
+		ok = true;
+		acerca.close();
+	}
+	else
+	{
+		ok = false;
+	}
+	return ok;
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -768,7 +799,7 @@ bool tMazo::partir(tMazo &otroMazo, int cuantasCoger)
 	{
 		for (i = 0; cuantasCoger + i < cuantas; i++)
 		{
-			otroMazo.cartas[i] = cartas[cuantasCoger + i];
+			otroMazo[i] = cartas[cuantasCoger + i];
 		}
 
 		cuantas = cuantasCoger;
@@ -784,7 +815,7 @@ bool tMazo::unir(const tMazo &otroMazo)
 	{
 		for (int i = 0; i < otroMazo.cuantas; i++)
 		{
-			cartas[i] = otroMazo.cartas[i];
+			cartas[i] = otroMazo[i];
 		}
 		return true;
 	}
@@ -887,12 +918,12 @@ void tMazo::repartir_segun_criterio(tMazo &mazo1, tMazo &mazo2, bool (*criterio)
 	{
 		if     (criterio(cartas[i]))
 		{
-			mazo1.cartas[j] = cartas[i];
+			mazo1[j] = cartas[i];
 			j++;
 		}
 		else
 		{
-			mazo2.cartas[k] = cartas[i];
+			mazo2[k] = cartas[i];
 			k++;
 		}
 	}
@@ -905,7 +936,7 @@ void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
 	int j=0;
 	for (int i = queMazo; i < cuantas; i+=enCuantos, j++)
 	{
-		mazoNuevo.cartas[j] = cartas[i];
+		mazoNuevo[j] = cartas[i];
 	}
 	mazoNuevo.cuantas = j;
 }
@@ -921,7 +952,7 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont)
 //cont evita que siempre repartamos las mismas cartas.
 {
 	for (int i=0; i < cuantasQuieres; i++)
-		mazoJugador.cartas[mazoJugador.cuantas++] = cartas[cont++];
+		mazoJugador[mazoJugador.cuantas++] = cartas[cont++];
 }
 
 void truco_de_los_tres_montones()
@@ -967,7 +998,7 @@ void truco_de_los_tres_montones()
 
 		//Adivinamos la carta
 		cout << "Tu carta era el..." << endl;
-		mostrar(mazoU.cartas[10]);
+		mostrar(mazoU[10]);
 	}
 	else
 	{
@@ -1138,9 +1169,10 @@ int menu_opciones()
 	
 	cout << "Blackjack:" << endl
 	     << "1 - Jugar"  << endl
+	     << "2 - Reglas" << endl
 	     << "2 - Salir"  << endl;
 	     
-	return digitoEntre(0,1);
+	return digitoEntre(0,2);
 }
 
 int opciones_de_blackjack()
@@ -1206,12 +1238,12 @@ int valor(tMazo &mano)
 	bool hay_un_as = false;
 	for (int i = 0; i < mano.cuantas; i++)
 	{
-		if (mano.cartas[i].num = A) hay_un_as = true;
-		if ((mano.cartas[i].num = K) ||(mano.cartas[i].num = J) || (mano.cartas[i].num = Q))
+		if (mano[i].num = A) hay_un_as = true;
+		if ((mano[i].num = K) ||(mano[i].num = J) || (mano[i].num = Q))
 		{
 			total += 10;
 		}
-		else total += (int) mano.cartas[i].num;
+		else total += (int) mano[i].num;
 	}
 	if (hay_un_as && total <= 11) return total + 10; //El as puede valer 1 o 11, según nos convenga.
 	else return total;
@@ -1221,6 +1253,7 @@ void blackjack()
 {
 	
 	int dinero = DINERO_INI, opcion;
+	string archivo = "reglas_bj.txt";
 	
 	do
 	{
@@ -1228,6 +1261,10 @@ void blackjack()
 		if (opcion == 1)
 		{
 			mano(dinero);
+		}
+		else if (opcion == 2)
+		{
+			mostrar(archivo);
 		}
 	}
 	while(opcion != 0);
@@ -1239,13 +1276,15 @@ void mano(int &dinero)
 	bool pasa_jug=false, pasa_crup=false;
 	int queHacer, apu, cont;
 	
-	cargar_mazo_completo(mazo);
-	barajar(mazo);
+	cout << "Bienvenido al juego de Blackjack" << endl;
+	
+	mazo.cargar_mazo_completo();
+	mazo.barajar();
 	
 	cont = 0; //La inicialización de cont hay que hacerla aquí
 	
-	repartir_n_cartas(mazo, mazoJugador, 2, cont); //Si aquí le pasas un literal, no se asigna a cont.
-	repartir_n_cartas(mazo, mazoBot, 2, cont);     
+	mazo.repartir_n_cartas(mazoJugador, 2, cont); //Si aquí le pasas un literal, no se asigna a cont.
+	mazo.repartir_n_cartas(mazoBot, 2, cont);     
 	
 	cout << "Carta del crupier:" << endl;
 	mostrar(mazoBot.cartas[1]);
@@ -1265,16 +1304,29 @@ void mano(int &dinero)
 		
 		if      (queHacer == 1)
 		{
-			repartir_n_cartas(mazo, mazoJugador, 1, cont);
+			cout << "Has pedido otra carta" << endl << endl;
+			
+			mazo.repartir_n_cartas(mazoJugador, 1, cont);
+			
+			cout << "Carta del crupier:" << endl;
+			mostrar(mazoBot[1]);
+			cout << endl;
+	
+			cout << "Mano actual:" << endl;
+			mostrar(mazoJugador);
+			cout << endl;
 		}
 		else if (queHacer == 2)
 		{
+			cout << "Has decidido plantarte" << endl;
+			
 			pasa_jug = true;
 			
 			turno_crupier(pasa_crup, mazo, mazoBot, cont);
 		}
 		else if (queHacer == 3)
-		{
+		{	
+			cout << "Acabas de doblar tu apuesta, espero que sepas lo que haces" << endl;
 			if (mazoJugador.cuantas > 2)
 			{
 				cout << "Error, no puedes doblar la apuesta si ya has pedido otra carta" << endl;
@@ -1293,14 +1345,14 @@ void mano(int &dinero)
 			{
 				cout << "Error, no puedes dividir la mano si ya has pedido otra carta" << endl;
 			}
-			else if (mazoJugador.cartas[0] != mazoJugador.cartas[1])
+			else if (mazoJugador.cartas[0] != mazoJugador[1])
 			{
 				cout << "Error, no puedes dividir la mano si tus dos cartas no son iguales" << endl;
 			}
 			else
 			{
-				mazoJug1.cartas[0] = mazoJugador.cartas[0];
-				mazoJug2.cartas[0] = mazoJugador.cartas[1];
+				mazoJug1.cartas[0] = mazoJugador[0];
+				mazoJug2.cartas[0] = mazoJugador[1];
 					
 				repartir_n_cartas(mazo, mazoJug1, 1, cont);				
 				repartir_n_cartas(mazo, mazoJug2, 1, cont);
@@ -1313,6 +1365,7 @@ void mano(int &dinero)
 	dinero = recompensa(mazoJugador, mazoBot, apu, dinero, queHacer);
 }
 
+
 void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int &cont)
 {
 	while (valor(mazoBot) < 17)
@@ -1322,7 +1375,7 @@ void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int &cont)
 		pasa_crup =  false;
 	}
         cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-             << "Su carta visible es: "; mostrar(mazoBot.cartas[0]); cout << endl;   
+             << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
 	pasa_crup = true;
 }
 
