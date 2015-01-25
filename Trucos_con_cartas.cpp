@@ -568,6 +568,7 @@ bool mostrar(string archivo)
 	}
 	else
 	{
+		cout << "Error, no se encontro el archivo" << endl;
 		ok = false;
 	}
 	return ok;
@@ -1170,7 +1171,7 @@ int menu_opciones()
 	cout << "Blackjack:" << endl
 	     << "1 - Jugar"  << endl
 	     << "2 - Reglas" << endl
-	     << "2 - Salir"  << endl;
+	     << "0 - Salir"  << endl;
 	     
 	return digitoEntre(0,2);
 }
@@ -1286,11 +1287,13 @@ void mano(int &dinero)
 	mazo.repartir_n_cartas(mazoJugador, 2, cont); //Si aquí le pasas un literal, no se asigna a cont.
 	mazo.repartir_n_cartas(mazoBot, 2, cont);     
 	
-	cout << "Carta del crupier:" << endl;
-	mostrar(mazoBot.cartas[1]);
-	
 	cout << "Mano actual:" << endl;
 	mostrar(mazoJugador);
+	cout << endl;
+	
+	cout << "Carta del crupier:" << endl;
+	mostrar(mazoBot[1]);
+	cout << endl;
 	
 	apu = apuesta();
 	dinero -= apu;
@@ -1308,12 +1311,12 @@ void mano(int &dinero)
 			
 			mazo.repartir_n_cartas(mazoJugador, 1, cont);
 			
-			cout << "Carta del crupier:" << endl;
-			mostrar(mazoBot[1]);
-			cout << endl;
-	
 			cout << "Mano actual:" << endl;
 			mostrar(mazoJugador);
+			cout << endl;
+			
+			cout << "Carta del crupier:" << endl;
+			mostrar(mazoBot[1]);
 			cout << endl;
 		}
 		else if (queHacer == 2)
@@ -1359,6 +1362,7 @@ void mano(int &dinero)
 				
 				apu *= 2;
 			}
+		}
 			la division es complicada. dejemosla para luego*/ 
 		
 	}
