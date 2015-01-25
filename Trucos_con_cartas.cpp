@@ -99,6 +99,37 @@ public:
 	int cuantas;
 };
 
+class tBlackjack
+{
+public:
+	//Constructor
+	tBlackjack(): 
+		dinero(DINERO_INI),
+		cont(0);
+	{mazo.cargar_mazo_completo()}
+	
+	//Metodos
+	// Menus
+	int menu_opciones();
+	int opciones_de_blackjack();
+
+	//Funciones de datos
+	int apuesta();
+	int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int dinero, int queHacer);
+	int valor(tMazo &mano);
+
+	//Funciones de juego
+	void blackjack();
+	void mano(int &dinero);
+	void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int &cont);
+
+private:
+	//Variables
+	int dinero,
+	    cont,
+	    mazo;
+}
+
 //FUNCIONES
 //Menus
 int menu_principal();
@@ -143,21 +174,6 @@ bool negro(tCarta carta);
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 void truco_del_jugador_desconfiado();
-
-//Juegos de cartas
-// Menus
-int menu_opciones();
-int opciones_de_blackjack();
-
-//Funciones de datos
-int apuesta();
-int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int dinero, int queHacer);
-int valor(tMazo &mano);
-
-//Funciones de juego
-void blackjack();
-void mano(int &dinero);
-void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int &cont);
 
 //System
 inline void pausa();
