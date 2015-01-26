@@ -324,7 +324,7 @@ int main()
 				{
 					linea();
 					
-					int cuantas;
+					int cuantas, cont =0;
 					tMazo mazoExtra;
 					
 					cout << "Cuantas cartas quieres?" << endl;
@@ -1265,11 +1265,11 @@ void Blackjack::recompensa(int apu, int queHacer)
 		if(manoJug <= manoCrup)
 		{		
 			cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-				 << "Saldo actual: " << dinero << endl;
+			     << "Saldo actual: " << dinero << endl;
 		}
 		else 
 		{
-			apu += apu/2;
+			apu += apu;
 			dinero += apu;
 			
 			cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
@@ -1279,15 +1279,28 @@ void Blackjack::recompensa(int apu, int queHacer)
 	else if((manoJug > 21) || (queHacer == 0))
 	{
 		cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-				 << "Saldo actual: " << dinero << endl;
+		     << "Saldo actual: " << dinero << endl;
 	}
-	else //if((manoJug <= 21) && (manoCrup > 21))
+	else if((manoJug <= 21) && (manoCrup > 21))
+	{
+		apu += apu;
+		dinero += apu;
+		
+		cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
+		     << "Saldo actual: " << dinero << " dolares" << endl;
+	}
+	else if((manoCrup == 21) && (mazoBot.cuantas == 2))
+	{
+		cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
+		     << "Saldo actual: " << dinero << endl;
+	}
+	else if((manoJug == 21) && (mazoJugador.cuantas == 2))
 	{
 		apu += apu/2;
 		dinero += apu;
 		
 		cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-			 << "Saldo actual: " << dinero << " dolares" << endl;
+		     << "Saldo actual: " << dinero << " dolares" << endl;
 	}
 }
 
