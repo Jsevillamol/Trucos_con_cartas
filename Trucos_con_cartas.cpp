@@ -51,7 +51,6 @@ void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 
 //Funciones de carga y guardado de mazos
 bool cargar(tMazo mazo, string &nomb);
-bool cargar_auto(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
 bool agregar(tMazo mazo);
 
@@ -84,7 +83,7 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 
-//System
+//Funcion de pausa
 void pausa();
 
 int main()
@@ -368,28 +367,6 @@ bool cargar(tMazo mazo, string &nomb)
 	else return false;
 }
 
-bool cargar_auto(tMazo mazo, string &nomb)
-{
-	char p;
-	int cont=0, n;
-	ifstream archivo(nomb);
-	if (archivo.is_open())
-	{
-		archivo >> p;
-		while (p != 'x' && cont < MAX_CARTAS)
-		{
-			archivo >> n;
-			mazo[cont] = traducir(p,n);
-			cont++;
-			archivo >> p;
-		}
-		mazo[cont] = CENTINELA;
-		archivo.close();
-		return true;
-	}
-	else return false;
-}
-
 //Abre el archivo que indica el usuario. Si el archivo no existe, se pregunta de nuevo, hasta tres veces.
 bool abrir(string &nomb, ifstream &archivo)
 {
@@ -648,11 +625,11 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 void truco_de_los_tres_montones()
 {
 	tMazo mazoU, mazo1, mazo2, mazo3;
-	string nomb = "3montones.txt";
+	string nomb
 	int mazo;
 
 	//generamos el mazo de 21 cartas
-	if(cargar_auto(mazoU, nomb))
+	if(cargar(mazoU, nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
@@ -699,10 +676,10 @@ void truco_de_los_tres_montones()
 void truco_de_la_posada()
 {
 	tMazo mazoU, mazo1, mazo2, mazo3, mazo4;
-	string nomb = "posada.txt";
+	string nomb
 	int corte;
 	
-	if (cargar_auto(mazoU, nomb)){
+	if (cargar(mazoU, nomb)){
 	
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
@@ -748,5 +725,5 @@ void truco_de_la_posada()
 
 void pausa()
 {
-	system("pause");
+	cin.get();
 }
