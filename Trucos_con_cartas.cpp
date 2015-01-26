@@ -115,13 +115,13 @@ public:
 
 	//Funciones de datos
 	int apuesta();
-	int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int queHacer);
+	int recompensa(int apu, int queHacer);
 	int valor(tMazo &mano);
 
 	//Funciones de juego
 	void run();
 	void mano();
-	void turno_crupier(bool &pasa_crup, tMazo &mazoBot);
+	void turno_crupier(bool &pasa_crup);
 
 private:
 	//Variables
@@ -1239,7 +1239,7 @@ int apuesta()
 	return digitoEntre(APU_MIN,APU_MAX);
 }
 
-int Blackjack::recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int queHacer)
+int Blackjack::recompensa(int apu, int queHacer)
 {
 	int manoCrup = valor(mazoBot);
 	int manoJug = valor(mazoJugador);
