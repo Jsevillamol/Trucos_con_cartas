@@ -128,6 +128,7 @@ private:
 	int dinero,
 	    cont;
 	tMazo mazo;
+	tMazo mazoJugador, mazoBot;
 };
 
 //FUNCIONES
@@ -1207,7 +1208,7 @@ void truco_del_jugador_desconfiado()
 	}
 }
 
-int menu_opciones()
+int Blackjack::menu_opciones()
 {
 	linea();
 	
@@ -1219,7 +1220,7 @@ int menu_opciones()
 	return digitoEntre(0,2);
 }
 
-int opciones_de_blackjack()
+int Blackjack::opciones_de_blackjack()
 {
 	cout << "Que decides hacer?:" << endl
 	     << "1 - Pedir"           << endl
@@ -1238,7 +1239,7 @@ int apuesta()
 	return digitoEntre(APU_MIN,APU_MAX);
 }
 
-int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int dinero, int queHacer)
+int Blackjack::recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int queHacer)
 {
 	int manoCrup = valor(mazoBot);
 	int manoJug = valor(mazoJugador);
@@ -1276,7 +1277,7 @@ int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int dinero, int queH
 	return dinero;
 }
 
-int valor(tMazo &mano)
+int Blackjack::valor(tMazo &mano)
 {
 	int total = 0;
 	bool hay_un_as = false;
@@ -1304,7 +1305,7 @@ void Blackjack::run()
 		opcion = menu_opciones();
 		if (opcion == 1)
 		{
-			mano(dinero);
+			mano();
 		}
 		else if (opcion == 2)
 		{
@@ -1314,15 +1315,14 @@ void Blackjack::run()
 	while(opcion != 0);
 }
 
-void Blackjack::mano(int &dinero)
+void Blackjack::mano()
 {
-	tMazo mazo, mazoJugador, mazoBot;
+	
 	bool pasa_jug=false, pasa_crup=false;
-	int queHacer, apu, cont;
+	int queHacer, apu;
 	
 	cout << "Bienvenido al juego de Blackjack" << endl;
 	
-	mazo.cargar_mazo_completo();
 	mazo.barajar();
 	
 	cont = 0; //La inicialización de cont hay que hacerla aquí
@@ -1368,7 +1368,7 @@ void Blackjack::mano(int &dinero)
 			
 			pasa_jug = true;
 			
-			turno_crupier(pasa_crup, mazo, mazoBot, cont);
+			turno_crupier(pasa_crup);
 		}
 		else if (queHacer == 3)
 		{	
@@ -1408,11 +1408,11 @@ void Blackjack::mano(int &dinero)
 			la division es complicada. dejemosla para luego*/ 
 		
 	}
-	dinero = recompensa(mazoJugador, mazoBot, apu, dinero, queHacer);
+	dinero = recompensa(apu, queHacer);
 }
 
 
-void Blackjack::turno_crupier(bool &pasa_crup, tMazo &mazoBot)
+void Blackjack::turno_crupier(bool &pasa_crup)
 {
 	while (valor(mazoBot) < 17)
 	{
