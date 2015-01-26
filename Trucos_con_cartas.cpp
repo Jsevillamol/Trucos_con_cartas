@@ -30,6 +30,8 @@ typedef int tCarta;
 typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
+void saludar();
+
 //Menus
 int menu();
 int digitoEntre(int a, int b);
@@ -94,6 +96,8 @@ int main()
 
 	srand(time(NULL));
 	vaciar(mazo);
+	
+	saludar();
 
 	do
 	{
@@ -186,6 +190,16 @@ int main()
 	}while(opcion != 0);
 
 	return 1;
+}
+
+void saludar()
+{
+	string nombre;
+	cout << "Bienvenido a Pasa la calculadora!" << endl
+	     << "Como te llamas? ";
+	cin  >> nombre;
+	cout << "Hola " << nombre << ", bienvenido al " 
+	     << "programa de la cartomagia" << endl << endl;
 }
 
 int menu()
