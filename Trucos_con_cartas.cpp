@@ -115,13 +115,13 @@ public:
 
 	//Funciones de datos
 	int apuesta();
-	int recompensa(int apu, int queHacer);
-	int valor(tMazo &mano);
+	void recompensa(int apu, int queHacer);
+	int valor(const tMazo &mano);
 
 	//Funciones de juego
 	void run();
 	void mano();
-	void turno_crupier(bool &pasa_crup);
+	bool turno_crupier();
 
 private:
 	//Variables
@@ -1009,7 +1009,7 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont)
 	else
 	{
 		for (int i=0; i < cuantasQuieres; i++)
-			mazoJugador[mazoJugador.cuantas++] = cartas[cont++];
+			mazoJugador[mazoJugador.cuantas++] = (*this)[cont++];
 	}
 }
 
@@ -1252,7 +1252,7 @@ int Blackjack::apuesta()
 	return digitoEntre(APU_MIN,APU_MAX);
 }
 
-int Blackjack::recompensa(int apu, int queHacer)
+void Blackjack::recompensa(int apu, int queHacer)
 {
 	int manoCrup = valor(mazoBot);
 	int manoJug = valor(mazoJugador);
@@ -1266,7 +1266,7 @@ int Blackjack::recompensa(int apu, int queHacer)
 		}
 		else 
 		{
-			apu *= 3/2;
+			apu = float(apu) * 1.5;
 			dinero += apu;
 			
 			cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
@@ -1286,18 +1286,16 @@ int Blackjack::recompensa(int apu, int queHacer)
 		cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
 			 << "Saldo actual: " << dinero << " dolares" << endl;
 	}
-
-	return dinero;
 }
 
-int Blackjack::valor(tMazo &mano)
+int Blackjack::valor(const tMazo &mano)
 {
 	int total = 0;
 	bool hay_un_as = false;
 	for (int i = 0; i < mano.cuantas; i++)
 	{
-		if (mano[i].num = A) hay_un_as = true;
-		if ((mano[i].num = K) ||(mano[i].num = J) || (mano[i].num = Q))
+		if (mano[i].num == A) hay_un_as = true;
+		if ((mano[i].num == K) ||(mano[i].num == J) || (mano[i].num == Q))
 		{
 			total += 10;
 		}
@@ -1330,18 +1328,16 @@ void Blackjack::run()
 
 void Blackjack::mano()
 {
-	
-	bool pasa_jug=false, pasa_crup=false;
 	int queHacer, apu;
 	
 	cout << "Bienvenido al juego de Blackjack" << endl;
 	
 	mazo.barajar();
 	
-	cont = 0; //La inicialización de cont hay que hacerla aquí
+	cont = 0;
 	
-	mazo.repartir_n_cartas(mazoJugador, 2, cont); //Si aquí le pasas un literal, no se asigna a cont.
-	mazo.repartir_n_cartas(mazoBot, 2, cont);     
+	mazo.repartir_n_cartas(mazoJugador, 2, cont);
+	mazo.repartir_n_cartas(mazoBot, 2, cont);
 	
 	cout << "Mano actual:" << endl;
 	mostrar(mazoJugador);
@@ -1355,7 +1351,7 @@ void Blackjack::mano()
 	dinero -= apu;
 	
 	//Antes de comenzar a jugar hay que comprobar que ni el crupier ni el jugador tengan 21 o más
-	while((valor(mazoJugador) < 21) && (valor(mazoBot) < 21) && !(pasa_jug && pasa_crup))
+	do
 	{
 		//Siempre empieza el jugador
 		
@@ -1372,70 +1368,51 @@ void Blackjack::mano()
 			cout << endl;
 			
 			cout << "Carta del crupier:" << endl;
-			mostrar(mazoBot[1]);
+			mostrar(mazoBot[0]);
 			cout << endl;
 		}
 		else if (queHacer == 2)
 		{
 			cout << "Has decidido plantarte" << endl;
-			
-			pasa_jug = true;
-			
-			turno_crupier(pasa_crup);
 		}
 		else if (queHacer == 3)
 		{	
-			cout << "Acabas de doblar tu apuesta, espero que sepas lo que haces" << endl;
 			if (mazoJugador.cuantas > 2)
 			{
 				cout << "Error, no puedes doblar la apuesta si ya has pedido otra carta" << endl;
 			}
 			else 
 			{
+				cout << "Acabas de doblar tu apuesta, espero que sepas lo que haces" << endl;
+				dinero -= apu;
 				apu *= 2;
-				dinero -= (apu/2);
 			}
-			
-			if (queHacer == 2) pasa_jug = true; else pasa_jug = false;
 		}
-		/*else if (queHacer == 4)
-		{
-			if (mazoJugador.cartas > 2)
-			{
-				cout << "Error, no puedes dividir la mano si ya has pedido otra carta" << endl;
-			}
-			else if (mazoJugador.cartas[0] != mazoJugador[1])
-			{
-				cout << "Error, no puedes dividir la mano si tus dos cartas no son iguales" << endl;
-			}
-			else
-			{
-				mazoJug1.cartas[0] = mazoJugador[0];
-				mazoJug2.cartas[0] = mazoJugador[1];
-					
-				repartir_n_cartas(mazo, mazoJug1, 1, cont);				
-				repartir_n_cartas(mazo, mazoJug2, 1, cont);
-				
-				apu *= 2;
-			}
-			la division es complicada. dejemosla para luego*/ 
-		
-	}
-	dinero = recompensa(apu, queHacer);
+	}while((valor(mazoJugador) < 21) && queHacer != 2);
+
+	turno_crupier();
+
+	recompensa(apu, queHacer);
+
+	mazoBot.vaciar();
+	mazoJugador.vaciar();
 }
 
 
-void Blackjack::turno_crupier(bool &pasa_crup)
+bool Blackjack::turno_crupier()
 {
-	while (valor(mazoBot) < 17)
+	bool pasa_crup = true;
+	while (valor(mazoJugador) <= 21 && valor(mazoBot) < valor(mazoJugador))
 	{
+		cout << "El crupier ha pedido una carta" << endl;
 		mazo.repartir_n_cartas(mazoBot, 1, cont);
-		
-		pasa_crup =  false;
+		pasa_crup = false;
 	}
-        cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-             << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
-	pasa_crup = true;
+
+    cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
+            << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
+
+	return pasa_crup;
 }
 
 inline void pausa()
