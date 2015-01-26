@@ -132,6 +132,8 @@ private:
 };
 
 //FUNCIONES
+void saludar();
+
 //Menus
 int menu_principal();
 int menu_de_carga_y_guardado();
@@ -187,6 +189,8 @@ int main()
 
 	srand(time(NULL));
 	mazo.vaciar();
+	
+	void saludar();
 
 	do
 	{
@@ -402,6 +406,16 @@ int main()
 	}while(eleccion != 0);
 
 	return 1;
+}
+
+void saludar()
+{
+	string nombre;
+	cout << "Bienvenido a Pasa la calculadora!" << endl
+	     << "Como te llamas? ";
+	cin  >> nombre;
+	cout << "Hola " << nombre << ", bienvenido al " 
+	     << "programa de la cartomagia" << endl << endl;
 }
 
 int menu_principal()
