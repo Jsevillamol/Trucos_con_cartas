@@ -175,7 +175,7 @@ void truco_de_los_tres_montones();
 void truco_de_la_posada();
 void truco_del_jugador_desconfiado();
 
-//System
+//Funcion de pausa
 inline void pausa();
 
 int main()
@@ -1427,5 +1427,5 @@ void Blackjack::turno_crupier(bool &pasa_crup, tMazo &mazoBot)
 
 inline void pausa()
 {
-	system("pause");
+	cin.get();
 }
