@@ -192,6 +192,7 @@ int main()
 	return 1;
 }
 
+//Pide el nombre al usuario y le saluda
 void saludar()
 {
 	string nombre;
@@ -201,6 +202,7 @@ void saludar()
 	cout << "Hola " << nombre << endl << endl;
 }
 
+//Permite al usuario elegir que hacer
 int menu()
 {
 	linea();
@@ -220,6 +222,8 @@ int menu()
 	return digitoEntre(0,11);
 }
 
+//Controla que el usuario no introduzca un
+//digito que no haga nada
 int digitoEntre(int a, int b)
 {
 	int digito = -1;
@@ -247,11 +251,13 @@ int digitoEntre(int a, int b)
 	return digito;
 }
 
+//Añade una linea de guion
 void linea()
 {
 	cout << setfill('-') << setw(79) <<  '-'  << endl << setfill(' ');
 }
 
+//Determina cuantas cartas contiene un mazo concreto
 int cuantas(const tMazo mazo)
 {
 	int i;
@@ -261,6 +267,7 @@ int cuantas(const tMazo mazo)
 	return i;
 }
 
+//Determina el palo de una carta concreta
 tPalo palo(tCarta carta)
 {
 	int seccionPalo;
@@ -277,6 +284,7 @@ tPalo palo(tCarta carta)
 		return corazones;
 }
 
+//Determina el numero de una carta concreta
 tNumero numero(tCarta carta)
 {
 	int seccionNumero;
@@ -286,6 +294,7 @@ tNumero numero(tCarta carta)
 	return tNumero (seccionNumero+1);
 }
 
+//Muestra las cartas de un amzo concreto
 void mostrar(tMazo mazo)
 {
 	for(int i=0; mazo[i] != CENTINELA; i++)
@@ -295,6 +304,7 @@ void mostrar(tMazo mazo)
 	cout << endl;
 }
 
+//Muestra el numero y el palo de una carta
 void mostrar(tCarta carta)
 {
 	mostrar(numero(carta));
@@ -306,6 +316,7 @@ void mostrar(tCarta carta)
 	cout << endl;
 }
 
+//Muestra el numero de una carta
 void mostrar(tNumero n)
 {
 	if      (n == A) cout << "A";
@@ -315,6 +326,7 @@ void mostrar(tNumero n)
 	else             cout <<  n ;
 }
 
+//Muestra el palo de una carta
 void mostrar(tPalo p)
 {
 	if      (p == picas)         cout <<     "de picas";
@@ -323,6 +335,7 @@ void mostrar(tPalo p)
 	else /*if (p == corazones)*/ cout << "de corazones";
 }
 
+//Muestra el contenido de tres mazos (necesario para 3montones)
 void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3)
 {
 	cout << "Mazo 1:" << endl;
@@ -338,6 +351,7 @@ void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3)
 	cout << endl;
 }
 
+//Muestra el contenido de cuatro mazos (necesario para posada)
 void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4)
 {
 	cout << "Mazo 1:" << endl;
@@ -419,6 +433,8 @@ bool agregar(tMazo mazo)
 	else return true;
 }
 
+//Guarda el mazo actual en el archivo que elija el usuario 
+//(por defecto se guarda en el archivo actual)
 bool guardar(const tMazo mazo, string &nomb)
 {
 	string response;
@@ -447,6 +463,7 @@ bool guardar(const tMazo mazo, string &nomb)
 	else return false;
 }
 
+//Traduce los palos de las cartas a caracteres
 string traducir(tCarta carta)
 {
 	string s="";
@@ -470,18 +487,20 @@ string traducir(tCarta carta)
 	return s;
 }
 
+//Traduce los caracteres del archivo del mazo a palos
 tCarta traducir(char p, int n)
 {
 	tPalo suit;
 
-	if (p == 'c')      suit = corazones;
-	else if (p == 't') suit = treboles;
-	else if (p == 'p') suit = picas;
+	if        (p == 'c')   suit = corazones;
+	else if   (p == 't')   suit =  treboles;
+	else if   (p == 'p')   suit =     picas;
 	else /*if (p == 'd')*/ suit = diamantes;
 
 	return (n-1 + int (suit) * CARTASxPALO);
 }
 
+//Vacia el mazo actual
 void vaciar(tMazo mazo)
 {
 	mazo[0] = CENTINELA;
@@ -499,11 +518,13 @@ void barajar(tMazo mazo)
 	}
 }
 
+//Genera un numero aleatorio entre 0 y el argumento
 int randint(int max)
 {
 	return rand() % (max);
 }
 
+//Intercambia las posiciones de dos cartas dentro de un mazo
 void intercambiar(tMazo mazo, int pos1, int pos2)
 {
 	tCarta aux;
@@ -515,6 +536,9 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 	mazo[pos2] = aux;
 }
 
+
+//Desplaza las cartas del mazo a la derecha a fin de 
+//dejar hueco para añadir mas cartas
 bool desplazar(tMazo mazo, int numero)
 {
 	int total = cuantas(mazo);
@@ -527,6 +551,7 @@ bool desplazar(tMazo mazo, int numero)
 	else return false;
 }
 
+//Corta el mazo por la posicion que elija el usuario
 void cortar(tMazo mazo, int cuantasCartas)
 {
 	tMazo otroMazo;
@@ -536,6 +561,7 @@ void cortar(tMazo mazo, int cuantasCartas)
 		unir(mazo, otroMazo);
 }
 
+//Parte el mazo en dos por la posicion que indique el argumento cuantasCoger
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 {
 	int i;
@@ -554,6 +580,8 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 	}
 }
 
+//Une los dos mazos que se le pasen come argumento, guardando
+//el mazo resultante en el primero de dichos argumentos
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
 	if (desplazar(mazo, cuantas(otroMazo)))
@@ -566,6 +594,8 @@ bool unir(tMazo mazo, const tMazo otroMazo)
 	else return false;
 }
 
+//Separa un mazo en dos distintos segun sean las cartas de este
+//mayores, o menores o iguales que siete
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 {	
 	int j=0, k=0;
@@ -587,6 +617,8 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 	mazoAltas[k] = CENTINELA;
 }
 
+//Separa un mazo en dos segun sean sus cartas negras (picas y treboles), 
+//o rojas (diamantes y corazones)
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 {
 	int j=0, k=0;
@@ -608,6 +640,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 	mazoRojo [k] = CENTINELA;
 }
 
+//Reparte cartas de un mazo a otro intercaladamente
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
 {
 	int j=0;
@@ -618,6 +651,7 @@ void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo ma
 	mazoNuevo[j] = CENTINELA;
 }
 
+//Reparte cartas de un mazo a otros tres mazos intercaladamente
 void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3)
 {
 	//Repartir alternamente
@@ -626,6 +660,7 @@ void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3)
 	repartirIntercalando(mazo, 3, 0, mazo1);
 }
 
+//Reparte cartas de un mazo a otros cuatro mazos intercaladamente
 void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4)
 {
 	//Repartir alternamente
@@ -728,11 +763,11 @@ void truco_de_la_posada()
 		mostrar(mazo1, mazo2, mazo3, mazo4);
 	
 		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
-			 << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+		     << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
 	}
 	else
 	{
-		cout << "Archivo \"posada.txt\" no encontrado." << endl;
+		cout << "Error. Archivo \"posada.txt\" no encontrado." << endl;
 	}
 }
 
