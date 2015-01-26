@@ -190,7 +190,7 @@ int main()
 	srand(time(NULL));
 	mazo.vaciar();
 	
-	void saludar();
+	saludar();
 
 	do
 	{
