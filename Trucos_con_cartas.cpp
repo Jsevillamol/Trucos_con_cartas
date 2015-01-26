@@ -324,7 +324,7 @@ int main()
 				{
 					linea();
 					
-					int cuantas, cont =0;
+					int cuantas;
 					tMazo mazoExtra;
 					
 					cout << "Cuantas cartas quieres?" << endl;
