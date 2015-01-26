@@ -54,6 +54,7 @@ void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 //Funciones de carga y guardado de mazos
 bool cargar(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
+bool mazoValido(tMazo &mazo, int cartasNecesarias, string &nomb);
 bool agregar(tMazo mazo);
 
 bool guardar(const tMazo mazo, string &nomb);
@@ -415,6 +416,23 @@ bool abrir(string &nomb, ifstream &archivo)
 	else return false;
 }
 
+//Comprueba que el mazo cargado tenga las cartas necesarias para los trucos
+bool mazoValido(tMazo &mazo, int cartasNecesarias, string &nomb)
+{
+	if(cargar(mazo, nomb))
+	{
+		while(cartasNecesarias != cuantas(mazo))
+			{
+				cout << "Error, el mazo nargado no tiene las "
+			             << cartasNecesarias << " cartas necesarias" << endl;
+				cargar(mazo, nomb);
+			}
+		return true;
+	}
+	else return false;
+}
+
+
 //Concatena al mazo actual un mazo cargado de archivo.
 bool agregar(tMazo mazo)
 {
@@ -677,7 +695,7 @@ void truco_de_los_tres_montones()
 	int mazo;
 
 	//generamos el mazo de 21 cartas
-	if(cargar(mazoU, nomb))
+	if (mazoValido(mazo, 21, nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
@@ -727,8 +745,8 @@ void truco_de_la_posada()
 	string nomb
 	int corte;
 	
-	if (cargar(mazoU, nomb)){
-	
+	if (mazoValido(mazo, 16, nomb))
+	{
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
 			 << "Un dia llegaron cuatro caballeros y cada uno se" 
