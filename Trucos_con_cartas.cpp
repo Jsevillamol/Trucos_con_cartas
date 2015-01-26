@@ -582,8 +582,7 @@ bool mostrar(string archivo)
 	ifstream acerca;
 	char c;
 	
-	cout << setfill('-') << setw(79) << '-' << endl;
-	cout << setfill(' ');
+	linea();
 	
 	acerca.open(archivo);
 	
