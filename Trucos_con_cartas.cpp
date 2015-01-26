@@ -411,11 +411,10 @@ int main()
 void saludar()
 {
 	string nombre;
-	cout << "Bienvenido a Pasa la calculadora!" << endl
+	cout << "Bienvenido al programa de la cartomagia!" << endl
 	     << "Como te llamas? ";
 	cin  >> nombre;
-	cout << "Hola " << nombre << ", bienvenido al " 
-	     << "programa de la cartomagia" << endl << endl;
+	cout << "Hola " << nombre << endl << endl;
 }
 
 int menu_principal()
