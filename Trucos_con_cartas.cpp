@@ -99,14 +99,14 @@ public:
 	int cuantas;
 };
 
-class tBlackjack
+class Blackjack
 {
 public:
 	//Constructor
-	tBlackjack(): 
+	Blackjack(): 
 		dinero(DINERO_INI),
-		cont(0);
-	{mazo.cargar_mazo_completo()}
+		cont(0)
+	{mazo.cargar_mazo_completo();}
 	
 	//Metodos
 	// Menus
@@ -115,20 +115,20 @@ public:
 
 	//Funciones de datos
 	int apuesta();
-	int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int dinero, int queHacer);
+	int recompensa(tMazo &mazoJugador, tMazo &mazoBot, int apu, int queHacer);
 	int valor(tMazo &mano);
 
 	//Funciones de juego
-	void blackjack();
-	void mano(int &dinero);
-	void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int &cont);
+	void run();
+	void mano();
+	void turno_crupier(bool &pasa_crup, tMazo &mazoBot);
 
 private:
 	//Variables
 	int dinero,
-	    cont,
-	    mazo;
-}
+	    cont;
+	tMazo mazo;
+};
 
 //FUNCIONES
 //Menus
@@ -372,7 +372,7 @@ int main()
 				opcion = menu_de_juegos();
 				if      (opcion == 1)
 				{
-					blackjack();
+					Blackjack bj; bj.run();
 				}
 			}while (opcion != 0);
 		}
@@ -1293,7 +1293,7 @@ int valor(tMazo &mano)
 	else return total;
 }
 
-void blackjack()
+void Blackjack::run()
 {
 	
 	int dinero = DINERO_INI, opcion;
@@ -1314,7 +1314,7 @@ void blackjack()
 	while(opcion != 0);
 }
 
-void mano(int &dinero)
+void Blackjack::mano(int &dinero)
 {
 	tMazo mazo, mazoJugador, mazoBot;
 	bool pasa_jug=false, pasa_crup=false;
@@ -1412,7 +1412,7 @@ void mano(int &dinero)
 }
 
 
-void turno_crupier(bool &pasa_crup, tMazo &mazo, tMazo &mazoBot, int &cont)
+void Blackjack::turno_crupier(bool &pasa_crup, tMazo &mazoBot)
 {
 	while (valor(mazoBot) < 17)
 	{
