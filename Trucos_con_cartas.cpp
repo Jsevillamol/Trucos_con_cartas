@@ -1232,7 +1232,7 @@ int Blackjack::opciones_de_blackjack()
 	return digitoEntre(0,3);
 }
 
-int apuesta()
+int Blackjack::apuesta()
 {
 	cout << "Cuanto quieres apostar?" << endl;
 	
