@@ -1289,11 +1289,6 @@ void Blackjack::recompensa(int apu, int queHacer)
 		cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
 		     << "Saldo actual: " << dinero << " dolares" << endl;
 	}
-	else if((manoCrup == 21) && (mazoBot.cuantas == 2))
-	{
-		cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-		     << "Saldo actual: " << dinero << endl;
-	}
 	else if((manoJug == 21) && (mazoJugador.cuantas == 2))
 	{
 		apu += apu/2;
