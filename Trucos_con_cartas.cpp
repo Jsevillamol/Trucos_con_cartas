@@ -16,6 +16,13 @@ const int CARTASxPALO=13,
 
 //TIPOS PROPIOS
 //Enumerados
+
+typedef enum tJugador
+{
+	Jugador,
+	Automata
+};
+
 typedef enum
 {
 	picas,
@@ -112,15 +119,18 @@ public:
 	// Menus
 	int menu_opciones();
 	int opciones_de_blackjack();
+	
+	//Funciones de archivo
+	bool actualizar_stats(tJugador ganador, string usuario);
 
 	//Funciones de datos
 	int apuesta();
-	void recompensa(int apu, int queHacer);
+	void recompensa(int apu, int queHacer, string usuario);
 	int valor(const tMazo &mano);
 
 	//Funciones de juego
-	void run();
-	void mano();
+	void run(string usuario);
+	void mano(string usuario);
 	bool turno_crupier();
 	inline void ganar(int apu);
 	inline void perder(int apu);
@@ -134,7 +144,8 @@ private:
 };
 
 //FUNCIONES
-void saludar();
+string iniciar_sesion();
+string usuario_valido();
 
 //Menus
 int menu_principal();
@@ -175,6 +186,16 @@ bool figuras(tCarta carta);
 bool bajas(tCarta carta);
 bool negro(tCarta carta);
 
+//Funciones de archivo
+void registrar_nueva_ejecucion();
+void stats(string usuario);
+void fcopy(string origen, string destino);
+bool restore_from_backup();
+string reset(string usuario);
+void hard_reset();
+void soft_reset(string usuario);
+void delete_user(string usuario);
+
 //Trucos de magia
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
@@ -187,12 +208,13 @@ int main()
 {
 	int opcion, eleccion, cont = 0;
 	tMazo mazo;
-	string nomb;
+	string nomb, usuario;
 
 	srand(time(NULL));
 	mazo.vaciar();
 	
-	saludar();
+	usuario = iniciar_sesion();
+	registrar_nueva_ejecucion();
 
 	do
 	{
@@ -379,7 +401,7 @@ int main()
 				opcion = menu_de_juegos();
 				if      (opcion == 1)
 				{
-					Blackjack bj; bj.run();
+					Blackjack bj; bj.run(usuario);
 				}
 			}while (opcion != 0);
 		}
@@ -410,13 +432,92 @@ int main()
 	return 1;
 }
 
-void saludar()
+//Devuelve el nombre de usuario, y crea su perfil 
+//en las estadisticas si no existe
+string iniciar_sesion()
 {
-	string nombre;
+	//Conseguimos el nombre de usuario
+	string usuario;
 	cout << "Bienvenido al programa de la cartomagia!" << endl
 	     << "Como te llamas? ";
-	cin  >> nombre;
-	cout << "Hola " << nombre << endl << endl;
+	usuario = usuario_valido();
+
+	string line;
+	ofstream backup;
+	//Abrimos el archivo stats
+	ifstream stats;
+	stats.open("stats.txt");
+
+	//Restauracion desde backup, si es necesaria
+	if (!stats.good())
+	{
+		cout << "\"stats.txt\" no existe. Buscando backup." << endl;
+		stats.close();
+		restore_from_backup();
+		stats.open("stats.txt");
+	}
+	if (stats.good())
+	{
+		//Busqueda de la info del usuario
+		getline(stats,line);
+		while (line!=usuario && !stats.eof())
+		{
+			getline(stats,line);
+		}
+		//Si el usuario no existe, creamos un nuevo perfil de usuario.
+		if (stats.eof())
+		{
+			cout << "Usuario no encontrado. Se creara un nuevo perfil." << endl;
+			
+			backup.open("backup.txt",ios::app);
+				backup << usuario << endl
+				       << 0        << endl  //Ganadas
+				       << 0        << endl  //Perdidas
+				                   << endl;
+			backup.close();
+		}
+		else
+		{
+			cout << "Bienvenido de nuevo " << usuario << endl;
+		}
+	}
+	else
+		//Si el archivo stats no existe y no hay backup, creamos un nuevo archivo 
+		//y agregamos el perfil del nuevo usuario
+	{
+		cout << "Un nuevo archivo sera creado." << endl;
+
+		backup.open("backup.txt");
+			backup << 0       << endl << endl //Ejecuciones
+			       << usuario << endl         //Usuario
+			       << 0        << endl         //Ganadas
+			       << 0        << endl         //Perdidas
+			                   << endl;
+		backup.close();
+	}
+	stats.close();
+
+	fcopy("backup.txt", "stats.txt");
+
+return usuario;
+}
+
+//Evita que el nombre de usuario empiece por un numero, para evitar 
+//errores a la hora de buscar a ese usuario en el archivo stats.txt
+string usuario_valido()
+{
+	string nombre;
+	
+	cin >> nombre;
+	cin.clear();
+	
+	while(isdigit(nombre[0]))
+	{
+		cout << "Error, el nombre de usuario no puede empezar por un digito" << endl;
+		cin >> nombre;
+		cin.clear();
+	}
+	return nombre;
 }
 
 int menu_principal()
@@ -1015,6 +1116,350 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont)
 	}
 }
 
+//Actualiza el numero de ejecuciones guardado en el archivo stats.
+void registrar_nueva_ejecucion()
+{
+	int ejecuciones; char c;
+
+	ifstream stats("stats.txt", ios::in);
+	ofstream backup("backup.txt", ios::out);
+	//Las comprobaciones de backup ya se han hecho en iniciar_sesion()
+
+	stats >> ejecuciones;
+	backup << ejecuciones+1;
+
+	stats.get(c);
+	while (!stats.eof())
+	{
+		backup.put(c);
+		stats.get(c);
+	}
+
+	stats.close();
+	backup.close();
+
+	fcopy("backup.txt", "stats.txt");
+}
+
+//Actualiza las estadisticas
+bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
+{
+	bool ok;
+	int ganadas, perdidas, abandonadas;
+	string linea;
+	ifstream stats;
+	ofstream actualizar;
+	
+	stats.open("stats.txt");
+
+	//Restauracion con el backup, si es necesaria
+	if (!stats.good())
+	{
+		cout << "Error! stats.txt no existe. Buscando backup..."<<endl;
+		stats.close();
+
+		restore_from_backup();
+
+		stats.open("stats.txt");
+	}
+
+	actualizar.open("backup.txt");
+
+	if(stats.good())
+	{
+		//Copia de stats a backup, hasta la info del usuario
+		do
+		{
+			getline(stats, linea);
+			actualizar << linea << endl;
+		}
+		while(linea != usuario);
+
+		//Actualizacion de datos
+		stats >> ganadas;
+		stats >> perdidas;
+		stats >> abandonadas;
+
+		if     (ganador == Jugador)   ganadas += 1;
+		else if(ganador == Automata) perdidas += 1;
+
+		actualizar << ganadas     << endl;
+		actualizar << perdidas;
+
+		char c;
+		stats.get(c);
+		while (!stats.eof())
+		{
+			actualizar.put(c);
+			stats.get(c);
+		}
+
+		ok = true;
+	}
+	else
+	{
+		ganadas =   (ganador == Jugador) ?1 :0;
+		perdidas = (ganador == Automata) ?1 :0;
+
+		actualizar << 1   << endl << endl //Ejecuciones
+			   << usuario     << endl
+		           << ganadas     << endl
+		           << perdidas    << endl
+		           << 	     	     endl;
+		
+		cout << "El archivo 'stats.txt' no se encontro, se ha creado un nuevo archivo" << endl;
+		
+		ok = false;
+	}
+	stats.close();
+	actualizar.close();
+
+	//Ahora copiamos la informacion actualizada en el archivo original
+	fcopy("backup.txt", "stats.txt");
+	
+return ok;
+}
+
+//Muestra las estadisticas del jugador actual.
+void stats(string usuario) 
+{ 
+	ifstream stats; 
+	string line;
+	int ganadas, perdidas, ejecuciones; 
+	 
+	stats.open("stats.txt"); 
+
+	stats >> ejecuciones;
+	
+	getline(stats, line);
+	
+	while(line != usuario)
+	{
+		getline(stats, line);
+	}
+	
+	stats >>     ganadas;
+	stats >>    perdidas;
+	
+	cout << setfill('-')   << setw(79)                  << '-'                            << endl;
+	cout << "Numero de ejecuciones del programa: "      <<  ejecuciones                   << endl;
+	cout << endl;
+	cout << "Partidas de " << usuario << ": "           << (ganadas+perdidas) << endl; 
+	cout << right
+	     << setfill(' ') << setw(22) << "ganadas: "     <<  ganadas                       << endl 
+	     << setfill(' ') << setw(22) << "perdidas: "    <<  perdidas                      << endl
+	     << endl;
+	     
+	stats.close();
+}
+
+//Copia el contenido de un archivo en otro 
+//por si fuera necesario restaurar un archivo
+void fcopy(string origen, string destino)
+{
+	ifstream paso1;
+	ofstream paso2;
+	char 	  word;
+	
+	paso1.open(origen);
+	paso2.open(destino);
+
+	paso1.get(word);
+
+	while(!paso1.eof())
+	{
+		paso2.put(word);
+		paso1.get(word);
+	}
+
+	paso1.close();
+	paso2.close();
+}
+
+//Copia backup.txt en stats.txt. Si backup no existe devuelve false
+bool restore_from_backup()
+{
+	ifstream backup; bool ok;
+
+	backup.open("backup.txt");
+	if (backup.good())
+	{
+		backup.close();
+		fcopy("backup.txt", "stats.txt");
+		ok = true;
+	}
+	else
+	{
+		backup.close();
+		cout << "El backup no ha sido encontrado" << endl;
+		ok = false;
+	}
+return ok;
+}
+
+//Menu con opciones de reseteo de estadisticas.
+string reset(string usuario)
+{
+	cout << setfill('-') << setw(79) << '-'              << endl
+	     << "1 - Borrar estadisticas del jugador actual" << endl
+	     << "2 - Borrar perfil del jugador actual"       << endl
+	     << "3 - Borrar todas las estadisticas"          << endl
+	     << "0 - Volver al menu"                         << endl;
+	cout << setfill(' ');
+	
+	int opcion = digitoEntre(0,3);
+
+	if (opcion == 1) 
+		soft_reset(usuario);
+	else if(opcion == 2)
+	{
+		delete_user(usuario);
+		usuario = iniciar_sesion();
+	}
+	else if (opcion == 3)
+	{ 
+		hard_reset();
+		usuario = iniciar_sesion();
+	}
+return usuario;
+}
+
+//Borra todas las estadisticas.
+void hard_reset()
+{
+	remove("backup.txt");
+	remove("stats.txt");
+}
+
+//Inicializa a 0 las estadisticas de un usuario.
+void soft_reset(string usuario)
+{
+	int i;
+	string linea;
+	ifstream stats;
+	ofstream actualizar;
+	
+	stats.open("stats.txt");
+
+	//Restauracion con el backup, si es necesaria
+	if (!stats.good())
+	{
+		cout << "Error! stats.txt no existe. Buscando backup..."<<endl;
+		stats.close();
+
+		restore_from_backup();
+
+		stats.open("stats.txt");
+	}
+
+	actualizar.open("backup.txt");
+
+	if(stats.good())
+	{
+		//Copia de stats a backup, hasta la info del usuario
+		do
+		{
+			getline(stats, linea);
+			actualizar << linea << endl;
+		}
+		while(linea != usuario);
+
+		//Ignoramos los datos anteriores...
+		stats >> i;
+		stats >> i;
+		stats >> i;
+		 //...y los sutituimos por 0
+		actualizar << 0 << endl; //Ganadas
+		actualizar << 0;         //Perdidas
+
+		char c;
+		stats.get(c);
+		while (!stats.eof())
+		{
+			actualizar.put(c);
+			stats.get(c);
+		}
+	}
+	else
+	{
+
+		actualizar << 1   << endl << endl //Ejecuciones
+			   << usuario     << endl
+		           << 0 << endl
+		           << 0 << endl
+		           <<endl;
+		
+		cout << "El archivo 'stats.txt' no se encontro, se ha creado un nuevo archivo" << endl;
+	}
+
+	stats.close();
+	actualizar.close();
+
+	//Ahora copiamos la informacion actualizada en el archivo original
+	fcopy("backup.txt", "stats.txt");
+}
+
+//Elimina un perfil de usuario en las estadisticas.
+void delete_user(string usuario)
+{
+	string linea;
+	ifstream stats;
+	ofstream actualizar;
+	
+	stats.open("stats.txt");
+
+	//Restauracion con el backup, si es necesaria
+	if (!stats.good())
+	{
+		cout << "Error! stats.txt no existe. Buscando backup..."<<endl;
+		stats.close();
+
+		restore_from_backup();
+
+		stats.open("stats.txt");
+	}
+
+	actualizar.open("backup.txt");
+
+	if(stats.good())
+	{
+		//Copia de stats a backup, hasta la info del usuario
+		getline(stats,linea);
+		while(linea != usuario)
+		{
+			actualizar << linea << endl;
+			getline(stats, linea);
+		}
+
+		//Ignoramos los datos anteriores
+		for (int i=0; i<4;i++)
+			stats.ignore(1000, '\n');
+
+		//Copiamos el resto del archivo
+		char c;
+		stats.get(c);
+		while (!stats.eof())
+		{
+			actualizar.put(c);
+			stats.get(c);
+		}
+	}
+	else
+	{
+
+		actualizar << 1   << endl << endl //Ejecuciones
+		           <<endl;
+		
+		cout << "El archivo 'stats.txt' no se encontro, se ha creado un nuevo archivo" << endl;
+	}
+
+	stats.close();
+	actualizar.close();
+
+	//Ahora copiamos la informacion actualizada en el archivo original
+	fcopy("backup.txt", "stats.txt");
+}
+
 void truco_de_los_tres_montones()
 {
 	tMazo mazoU, mazo[3];
@@ -1227,12 +1672,15 @@ int Blackjack::menu_opciones()
 {
 	linea();
 	
-	cout << "Blackjack:" << endl
-	     << "1 - Jugar"  << endl
-	     << "2 - Reglas" << endl
-	     << "0 - Salir"  << endl;
+	cout << "Blackjack:"                << endl
+	     << "1 - Jugar"                 << endl
+	     << "2 - Reglas"                << endl
+	     << "3 - Estadisticas"          << endl
+	     << "4 - Cambiar usuario"       << endl
+	     << "5 - Resetear estadisticas" << endl
+	     << "0 - Salir"                 << endl;
 	     
-	return digitoEntre(0,2);
+	return digitoEntre(0,5);
 }
 
 int Blackjack::opciones_de_blackjack()
@@ -1241,7 +1689,6 @@ int Blackjack::opciones_de_blackjack()
 	     << "1 - Pedir"           << endl
 	     << "2 - Plantarse"       << endl
 	     << "3 - Doblar apuesta"  << endl
-	   //<< "4 - Dividir "        << endl
 	     << "0 - Abandonar"       << endl;
 		 
 	return digitoEntre(0,3);
@@ -1256,17 +1703,18 @@ int Blackjack::apuesta()
 	
 	while(pastaJugada > dinero)
 	{
-		cout << "Error, no puedes apostar mas dinero del que tienes" << endl
+		cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
 		
 		pastaJugada;
 	}
-	else return pastaJugada;
+	return pastaJugada;
 }
 
-void Blackjack::recompensa(int apu, int queHacer)
+void Blackjack::recompensa(int apu, int queHacer, string usuario)
 {
 	int manoCrup = valor(mazoBot);
 	int manoJug  = valor(mazoJugador);
+	tJugador ganador;
 	
 	mostrar(mazoJugador); mostrar(mazoBot);
 
@@ -1275,7 +1723,7 @@ void Blackjack::recompensa(int apu, int queHacer)
 		
 		if(manoJug <= manoCrup)
 		{		
-			cout << "El crupier tiene una mano mejor que la tuya" << endl
+			cout << "El crupier tiene una mano mejor que la tuya" << endl;
 			
 			perder(apu);
 		}
@@ -1283,10 +1731,11 @@ void Blackjack::recompensa(int apu, int queHacer)
 		{
 			apu += apu;
 		
-			cout << "Tu mano es mejor que la del crupier" << endl
+			cout << "Tu mano es mejor que la del crupier" << endl;
 			
 			ganar(apu);
 		}
+		ganador = Jugador;
 	}
 	else if((manoJug > 21) || (queHacer == 0))
 	{
@@ -1302,19 +1751,25 @@ void Blackjack::recompensa(int apu, int queHacer)
 			
 			perder(apu);
 		}
+		ganador = Automata;
 	}
 	else if((manoJug <= 21) && (manoCrup > 21))
 	{
 		apu += apu;
 		
 		ganar(apu);
+		
+		ganador = Jugador;
 	}
 	else if((manoJug == 21) && (mazoJugador.cuantas == 2))
 	{
 		apu += apu/2;
 		
 		ganar(apu);
+		
+		ganador = Jugador;
 	}
+	actualizar_stats(ganador, usuario);
 }
 
 int Blackjack::valor(const tMazo &mano)
@@ -1334,7 +1789,7 @@ int Blackjack::valor(const tMazo &mano)
 	else return total;
 }
 
-void Blackjack::run()
+void Blackjack::run(string usuario)
 {
 	
 	int dinero = DINERO_INI, opcion;
@@ -1348,22 +1803,35 @@ void Blackjack::run()
 			if (dinero == 0)
 			{
 				cout << "No puedes volver a jugar, te has quedado sin dinero,"
-				     << " reinicia el programa para volver a jugar"
+				     << " reinicia el programa para volver a jugar";
 			}
 			else
 			{
-				mano();
+				mano(usuario);
 			}
 		}
 		else if (opcion == 2)
 		{
 			mostrar(archivo);
 		}
+		else if (opcion == 3)
+		{
+			stats(usuario);
+		}
+		else if (opcion == 4)
+		{
+			cout << "Hasta la proxima, " << usuario << endl;
+			usuario = iniciar_sesion();
+		}
+		else if (opcion == 5)
+		{
+			usuario = reset(usuario);
+		}
 	}
 	while(opcion != 0);
 }
 
-void Blackjack::mano()
+void Blackjack::mano(string usuario)
 {
 	int queHacer, apu;
 	
@@ -1429,7 +1897,7 @@ void Blackjack::mano()
 
 	turno_crupier();
 
-	recompensa(apu, queHacer);
+	recompensa(apu, queHacer, usuario);
 
 	mazoBot.vaciar();
 	mazoJugador.vaciar();
