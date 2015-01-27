@@ -140,7 +140,6 @@ void saludar();
 int menu_principal();
 int menu_de_carga_y_guardado();
 int menu_de_manipulacion_de_mazos();
-int menu_de_juegos();
 int menu_de_magia();
 
 int digitoEntre(int a, int b);
@@ -374,14 +373,7 @@ int main()
 		}
 		else if (eleccion == 3) 
 		{
-			do
-			{
-				opcion = menu_de_juegos();
-				if      (opcion == 1)
-				{
-					Blackjack bj; bj.run();
-				}
-			}while (opcion != 0);
+			Blackjack bj; bj.run();
 		}
 		else if (eleccion == 4) 
 		{
@@ -464,16 +456,6 @@ int menu_de_manipulacion_de_mazos()
  	     << "0  - Volver al menu principal"     << endl;
 	
 	return digitoEntre(0,12);
-}
-
-int menu_de_juegos()
-{
-	linea();
-	cout << "Menu de juegos de cartas:"    << endl
-	     << "1 - Blackjack"                << endl
-	     << "0 - Volver al menu principal" << endl;
-		 
-	return digitoEntre(0,3);
 }
 
 int menu_de_magia()
@@ -1239,7 +1221,6 @@ int Blackjack::opciones_de_blackjack()
 	     << "1 - Pedir"           << endl
 	     << "2 - Plantarse"       << endl
 	     << "3 - Doblar apuesta"  << endl
-	   //<< "4 - Dividir "        << endl
 	     << "0 - Abandonar"       << endl;
 		 
 	return digitoEntre(0,3);
@@ -1267,52 +1248,62 @@ void Blackjack::recompensa(int apu, int queHacer)
 	int manoCrup = valor(mazoBot);
 	int manoJug  = valor(mazoJugador);
 	
-	mostrar(mazoJugador); mostrar(mazoBot);
+	cout << "Mazo actual: " << endl;
+	mostrar(mazoJugador); 
+	cout << endl;
+	
+	cout << "Mazo del crupier: " << endl;
+	mostrar(mazoBot);
+	cout << endl;
 
-	if((manoJug <= 21) && (manoCrup <= 21))
+	if(queHacer == 0)
 	{
+		cout << "Has abandonado la partida" << endl;
 		
-		if(manoJug <= manoCrup)
-		{		
-			cout << "El crupier tiene una mano mejor que la tuya" << endl;
-			
-			perder(apu);
-		}
-		else 
-		{
-			apu += apu;
-		
-			cout << "Tu mano es mejor que la del crupier" << endl;
-			
-			ganar(apu);
-		}
+		perder(apu);
 	}
-	else if((manoJug > 21) || (queHacer == 0))
+	else if(queHacer == 2)
 	{
-		if(manoJug > 21)
+		if((manoJug <= 21) && (manoCrup <= 21))
+		{
+			
+			if(manoJug <= manoCrup)
+			{		
+				cout << "El crupier tiene una mano mejor que la tuya" << endl;
+				
+				perder(apu);
+			}
+			else 
+			{
+				apu += apu;
+			
+				cout << "Tu mano es mejor que la del crupier" << endl;
+				
+				ganar(apu);
+			}
+		}
+		else if(manoJug > 21)
 		{
 			cout << "Tu mano supera el valor de 21" << endl;
 			
 			perder(apu);
 		}
-		else if(queHacer == 0)
+		else if((manoJug <= 21) && (manoCrup > 21))
 		{
-			cout << "Has abandonado la partida" << endl;
+			apu += apu;
 			
-			perder(apu);
+			cout << "La mano del crupier supera el valor de 21" << endl;
+			
+			ganar(apu);
 		}
-	}
-	else if((manoJug <= 21) && (manoCrup > 21))
-	{
-		apu += apu;
-		
-		ganar(apu);
-	}
-	else if((manoJug == 21) && (mazoJugador.cuantas == 2))
-	{
-		apu += apu/2;
-		
-		ganar(apu);
+		else if((manoJug == 21) && (mazoJugador.cuantas == 2))
+		{
+			apu += apu/2;
+			
+			cout << "Has conseguido blackjack con tus dos primeras cartas" << endl;
+			
+			ganar(apu);
+		}
 	}
 }
 
@@ -1339,6 +1330,8 @@ void Blackjack::run()
 	int opcion;
 	string archivo = "reglas_bj.txt";
 	
+	cout << "Saldo actual: " << dinero << endl;
+	
 	do
 	{
 		opcion = menu_opciones();
@@ -1347,7 +1340,8 @@ void Blackjack::run()
 			if (dinero == 0)
 			{
 				cout << "No puedes volver a jugar, te has quedado sin dinero,"
-				     << " reinicia el programa para volver a jugar" << endl;
+				     << " reinicia el programa para volver a jugar" << endl
+				     << "Saldo actual: " << dinero << endl;
 			}
 			else
 			{
@@ -1424,7 +1418,7 @@ void Blackjack::mano()
 				apu *= 2;
 			}
 		}
-	}while((valor(mazoJugador) < 21) && queHacer != 2);
+	}while((valor(mazoJugador) < 21) && (queHacer != 2) && (queHacer != 0));
 
 	turno_crupier();
 	
@@ -1470,7 +1464,7 @@ inline void Blackjack::ganar(int apu)
 inline void Blackjack::perder(int apu)
 {
 	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-	     << "Saldo actual: " << dinero << "dolares" << endl;
+	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 inline void pausa()
