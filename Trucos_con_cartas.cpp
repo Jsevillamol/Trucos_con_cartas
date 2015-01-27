@@ -1337,7 +1337,7 @@ int Blackjack::valor(const tMazo &mano)
 void Blackjack::run()
 {
 	
-	int dinero = DINERO_INI, opcion;
+	int opcion;
 	string archivo = "reglas_bj.txt";
 	
 	do
