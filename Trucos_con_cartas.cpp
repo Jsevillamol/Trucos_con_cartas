@@ -527,8 +527,6 @@ inline tCarta elegir_carta()
 
 int elegir_numero()
 {
-	int number;
-	
 	cout << "Que numero de carta escoges?"
 	     << " (debe estar entre 1 y 13) " << endl;
 	
@@ -1256,11 +1254,12 @@ int Blackjack::apuesta()
 	
 	while(pastaJugada > dinero)
 	{
-		cout << "Error, no puedes apostar mas dinero del que tienes" << endl
+		cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
 		
 		pastaJugada = digitoEntre(APU_MIN,APU_MAX);
 	}
-	else return pastaJugada;
+	
+	return pastaJugada;
 }
 
 void Blackjack::recompensa(int apu, int queHacer)
@@ -1275,7 +1274,7 @@ void Blackjack::recompensa(int apu, int queHacer)
 		
 		if(manoJug <= manoCrup)
 		{		
-			cout << "El crupier tiene una mano mejor que la tuya" << endl
+			cout << "El crupier tiene una mano mejor que la tuya" << endl;
 			
 			perder(apu);
 		}
@@ -1283,7 +1282,7 @@ void Blackjack::recompensa(int apu, int queHacer)
 		{
 			apu += apu;
 		
-			cout << "Tu mano es mejor que la del crupier" << endl
+			cout << "Tu mano es mejor que la del crupier" << endl;
 			
 			ganar(apu);
 		}
@@ -1348,7 +1347,7 @@ void Blackjack::run()
 			if (dinero == 0)
 			{
 				cout << "No puedes volver a jugar, te has quedado sin dinero,"
-				     << " reinicia el programa para volver a jugar"
+				     << " reinicia el programa para volver a jugar" << endl;
 			}
 			else
 			{
