@@ -1258,7 +1258,7 @@ int Blackjack::apuesta()
 	{
 		cout << "Error, no puedes apostar mas dinero del que tienes" << endl
 		
-		pastaJugada;
+		pastaJugada = digitoEntre(APU_MIN,APU_MAX);
 	}
 	else return pastaJugada;
 }
