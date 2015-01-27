@@ -691,11 +691,11 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 void truco_de_los_tres_montones()
 {
 	tMazo mazoU, mazo1, mazo2, mazo3;
-	string nomb
+	string nomb;
 	int mazo;
 
 	//generamos el mazo de 21 cartas
-	if (mazoValido(mazo, 21, nomb))
+	if (mazoValido(mazoU, 21, nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
@@ -742,10 +742,10 @@ void truco_de_los_tres_montones()
 void truco_de_la_posada()
 {
 	tMazo mazoU, mazo1, mazo2, mazo3, mazo4;
-	string nomb
+	string nomb;
 	int corte;
 	
-	if (mazoValido(mazo, 16, nomb))
+	if (mazoValido(mazoU, 16, nomb))
 	{
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
