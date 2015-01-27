@@ -154,7 +154,6 @@ int menu_de_manipulacion_de_mazos();
 int menu_de_juegos();
 int menu_de_magia();
 
-int digitoEntre(int a, int b);
 inline void linea();
 
 int digitoEntre(int a, int b);
@@ -178,7 +177,7 @@ string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
 //Funciones de manipulacion de un mazo individual
-int randint(int max);
+inline int randint(int max);
 
 //Funciones para repartir en varios mazos
 bool pares(tCarta carta);
@@ -628,8 +627,6 @@ inline tCarta elegir_carta()
 
 int elegir_numero()
 {
-	int number;
-	
 	cout << "Que numero de carta escoges?"
 	     << " (debe estar entre 1 y 13) " << endl;
 	
@@ -901,7 +898,7 @@ void tMazo::barajar()
 	}
 }
 
-int randint(int max)
+inline int randint(int max)
 {
 	return rand() % (max);
 }
