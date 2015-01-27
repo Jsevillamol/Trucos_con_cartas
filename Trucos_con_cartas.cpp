@@ -122,6 +122,8 @@ public:
 	void run();
 	void mano();
 	bool turno_crupier();
+	inline void ganar(int apu);
+	inline void perder(int apu);
 
 private:
 	//Variables
@@ -1247,15 +1249,24 @@ int Blackjack::opciones_de_blackjack()
 
 int Blackjack::apuesta()
 {
+	int pastaJugada;
 	cout << "Cuanto quieres apostar?" << endl;
 	
-	return digitoEntre(APU_MIN,APU_MAX);
+	pastaJugada = digitoEntre(APU_MIN,APU_MAX);
+	
+	while(pastaJugada > dinero)
+	{
+		cout << "Error, no puedes apostar mas dinero del que tienes" << endl
+		
+		pastaJugada;
+	}
+	else return pastaJugada;
 }
 
 void Blackjack::recompensa(int apu, int queHacer)
 {
 	int manoCrup = valor(mazoBot);
-	int manoJug = valor(mazoJugador);
+	int manoJug  = valor(mazoJugador);
 	
 	mostrar(mazoJugador); mostrar(mazoBot);
 
@@ -1264,38 +1275,45 @@ void Blackjack::recompensa(int apu, int queHacer)
 		
 		if(manoJug <= manoCrup)
 		{		
-			cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-			     << "Saldo actual: " << dinero << endl;
+			cout << "El crupier tiene una mano mejor que la tuya" << endl
+			
+			perder(apu);
 		}
 		else 
 		{
 			apu += apu;
-			dinero += apu;
+		
+			cout << "Tu mano es mejor que la del crupier" << endl
 			
-			cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-				 << "Saldo actual: " << dinero << " dolares" << endl;
+			ganar(apu);
 		}
 	}
 	else if((manoJug > 21) || (queHacer == 0))
 	{
-		cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-		     << "Saldo actual: " << dinero << endl;
+		if(manoJug > 21)
+		{
+			cout << "Tu mano supera el valor de 21" << endl;
+			
+			perder(apu);
+		}
+		else if(queHacer == 0)
+		{
+			cout << "Has abandonado la partida" << endl;
+			
+			perder(apu);
+		}
 	}
 	else if((manoJug <= 21) && (manoCrup > 21))
 	{
 		apu += apu;
-		dinero += apu;
 		
-		cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-		     << "Saldo actual: " << dinero << " dolares" << endl;
+		ganar(apu);
 	}
 	else if((manoJug == 21) && (mazoJugador.cuantas == 2))
 	{
 		apu += apu/2;
-		dinero += apu;
 		
-		cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-		     << "Saldo actual: " << dinero << " dolares" << endl;
+		ganar(apu);
 	}
 }
 
@@ -1327,7 +1345,15 @@ void Blackjack::run()
 		opcion = menu_opciones();
 		if (opcion == 1)
 		{
-			mano();
+			if (dinero == 0)
+			{
+				cout << "No puedes volver a jugar, te has quedado sin dinero,"
+				     << " reinicia el programa para volver a jugar"
+			}
+			else
+			{
+				mano();
+			}
 		}
 		else if (opcion == 2)
 		{
@@ -1424,6 +1450,20 @@ bool Blackjack::turno_crupier()
             << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
 
 	return pasa_crup;
+}
+
+inline void Blackjack::ganar(int apu)
+{
+	dinero += apu;
+	
+	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
+	     << "Saldo actual: " << dinero << " dolares" << endl;
+}
+
+inline void Blackjack::perder(int apu)
+{
+	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
+	     << "Saldo actual: " << dinero << "dolares" << endl;
 }
 
 inline void pausa()
