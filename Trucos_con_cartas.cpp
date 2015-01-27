@@ -30,6 +30,8 @@ typedef int tCarta;
 typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
+void saludar();
+
 //Menus
 int menu();
 int digitoEntre(int a, int b);
@@ -51,8 +53,8 @@ void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4);
 
 //Funciones de carga y guardado de mazos
 bool cargar(tMazo mazo, string &nomb);
-bool cargar_auto(tMazo mazo, string &nomb);
 bool abrir(string &nomb, ifstream &archivo);
+bool mazoValido(tMazo &mazo, int cartasNecesarias, string &nomb);
 bool agregar(tMazo mazo);
 
 bool guardar(const tMazo mazo, string &nomb);
@@ -84,7 +86,7 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 
-//System
+//Funcion de pausa
 void pausa();
 
 int main()
@@ -95,6 +97,8 @@ int main()
 
 	srand(time(NULL));
 	vaciar(mazo);
+	
+	saludar();
 
 	do
 	{
@@ -189,6 +193,17 @@ int main()
 	return 1;
 }
 
+//Pide el nombre al usuario y le saluda
+void saludar()
+{
+	string nombre;
+	cout << "Bienvenido al programa de la cartomagia!" << endl
+	     << "Como te llamas? ";
+	cin  >> nombre;
+	cout << "Hola " << nombre << endl << endl;
+}
+
+//Permite al usuario elegir que hacer
 int menu()
 {
 	linea();
@@ -208,6 +223,8 @@ int menu()
 	return digitoEntre(0,11);
 }
 
+//Controla que el usuario no introduzca un
+//digito que no haga nada
 int digitoEntre(int a, int b)
 {
 	int digito = -1;
@@ -235,11 +252,13 @@ int digitoEntre(int a, int b)
 	return digito;
 }
 
+//Añade una linea de guion
 void linea()
 {
 	cout << setfill('-') << setw(79) <<  '-'  << endl << setfill(' ');
 }
 
+//Determina cuantas cartas contiene un mazo concreto
 int cuantas(const tMazo mazo)
 {
 	int i;
@@ -249,6 +268,7 @@ int cuantas(const tMazo mazo)
 	return i;
 }
 
+//Determina el palo de una carta concreta
 tPalo palo(tCarta carta)
 {
 	int seccionPalo;
@@ -265,6 +285,7 @@ tPalo palo(tCarta carta)
 		return corazones;
 }
 
+//Determina el numero de una carta concreta
 tNumero numero(tCarta carta)
 {
 	int seccionNumero;
@@ -274,15 +295,17 @@ tNumero numero(tCarta carta)
 	return tNumero (seccionNumero+1);
 }
 
+//Muestra las cartas de un amzo concreto
 void mostrar(tMazo mazo)
 {
-	for(int i=0; mazo[i] != CENTINELA && i<MAX_CARTAS; i++)
+	for(int i=0; mazo[i] != CENTINELA; i++)
 	{
 		mostrar(mazo[i]);
 	}
 	cout << endl;
 }
 
+//Muestra el numero y el palo de una carta
 void mostrar(tCarta carta)
 {
 	mostrar(numero(carta));
@@ -294,6 +317,7 @@ void mostrar(tCarta carta)
 	cout << endl;
 }
 
+//Muestra el numero de una carta
 void mostrar(tNumero n)
 {
 	if      (n == A) cout << "A";
@@ -303,14 +327,16 @@ void mostrar(tNumero n)
 	else             cout <<  n ;
 }
 
+//Muestra el palo de una carta
 void mostrar(tPalo p)
 {
-	if      (p == picas)     cout <<     "de picas";
-	else if (p == treboles)  cout <<  "de treboles";
-	else if (p == diamantes) cout << "de diamantes";
-	else if (p == corazones) cout << "de corazones";
+	if      (p == picas)         cout <<     "de picas";
+	else if (p == treboles)      cout <<  "de treboles";
+	else if (p == diamantes)     cout << "de diamantes";
+	else /*if (p == corazones)*/ cout << "de corazones";
 }
 
+//Muestra el contenido de tres mazos (necesario para 3montones)
 void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3)
 {
 	cout << "Mazo 1:" << endl;
@@ -326,6 +352,7 @@ void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3)
 	cout << endl;
 }
 
+//Muestra el contenido de cuatro mazos (necesario para posada)
 void mostrar(tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4)
 {
 	cout << "Mazo 1:" << endl;
@@ -368,28 +395,6 @@ bool cargar(tMazo mazo, string &nomb)
 	else return false;
 }
 
-bool cargar_auto(tMazo mazo, string &nomb)
-{
-	char p;
-	int cont=0, n;
-	ifstream archivo(nomb);
-	if (archivo.is_open())
-	{
-		archivo >> p;
-		while (p != 'x' && cont < MAX_CARTAS)
-		{
-			archivo >> n;
-			mazo[cont] = traducir(p,n);
-			cont++;
-			archivo >> p;
-		}
-		mazo[cont] = CENTINELA;
-		archivo.close();
-		return true;
-	}
-	else return false;
-}
-
 //Abre el archivo que indica el usuario. Si el archivo no existe, se pregunta de nuevo, hasta tres veces.
 bool abrir(string &nomb, ifstream &archivo)
 {
@@ -411,6 +416,23 @@ bool abrir(string &nomb, ifstream &archivo)
 	else return false;
 }
 
+//Comprueba que el mazo cargado tenga las cartas necesarias para los trucos
+bool mazoValido(tMazo &mazo, int cartasNecesarias, string &nomb)
+{
+	if(cargar(mazo, nomb))
+	{
+		while(cartasNecesarias != cuantas(mazo))
+			{
+				cout << "Error, el mazo nargado no tiene las "
+			             << cartasNecesarias << " cartas necesarias" << endl;
+				cargar(mazo, nomb);
+			}
+		return true;
+	}
+	else return false;
+}
+
+
 //Concatena al mazo actual un mazo cargado de archivo.
 bool agregar(tMazo mazo)
 {
@@ -429,6 +451,8 @@ bool agregar(tMazo mazo)
 	else return true;
 }
 
+//Guarda el mazo actual en el archivo que elija el usuario 
+//(por defecto se guarda en el archivo actual)
 bool guardar(const tMazo mazo, string &nomb)
 {
 	string response;
@@ -457,6 +481,7 @@ bool guardar(const tMazo mazo, string &nomb)
 	else return false;
 }
 
+//Traduce los palos de las cartas a caracteres
 string traducir(tCarta carta)
 {
 	string s="";
@@ -480,17 +505,20 @@ string traducir(tCarta carta)
 	return s;
 }
 
+//Traduce los caracteres del archivo del mazo a palos
 tCarta traducir(char p, int n)
 {
 	tPalo suit;
 
-	if (p == 'c')      suit = corazones;
-	else if (p == 't') suit = treboles;
-	else if (p == 'p') suit = picas;
+	if        (p == 'c')   suit = corazones;
+	else if   (p == 't')   suit =  treboles;
+	else if   (p == 'p')   suit =     picas;
 	else /*if (p == 'd')*/ suit = diamantes;
 
 	return (n-1 + int (suit) * CARTASxPALO);
 }
+
+//Vacia el mazo actual
 void vaciar(tMazo mazo)
 {
 	mazo[0] = CENTINELA;
@@ -508,11 +536,13 @@ void barajar(tMazo mazo)
 	}
 }
 
+//Genera un numero aleatorio entre 0 y el argumento
 int randint(int max)
 {
 	return rand() % (max);
 }
 
+//Intercambia las posiciones de dos cartas dentro de un mazo
 void intercambiar(tMazo mazo, int pos1, int pos2)
 {
 	tCarta aux;
@@ -524,10 +554,13 @@ void intercambiar(tMazo mazo, int pos1, int pos2)
 	mazo[pos2] = aux;
 }
 
+
+//Desplaza las cartas del mazo a la derecha a fin de 
+//dejar hueco para añadir mas cartas
 bool desplazar(tMazo mazo, int numero)
 {
 	int total = cuantas(mazo);
-	if (total+numero < MAX_CARTAS)
+	if (total+numero <= MAX_CARTAS)
 	{
 		for (int i = total; i >= 0; i--)
 			mazo[i+numero] = mazo[i];
@@ -536,6 +569,7 @@ bool desplazar(tMazo mazo, int numero)
 	else return false;
 }
 
+//Corta el mazo por la posicion que elija el usuario
 void cortar(tMazo mazo, int cuantasCartas)
 {
 	tMazo otroMazo;
@@ -545,6 +579,7 @@ void cortar(tMazo mazo, int cuantasCartas)
 		unir(mazo, otroMazo);
 }
 
+//Parte el mazo en dos por la posicion que indique el argumento cuantasCoger
 bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 {
 	int i;
@@ -563,23 +598,22 @@ bool partir(tMazo mazo, int cuantasCoger, tMazo otroMazo)
 	}
 }
 
+//Une los dos mazos que se le pasen come argumento, guardando
+//el mazo resultante en el primero de dichos argumentos
 bool unir(tMazo mazo, const tMazo otroMazo)
 {
-	int total = cuantas(mazo);
-	int otroTotal = cuantas(otroMazo);
-
-	if (desplazar(mazo, otroTotal))
+	if (desplazar(mazo, cuantas(otroMazo)))
 	{
 		for (int i = 0; otroMazo[i] != CENTINELA; i++)
-		{
 			mazo[i] = otroMazo[i];
-		}
 
 		return true;
 	}
 	else return false;
 }
 
+//Separa un mazo en dos distintos segun sean las cartas de este
+//mayores, o menores o iguales que siete
 void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 {	
 	int j=0, k=0;
@@ -591,7 +625,7 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 			mazoBajas[j] = mazo[i];
 			j++;
 		}
-		else if(numero(mazo[i])>7) 
+		else //if(numero(mazo[i])>7) 
 		{
 			mazoAltas[k] = mazo[i];
 			k++;
@@ -601,6 +635,8 @@ void repartirBajaAlta(const tMazo mazo, tMazo mazoBajas, tMazo mazoAltas)
 	mazoAltas[k] = CENTINELA;
 }
 
+//Separa un mazo en dos segun sean sus cartas negras (picas y treboles), 
+//o rojas (diamantes y corazones)
 void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 {
 	int j=0, k=0;
@@ -612,7 +648,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 			mazoNegro[j] = mazo[i];
 			j++;
 		}
-		else if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
+		else //if((palo(mazo[i]) == diamantes)||(palo(mazo[i]) == corazones)) 
 		{
 			mazoRojo[k] = mazo[i];
 			k++;
@@ -622,6 +658,7 @@ void repartirNegroRojo(const tMazo mazo, tMazo mazoNegro, tMazo mazoRojo)
 	mazoRojo [k] = CENTINELA;
 }
 
+//Reparte cartas de un mazo a otro intercaladamente
 void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo mazoNuevo)
 {
 	int j=0;
@@ -632,6 +669,7 @@ void repartirIntercalando(const tMazo mazo, int enCuantos, int queMazo, tMazo ma
 	mazoNuevo[j] = CENTINELA;
 }
 
+//Reparte cartas de un mazo a otros tres mazos intercaladamente
 void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3)
 {
 	//Repartir alternamente
@@ -640,6 +678,7 @@ void repartir_en_tres(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3)
 	repartirIntercalando(mazo, 3, 0, mazo1);
 }
 
+//Reparte cartas de un mazo a otros cuatro mazos intercaladamente
 void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo mazo4)
 {
 	//Repartir alternamente
@@ -652,11 +691,11 @@ void repartir_en_cuatro(tMazo mazo, tMazo mazo1, tMazo mazo2, tMazo mazo3, tMazo
 void truco_de_los_tres_montones()
 {
 	tMazo mazoU, mazo1, mazo2, mazo3;
-	string nomb = "3montones.txt";
+	string nomb;
 	int mazo;
 
 	//generamos el mazo de 21 cartas
-	if(cargar_auto(mazoU, nomb))
+	if (mazoValido(mazoU, 21, nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
@@ -702,12 +741,17 @@ void truco_de_los_tres_montones()
 
 void truco_de_la_posada()
 {
+<<<<<<< HEAD
 	tMazo mazo1, mazo2, mazo3, mazo4;
 	string nomb = "posada.txt";
+=======
+	tMazo mazoU, mazo1, mazo2, mazo3, mazo4;
+	string nomb;
+>>>>>>> origin/master
 	int corte;
 	
-	if (cargar_auto(mazo1, nomb)){
-	
+	if (mazoValido(mazoU, 16, nomb))
+	{
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
 			 << "Un dia llegaron cuatro caballeros y cada uno se" 
@@ -731,24 +775,24 @@ void truco_de_la_posada()
 		//Cortamos el mazo
 		cout << "Por que numero de carta quieres cortar?";
 		cin >> corte;
-		cortar(mazo1, corte);
+		cortar(mazoU, corte);
 	
 		cout << "Sin embargo, a la maniana siguiente..." << endl;
 	
 		pausa();
-		repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+		repartir_en_cuatro(mazoU, mazo1, mazo2, mazo3, mazo4);
 		mostrar(mazo1, mazo2, mazo3, mazo4);
 	
 		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
-			 << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+		     << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
 	}
 	else
 	{
-		cout << "Archivo \"posada.txt\" no encontrado." << endl;
+		cout << "Error. Archivo \"posada.txt\" no encontrado." << endl;
 	}
 }
 
 void pausa()
 {
-	system("pause");
+	cin.get();
 }
