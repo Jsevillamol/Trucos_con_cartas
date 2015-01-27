@@ -456,7 +456,7 @@ int menu_de_manipulacion_de_mazos()
 	     << "5  - Separar en pares e impares"   << endl
 	     << "6  - Separar en figuras y numeros" << endl
 	     << "7  - Separar en n montones"        << endl
-		 << "8  - Repartir n cartas"            << endl
+	     << "8  - Repartir n cartas"            << endl
 	     << "9  - Mostrar mazo actual"          << endl
  	     << "10 - Aniadir una carta concreta"   << endl
  	     << "11 - Eliminar una carta concreta"  << endl
@@ -1381,7 +1381,7 @@ void Blackjack::mano()
 	cout << endl;
 	
 	cout << "Carta del crupier:" << endl;
-	mostrar(mazoBot[1]);
+	mostrar(mazoBot[0]);
 	cout << endl;
 	
 	apu = apuesta();
@@ -1428,7 +1428,15 @@ void Blackjack::mano()
 	}while((valor(mazoJugador) < 21) && queHacer != 2);
 
 	turno_crupier();
-
+	
+	cout << "Mano final:" << endl;
+	mostrar(mazoJugador);
+	cout << endl;
+	
+	cout << "Mazo del crupier:" << endl;
+	mostrar(mazoBot);
+	cout << endl;
+	
 	recompensa(apu, queHacer);
 
 	mazoBot.vaciar();
