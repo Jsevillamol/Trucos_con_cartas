@@ -1713,7 +1713,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 		
 		perder(apu);
 		
-		ganador == Automata;
+		ganador = Automata;
 	}
 	else if(queHacer == 2)
 	{
@@ -1726,7 +1726,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 				
 				perder(apu);
 				
-				ganador == Automata;
+				ganador = Automata;
 			}
 			else 
 			{
@@ -1736,7 +1736,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 				
 				ganar(apu);
 				
-				ganador == Jugador;
+				ganador = Jugador;
 			}
 		}
 		else if(manoJug > 21)
@@ -1745,7 +1745,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 			
 			perder(apu);
 			
-			ganador == Automata;
+			ganador = Automata;
 		}
 		else if((manoJug <= 21) && (manoCrup > 21))
 		{
@@ -1755,7 +1755,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 			
 			ganar(apu);
 			
-			ganador == Jugador;
+			ganador = Jugador;
 		}
 		else if((manoJug == 21) && (mazoJugador.cuantas == 2))
 		{
@@ -1765,7 +1765,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 			
 			ganar(apu);
 			
-			ganador == Jugador;
+			ganador = Jugador;
 		}
 	}
 	actualizar_stats(ganador, usuario);
