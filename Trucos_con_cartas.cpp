@@ -1422,14 +1422,6 @@ void Blackjack::mano()
 
 	turno_crupier();
 	
-	cout << "Mano final:" << endl;
-	mostrar(mazoJugador);
-	cout << endl;
-	
-	cout << "Mazo del crupier:" << endl;
-	mostrar(mazoBot);
-	cout << endl;
-	
 	recompensa(apu, queHacer);
 
 	mazoBot.vaciar();
@@ -1448,7 +1440,7 @@ bool Blackjack::turno_crupier()
 	}
 
     cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-            << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
+         << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
 
 	return pasa_crup;
 }
