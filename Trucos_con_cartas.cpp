@@ -154,6 +154,7 @@ int menu_de_manipulacion_de_mazos();
 int menu_de_juegos();
 int menu_de_magia();
 
+int digitoEntre(int a, int b);
 inline void linea();
 
 int digitoEntre(int a, int b);
@@ -177,7 +178,7 @@ string traducir(tCarta carta);
 tCarta traducir(char p, int n);
 
 //Funciones de manipulacion de un mazo individual
-inline int randint(int max);
+int randint(int max);
 
 //Funciones para repartir en varios mazos
 bool pares(tCarta carta);
@@ -395,14 +396,7 @@ int main()
 		}
 		else if (eleccion == 3) 
 		{
-			do
-			{
-				opcion = menu_de_juegos();
-				if      (opcion == 1)
-				{
-					Blackjack bj; bj.run(usuario);
-				}
-			}while (opcion != 0);
+			Blackjack bj; bj.run(usuario);
 		}
 		else if (eleccion == 4) 
 		{
@@ -566,16 +560,6 @@ int menu_de_manipulacion_de_mazos()
 	return digitoEntre(0,12);
 }
 
-int menu_de_juegos()
-{
-	linea();
-	cout << "Menu de juegos de cartas:"    << endl
-	     << "1 - Blackjack"                << endl
-	     << "0 - Volver al menu principal" << endl;
-		 
-	return digitoEntre(0,3);
-}
-
 int menu_de_magia()
 {
 	linea();
@@ -627,6 +611,8 @@ inline tCarta elegir_carta()
 
 int elegir_numero()
 {
+	int number;
+	
 	cout << "Que numero de carta escoges?"
 	     << " (debe estar entre 1 y 13) " << endl;
 	
@@ -898,7 +884,7 @@ void tMazo::barajar()
 	}
 }
 
-inline int randint(int max)
+int randint(int max)
 {
 	return rand() % (max);
 }
@@ -1180,8 +1166,8 @@ bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
 		if     (ganador == Jugador)   ganadas += 1;
 		else if(ganador == Automata) perdidas += 1;
 
-		actualizar << ganadas     << endl;
-		actualizar << perdidas;
+		actualizar << ganadas  << endl;
+		actualizar << perdidas << endl;   
 
 		char c;
 		stats.get(c);
@@ -1238,13 +1224,13 @@ void stats(string usuario)
 	stats >>     ganadas;
 	stats >>    perdidas;
 	
-	cout << setfill('-')   << setw(79)                  << '-'                            << endl;
-	cout << "Numero de ejecuciones del programa: "      <<  ejecuciones                   << endl;
+	cout << setfill('-')   << setw(79)                  << '-'                << endl;
+	cout << "Numero de ejecuciones del programa: "      <<  ejecuciones       << endl;
 	cout << endl;
 	cout << "Partidas de " << usuario << ": "           << (ganadas+perdidas) << endl; 
 	cout << right
-	     << setfill(' ') << setw(22) << "ganadas: "     <<  ganadas                       << endl 
-	     << setfill(' ') << setw(22) << "perdidas: "    <<  perdidas                      << endl
+	     << setfill(' ') << setw(22) << "ganadas: "     <<  ganadas           << endl 
+	     << setfill(' ') << setw(22) << "perdidas: "    <<  perdidas          << endl
 	     << endl;
 	     
 	stats.close();
@@ -1702,7 +1688,7 @@ int Blackjack::apuesta()
 	{
 		cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
 		
-		pastaJugada;
+		pastaJugada = digitoEntre(APU_MIN,APU_MAX);
 	}
 	return pastaJugada;
 }
@@ -1713,58 +1699,74 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 	int manoJug  = valor(mazoJugador);
 	tJugador ganador;
 	
-	mostrar(mazoJugador); mostrar(mazoBot);
-
-	if((manoJug <= 21) && (manoCrup <= 21))
+	cout << "Mazo actual: " << endl;
+	mostrar(mazoJugador); 
+	cout << endl;
+	
+	cout << "Mazo del crupier: " << endl;
+	mostrar(mazoBot);
+	cout << endl;
+	
+	if(queHacer == 0)
 	{
+		cout << "Has abandonado la partida" << endl;
 		
-		if(manoJug <= manoCrup)
-		{		
-			cout << "El crupier tiene una mano mejor que la tuya" << endl;
-			
-			perder(apu);
-		}
-		else 
-		{
-			apu += apu;
+		perder(apu);
 		
-			cout << "Tu mano es mejor que la del crupier" << endl;
-			
-			ganar(apu);
-		}
-		ganador = Jugador;
+		ganador == Automata;
 	}
-	else if((manoJug > 21) || (queHacer == 0))
+	else if(queHacer == 2)
 	{
-		if(manoJug > 21)
+		if((manoJug <= 21) && (manoCrup <= 21))
+		{
+			
+			if(manoJug <= manoCrup)
+			{		
+				cout << "El crupier tiene una mano mejor que la tuya" << endl;
+				
+				perder(apu);
+				
+				ganador == Automata;
+			}
+			else 
+			{
+				apu += apu;
+			
+				cout << "Tu mano es mejor que la del crupier" << endl;
+				
+				ganar(apu);
+				
+				ganador == Jugador;
+			}
+		}
+		else if(manoJug > 21)
 		{
 			cout << "Tu mano supera el valor de 21" << endl;
 			
 			perder(apu);
-		}
-		else if(queHacer == 0)
-		{
-			cout << "Has abandonado la partida" << endl;
 			
-			perder(apu);
+			ganador == Automata;
 		}
-		ganador = Automata;
-	}
-	else if((manoJug <= 21) && (manoCrup > 21))
-	{
-		apu += apu;
-		
-		ganar(apu);
-		
-		ganador = Jugador;
-	}
-	else if((manoJug == 21) && (mazoJugador.cuantas == 2))
-	{
-		apu += apu/2;
-		
-		ganar(apu);
-		
-		ganador = Jugador;
+		else if((manoJug <= 21) && (manoCrup > 21))
+		{
+			apu += apu;
+			
+			cout << "La mano del crupier supera el valor de 21" << endl;
+			
+			ganar(apu);
+			
+			ganador == Jugador;
+		}
+		else if((manoJug == 21) && (mazoJugador.cuantas == 2))
+		{
+			apu += apu/2;
+			
+			cout << "Has conseguido blackjack con tus dos primeras cartas" << endl;
+			
+			ganar(apu);
+			
+			ganador == Jugador;
+		}
 	}
 	actualizar_stats(ganador, usuario);
 }
@@ -1789,8 +1791,10 @@ int Blackjack::valor(const tMazo &mano)
 void Blackjack::run(string usuario)
 {
 	
-	int dinero = DINERO_INI, opcion;
+	int opcion;
 	string archivo = "reglas_bj.txt";
+	
+	cout << "Saldo actual: " << dinero << endl;
 	
 	do
 	{
@@ -1846,7 +1850,7 @@ void Blackjack::mano(string usuario)
 	cout << endl;
 	
 	cout << "Carta del crupier:" << endl;
-	mostrar(mazoBot[1]);
+	mostrar(mazoBot[0]);
 	cout << endl;
 	
 	apu = apuesta();
@@ -1890,7 +1894,7 @@ void Blackjack::mano(string usuario)
 				apu *= 2;
 			}
 		}
-	}while((valor(mazoJugador) < 21) && queHacer != 2);
+	}while((valor(mazoJugador) < 21) && (queHacer != 2) && (queHacer != 0));
 
 	turno_crupier();
 
@@ -1912,7 +1916,7 @@ bool Blackjack::turno_crupier()
 	}
 
     cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-            << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
+         << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;   
 
 	return pasa_crup;
 }
