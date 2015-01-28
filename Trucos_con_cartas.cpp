@@ -519,7 +519,7 @@ int menu_principal()
         cout << "Menu principal:"                   << endl
              << "1 - Menu de carga y guardado"      << endl
              << "2 - Menu de manipulacion de mazos" << endl
-             << "3 - Menu de juegos de cartas"      << endl
+             << "3 - Blackjack"                     << endl
              << "4 - Menu de magia de cartas"       << endl
              << "0 - Salir"                         << endl;
 	
