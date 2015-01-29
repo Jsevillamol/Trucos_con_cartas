@@ -621,9 +621,7 @@ inline tCarta elegir_carta()
 }
 
 int elegir_numero()
-{
-	int number;
-	
+{	
 	cout << "Que numero de carta escoges?"
 	     << " (debe estar entre 1 y 13) " << endl;
 	
@@ -1137,15 +1135,15 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
 int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
 {	int i;
 
-	for(i=cuenta; i>=0 || mazoNuevo[i].num == i; i--)
+	for(i=cuenta; i>=0 && mazoNuevo[i].num != i; i--)
 	{
 		(*this).repartir_n_cartas(mazoNuevo, 1);
 		
 		if(i != 0)
 		{
 			cout << "Carta " << i << ": ";
-			mostrar((*this)[i]);
-		}			
+			mostrar(mazoNuevo[cuenta-i]);
+		}
 	}
 	return i;
 }
