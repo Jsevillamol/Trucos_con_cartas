@@ -1305,6 +1305,37 @@ void Blackjack::recompensa(int apu, int queHacer)
 			ganar(apu);
 		}
 	}
+	else 
+	{
+		if(manoJug > 21)
+		{
+			cout << "Tu mano supera el valor de 21" << endl;
+			
+			perder(apu);
+			
+			ganador = Automata;
+		}
+		else 
+		{
+			if(manoCrup == 21)
+			{
+				cout << "El crupier y tu teneis la misma mano, " << endl
+					 << "gana el Crupier"                        << endl;
+				
+				perder(apu);
+					
+				ganador = Automata;
+			}
+			else
+			{
+				cout << "Tu mano es mejor que la del crupier" << endl;
+				
+				ganar(apu);
+				
+				ganador = Jugador;
+			}	
+		}
+	}
 }
 
 int Blackjack::valor(const tMazo &mano)
