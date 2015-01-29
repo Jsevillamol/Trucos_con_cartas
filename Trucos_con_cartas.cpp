@@ -1722,8 +1722,8 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 			{		
 				if(manoJug == manoCrup) 
 				{
-					cout << "El crupier y tu teneis la misma mano, " << endl
-					     << "gana el Crupier"                        << endl;
+					cout << "El crupier y tu teneis la misma mano, "
+					     << "gana el Crupier" << endl;
 				}
 				else 
 				{
@@ -1779,31 +1779,30 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 		if(manoJug > 21)
 		{
 			cout << "Tu mano supera el valor de 21" << endl;
-			
+				
 			perder(apu);
-			
+				
 			ganador = Automata;
 		}
-		else 
+		else if(manoCrup == 21)
 		{
-			if(manoCrup == 21)
-			{
-				cout << "El crupier y tu teneis la misma mano, " << endl
-					 << "gana el Crupier"                        << endl;
-				
-				perder(apu);
+			cout << "El crupier y tu teneis la misma mano, "
+				 << "gana el Crupier" << endl;
 					
-				ganador = Automata;
-			}
-			else
-			{
-				cout << "Tu mano es mejor que la del crupier" << endl;
-				
-				ganar(apu);
-				
-				ganador = Jugador;
-			}	
+			perder(apu);
+						
+			ganador = Automata;
 		}
+		else
+		{
+			apu += apu;
+			
+			cout << "Tu mano es mejor que la del crupier" << endl;
+					
+			ganar(apu);
+					
+			ganador = Jugador;
+		}	
 	}
 	actualizar_stats(ganador, usuario);
 }
@@ -1969,7 +1968,7 @@ inline void Blackjack::ganar(int apu)
 inline void Blackjack::perder(int apu)
 {
 	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-	     << "Saldo actual: " << dinero << " 0dolares" << endl;
+	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 inline void pausa()
