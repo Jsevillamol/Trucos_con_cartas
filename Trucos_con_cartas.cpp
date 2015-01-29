@@ -1128,7 +1128,7 @@ void registrar_nueva_ejecucion()
 bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
 {
 	bool ok;
-	int ganadas, perdidas, abandonadas;
+	int ganadas, perdidas;
 	string linea;
 	ifstream stats;
 	ofstream actualizar;
@@ -1161,7 +1161,6 @@ bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
 		//Actualizacion de datos
 		stats >> ganadas;
 		stats >> perdidas;
-		stats >> abandonadas;
 
 		if     (ganador == Jugador)   ganadas += 1;
 		else if(ganador == Automata) perdidas += 1;
@@ -1349,8 +1348,7 @@ void soft_reset(string usuario)
 
 		//Ignoramos los datos anteriores...
 		stats >> i;
-		stats >> i;
-		stats >> i;
+		stats >> i
 		 //...y los sutituimos por 0
 		actualizar << 0 << endl; //Ganadas
 		actualizar << 0;         //Perdidas
