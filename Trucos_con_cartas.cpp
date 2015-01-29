@@ -96,7 +96,9 @@ public:
 	void repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo);
 	void repartir_en_n(tMazo mazo[], int n);
 
-	void repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont);
+	void repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres);
+	
+	int repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta);
 	
 	//Operadores
 	tCarta& operator[](const int index){return cartas[index];}
@@ -170,6 +172,8 @@ void mostrar(const tCarta carta);
 void mostrar(const tNumero n);
 void mostrar(const tPalo p);
 bool mostrar(string archivo);
+void prediccion();
+void revelar_carta(int sumaValor);
 
 //Funciones de carga y guardado de mazos
 bool abrir(string &nomb, ifstream &archivo);
@@ -200,13 +204,14 @@ void delete_user(string usuario);
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 void truco_del_jugador_desconfiado();
+void truco_cabo_caniaberal();
 
 //Funcion de pausa
 inline void pausa();
 
 int main()
 {
-	int opcion, eleccion, cont = 0;
+	int opcion, eleccion;
 	tMazo mazo;
 	string nomb, usuario;
 
@@ -353,7 +358,7 @@ int main()
 					
 					cout << "Cuantas cartas quieres?" << endl;
 					cin >> cuantas;
-					mazo.repartir_n_cartas(mazoExtra, cuantas, cont);
+					mazo.repartir_n_cartas(mazoExtra, cuantas);
 					mazo.vaciar();
 					mazo.unir(mazoExtra);
 					
@@ -417,6 +422,11 @@ int main()
 				{
 					linea();
 					truco_del_jugador_desconfiado();
+				}
+				else if (opcion == 4)
+				{
+					linea();
+					truco_cabo_caniaberal();
 				}
 			}while (opcion != 0);
 		}
@@ -567,9 +577,10 @@ int menu_de_magia()
 	     << "1 - Truco de los tres montones"   << endl
 	     << "2 - Truco de la posada"           << endl
 	     << "3 - Truco del jugador despistado" << endl
+		 << "4 - Truco de cabo caniaveral "    << endl
 	     << "0 - Volver al menu principal"     << endl;
 		 
-	return digitoEntre(0,3);
+	return digitoEntre(0,4);
 }
 
 int digitoEntre(int a, int b)
@@ -704,6 +715,30 @@ bool mostrar(string archivo)
 		ok = false;
 	}
 	return ok;
+}
+
+void prediccion(tMazo mazo)
+{
+	cout << "Saldra la carta: ";
+	
+	mostrar(mazo[42]);
+}
+
+void revelar_carta(int sumaValor, tMazo mazo)
+{
+	cout << "Ahora contamos " << sumaValor << " cartas, y las "
+	     << "vamos mostrando:" << endl;
+
+	for(int i=0; i<sumaValor; i++)
+	{
+		cout << "Carta " << i << ": " << endl;
+		
+		mostrar(mazo[i]);
+	}
+	
+	cout << "La carta final es: ";
+	
+	mostrar(mazo[sumaValor-1]);
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -1081,7 +1116,7 @@ void tMazo::repartir_en_n(tMazo mazo[], int n)
 		repartirIntercalando( n, i, mazo[i]);
 }
 
-void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont) 
+void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres) 
 //cont evita que siempre repartamos las mismas cartas.
 {
 	if (cuantasQuieres > (*this).cuantas)
@@ -1095,8 +1130,24 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres, int &cont)
 	else
 	{
 		for (int i=0; i < cuantasQuieres; i++)
-			mazoJugador[mazoJugador.cuantas++] = (*this)[cont++];
+			mazoJugador[mazoJugador.cuantas++] = (*this)[--(*this).cuantas];
 	}
+}
+
+int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
+{	int i;
+
+	for(i=cuenta; i>=0 || mazoNuevo[i].num == i; i--)
+	{
+		(*this).repartir_n_cartas(mazoNuevo, 1);
+		
+		if(i != 0)
+		{
+			cout << "Carta " << i << ": ";
+			mostrar((*this)[i]);
+		}			
+	}
+	return i;
 }
 
 //Actualiza el numero de ejecuciones guardado en el archivo stats.
@@ -1184,7 +1235,7 @@ bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
 		perdidas = (ganador == Automata) ?1 :0;
 
 		actualizar << 1   << endl << endl //Ejecuciones
-			   << usuario     << endl
+			       << usuario     << endl
 		           << ganadas     << endl
 		           << perdidas    << endl
 		           << 	     	     endl;
@@ -1649,6 +1700,43 @@ void truco_del_jugador_desconfiado()
 	}
 }
 
+void truco_cabo_caniaberal()
+{
+	tMazo mazoI, mazo[4];
+	int valorMazo1, valorMazo2, valorMazo3, valorMazo4, valorTotal = 0;
+	
+	mazoI.cargar_mazo_completo();
+	
+	mazoI.barajar();
+	
+	mostrar(mazoI);
+	
+	cout << endl;
+	
+	prediccion(mazoI);
+	
+	cout << "Primer mazo: " << endl;
+	valorMazo1 = mazoI.repartir_con_cuenta_atras(mazo[0], 10);
+	cout << endl;
+	pausa();
+	cout << "Segundo mazo: " << endl;
+	valorMazo2 = mazoI.repartir_con_cuenta_atras(mazo[1], 10);
+	cout << endl;
+	pausa();
+	cout << "Tercer mazo: " << endl;
+	valorMazo3 = mazoI.repartir_con_cuenta_atras(mazo[2], 10);
+	cout << endl;
+	pausa();
+	cout << "Cuarto mazo: " << endl;
+	valorMazo4 = mazoI.repartir_con_cuenta_atras(mazo[3], 10);
+	
+	pausa();
+	
+	valorTotal = valorMazo1 + valorMazo2 + valorMazo3 + valorMazo4;
+	
+	revelar_carta(valorTotal, mazoI);
+}
+
 int Blackjack::menu_opciones()
 {
 	linea();
@@ -1876,10 +1964,8 @@ void Blackjack::mano(string usuario)
 	
 	mazo.barajar();
 	
-	cont = 0;
-	
-	mazo.repartir_n_cartas(mazoJugador, 2, cont);
-	mazo.repartir_n_cartas(mazoBot, 2, cont);
+	mazo.repartir_n_cartas(mazoJugador, 2);
+	mazo.repartir_n_cartas(mazoBot, 2);
 	
 	cout << "Mano actual:" << endl;
 	mostrar(mazoJugador);
@@ -1903,7 +1989,7 @@ void Blackjack::mano(string usuario)
 		{
 			cout << "Has pedido otra carta" << endl << endl;
 			
-			mazo.repartir_n_cartas(mazoJugador, 1, cont);
+			mazo.repartir_n_cartas(mazoJugador, 1);
 			
 			cout << "Mano actual:" << endl;
 			mostrar(mazoJugador);
@@ -1947,7 +2033,7 @@ bool Blackjack::turno_crupier()
 	while (valor(mazoJugador) <= 21 && valor(mazoBot) < valor(mazoJugador))
 	{
 		cout << "El crupier ha pedido una carta" << endl;
-		mazo.repartir_n_cartas(mazoBot, 1, cont);
+		mazo.repartir_n_cartas(mazoBot, 1);
 		pasa_crup = false;
 	}
 
