@@ -1166,7 +1166,7 @@ int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
 			cout << "Valor = 0";
 		}
 		pausa();
-	} while (i>=0 && valor(mazoNuevo[cuenta-i]) != i--);
+	} while (i>0 && valor(mazoNuevo[cuenta-i]) != i--);
 
 	return i;
 }
