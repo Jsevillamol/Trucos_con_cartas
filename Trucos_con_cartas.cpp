@@ -205,7 +205,7 @@ void delete_user(string usuario);
 void truco_de_los_tres_montones();
 void truco_de_la_posada();
 void truco_del_jugador_desconfiado();
-void truco_cabo_caniaberal();
+void truco_de_cabo_caniaberal();
 
 //Funcion de pausa
 inline void pausa();
@@ -427,7 +427,7 @@ int main()
 				else if (opcion == 4)
 				{
 					linea();
-					truco_cabo_caniaberal();
+					truco_de_cabo_caniaberal();
 				}
 			}while (opcion != 0);
 		}
@@ -653,7 +653,7 @@ char elegir_palo()
 		cout << "Que palo eliges?"
 		     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
 		cin  >> simboloPalo;
-		if(cin.fail)
+		if(cin.fail())
 		{
 			cout << "Error, introduce una letra, una sola" << endl;
 			cin.clear();
@@ -661,8 +661,8 @@ char elegir_palo()
 		else if(simboloPalo != 'p' || simboloPalo != 'd' || simboloPalo != 't' || simboloPalo != 'c')
 		{
 			cout << "Erroor, introduce una de estas cuatro letras (p = picas, d = diamantes, "
-			     << "t = treboles, c = corazones)"
-			simboloPalo = 'j'
+			     << "t = treboles, c = corazones)";
+			simboloPalo = 'j';
 		}
 	}
 	while(simboloPalo = 'j');
