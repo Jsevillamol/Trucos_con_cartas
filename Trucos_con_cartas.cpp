@@ -765,13 +765,15 @@ void prediccion(tMazo mazo)
 void revelar_carta(int sumaValor, tMazo &mazo)
 {
 	cout << "Ahora contamos " << sumaValor << " cartas, y las "
-	     << "vamos mostrando:" << endl;
+	     << "vamos mostrando:" << endl << endl;
 
 	for(int i=sumaValor; i>0; i--)
 	{
 		cout << "Carta " << sumaValor-i+1 << ": " << endl;
 		
 		mostrar(mazo[mazo.cuantas-sumaValor+i-1]);
+		
+		cout << endl;
 	}
 	
 	cout << "La carta final es: ";
