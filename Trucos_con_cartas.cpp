@@ -1607,6 +1607,38 @@ void truco_de_los_tres_montones()
 	{
 		for (int i=0; i<3; i++)
 		{
+			if     (i == 0)
+			{
+				cout << "Ahora dividimos el mazo en tres repartiendo cartas alternamente "
+				     << "desde el mazo inicial a otros tres mazos." << endl;
+				     
+				pausa();
+				
+				cout << "Ahora fijate en una de las cartas de cualquiera de los tres mazos, "
+				     << "y memorizala" << endl;
+				     
+				pausa();
+			}
+			else if(i == 1)
+			{
+				cout << "Repetimos el proceso otra vez" << endl;
+				
+				pausa();
+				
+				cout << "Localiza la carta que has meorizado antes" << endl;
+				
+				pausa();
+			}
+			else if(i == 2)
+			{
+				cout << "Y volvemos a repetirlo una ultima vez" << endl;
+				
+				pausa();
+				
+				cout << "Presta atencion y encuentra tu carta" << endl;
+				
+				pausa();
+			}
 			//Repartir alternamente
 			mazoU.repartir_en_n(mazo, 3);
 			mazoU.vaciar();
