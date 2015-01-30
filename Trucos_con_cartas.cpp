@@ -524,19 +524,22 @@ string usuario_valido()
 	return nombre;
 }
 
+
+//Menu que permite al usuario acceder a otros menus, o bien al juego de blackjack 
 int menu_principal()
 {
 	linea();
         cout << "Menu principal:"                   << endl
              << "1 - Menu de carga y guardado"      << endl
              << "2 - Menu de manipulacion de mazos" << endl
-             << "3 - Blackjack"                     << endl
+             << "3 - Menu de Blackjack"             << endl
              << "4 - Menu de magia de cartas"       << endl
              << "0 - Salir"                         << endl;
 	
 	return digitoEntre(0,4);
 }
 
+//Menu que permite al usuario cargar y/o guardar segun que mazos
 int menu_de_carga_y_guardado()
 {
 	linea();
@@ -550,6 +553,8 @@ int menu_de_carga_y_guardado()
 	return digitoEntre(0,4);
 }
 
+//Menu que permite al usuario manipular de diferentes formas 
+//el mazo que haya cargado anteriormente
 int menu_de_manipulacion_de_mazos()
 {
 	linea();
@@ -561,7 +566,7 @@ int menu_de_manipulacion_de_mazos()
 	     << "5  - Separar en pares e impares"   << endl
 	     << "6  - Separar en figuras y numeros" << endl
 	     << "7  - Separar en n montones"        << endl
-		 << "8  - Repartir n cartas"            << endl
+	     << "8  - Repartir n cartas"            << endl
 	     << "9  - Mostrar mazo actual"          << endl
  	     << "10 - Aniadir una carta concreta"   << endl
  	     << "11 - Eliminar una carta concreta"  << endl
@@ -571,6 +576,7 @@ int menu_de_manipulacion_de_mazos()
 	return digitoEntre(0,12);
 }
 
+//Menu que permite al usuario acceder a los distintos trucos de magia
 int menu_de_magia()
 {
 	linea();
@@ -578,12 +584,14 @@ int menu_de_magia()
 	     << "1 - Truco de los tres montones"   << endl
 	     << "2 - Truco de la posada"           << endl
 	     << "3 - Truco del jugador despistado" << endl
-		 << "4 - Truco de cabo caniaveral "    << endl
+	     << "4 - Truco de cabo caniaveral "    << endl
 	     << "0 - Volver al menu principal"     << endl;
 		 
 	return digitoEntre(0,4);
 }
 
+//Funcion que impide que el usuario introduzca algo que no sea un digito 
+//contenido entre los argumentos de dicha funcion
 int digitoEntre(int a, int b)
 {
 	int digito = -1;
@@ -611,16 +619,20 @@ int digitoEntre(int a, int b)
 	return digito;
 }
 
+//Saca por consola una linea de guion
 inline void linea()
 {
 	cout << setfill('-') << setw(79) <<  '-'  << endl << setfill(' ');
 }
 
+//Permite al usuario elegir una carta pidiendole el numero y el palo
+//de dicha carta
 inline tCarta elegir_carta()
 {
 	return traducir(elegir_palo(), elegir_numero());
 }
 
+//Pide al usuario el numero de la carta que quiere elegir
 int elegir_numero()
 {	
 	cout << "Que numero de carta escoges?"
@@ -629,17 +641,36 @@ int elegir_numero()
 	return digitoEntre(1,13);
 }
 
+//Pide al usuario el char correspondiente al palo de la carta que quiere elegir
 char elegir_palo()
 {
-	char simboloPalo;
+	char simboloPalo = 'j';
 	
-	cout << "Que palo eliges?"
-	     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
-	cin >> simboloPalo;
+	do
+	{
+		cin.sync();
+		
+		cout << "Que palo eliges?"
+		     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
+		cin  >> simboloPalo;
+		if(cin.fail)
+		{
+			cout << "Error, introduce una letra, una sola" << endl;
+			cin.clear();
+		}
+		else if(simboloPalo != 'p' || simboloPalo != 'd' || simboloPalo != 't' || simboloPalo != 'c')
+		{
+			cout << "Erroor, introduce una de estas cuatro letras (p = picas, d = diamantes, "
+			     << "t = treboles, c = corazones)"
+			simboloPalo = 'j'
+		}
+	}
+	while(simboloPalo = 'j');
 	
 	return simboloPalo;
 }
 
+//Muestra por consola tantos mazos como se le pasen como argumento
 void mostrar(const tMazo mazo[], int n)
 {
 	for(int i=0; i<n; i++)
@@ -649,6 +680,7 @@ void mostrar(const tMazo mazo[], int n)
 	}
 }
 
+//Muestra por consola el mazo que le pases como argumento
 void mostrar(tMazo mazo)
 {
 	for(int i=0; i < mazo.cuantas; i++)
@@ -658,6 +690,7 @@ void mostrar(tMazo mazo)
 	cout << endl;
 }
 
+//Muestra la carta que le pases como argumento
 void mostrar(const tCarta carta)
 {
 	mostrar(carta.num);
@@ -669,6 +702,8 @@ void mostrar(const tCarta carta)
 	cout << endl;
 }
 
+//Traduce los numeros de una carta a simbolos (A, J, Q, K)
+//y los muestra por consola
 void mostrar(const tNumero n)
 {
 	if      (n == A) cout << "A";
@@ -678,6 +713,7 @@ void mostrar(const tNumero n)
 	else             cout <<  n ;
 }
 
+//Traduce los palos de una carta y los muestra por consola
 void mostrar(const tPalo p)
 {
 	if            (p == picas)   cout <<     "de picas";
@@ -686,6 +722,7 @@ void mostrar(const tPalo p)
 	else /*if (c == corazones)*/ cout << "de corazones";
 }
 
+//Muestra el contenido del archivo que le pases como argumento
 bool mostrar(string archivo)
 {
 	bool ok;
@@ -716,6 +753,7 @@ bool mostrar(string archivo)
 	return ok;
 }
 
+//Usada en el truco cabo caniaveral, adivina la carta que saldra al final del truco
 void prediccion(tMazo mazo)
 {
 	cout << "Saldra la carta: ";
@@ -723,23 +761,26 @@ void prediccion(tMazo mazo)
 	mostrar(mazo[8]);
 }
 
-void revelar_carta(int sumaValor, tMazo mazo)
+//Usada en el truco cabo caniaveral, revela cual es la carta resultante del truco
+void revelar_carta(int sumaValor, tMazo &mazo)
 {
 	cout << "Ahora contamos " << sumaValor << " cartas, y las "
 	     << "vamos mostrando:" << endl;
 
-	for(int i=0; i<sumaValor; i++)
+	for(int i=sumaValor; i>0; i--)
 	{
-		cout << "Carta " << i+1 << ": " << endl;
+		cout << "Carta " << sumaValor-i+1 << ": " << endl;
 		
-		mostrar(mazo[i]);
+		mostrar(mazo[mazo.cuantas-sumaValor+i-1]);
 	}
 	
 	cout << "La carta final es: ";
 	
-	mostrar(mazo[sumaValor-1]);
+	mostrar(mazo[mazo.cuantas-sumaValor]);
 }
 
+//Usada en el truco cabo caniaveral, determina el valor de la carta que le 
+//pases como argumento, teniendo en cuenta que las figuras tambien valen 10
 int valor(tCarta carta)
 {
 	int valor;
@@ -778,6 +819,7 @@ bool tMazo::cargar(string &nomb)
 	else return false;
 }
 
+//Carga automaticamente el archivo que le pases como argumento
 bool tMazo::cargar_auto(string &nomb)
 {
 	char p;
@@ -800,6 +842,7 @@ bool tMazo::cargar_auto(string &nomb)
 	else return false;
 }
 
+//Carga un mazo de 52 cartas sin necesidad de acceder a ningun archivo
 void tMazo::cargar_mazo_completo()
 {
 	int k=0;
@@ -854,6 +897,8 @@ bool tMazo::agregar()
 	else return true;
 }
 
+//Guarda el mazo que tengas cargado, en el archivo que tue elijas 
+//(en el archivo) actual por defecto
 bool tMazo::guardar(string &nomb)
 {
 	string response;
@@ -882,6 +927,7 @@ bool tMazo::guardar(string &nomb)
 	else return false;
 }
 
+//Traduce el palo de una carta a un char
 string traducir(tCarta carta)
 {
 	string s="";
@@ -905,6 +951,7 @@ string traducir(tCarta carta)
 	return s;
 }
 
+//Traduce una pareje formada por un char y un int a una carta
 tCarta traducir(char p, int n)
 {
 	tPalo suit;
@@ -919,6 +966,7 @@ tCarta traducir(char p, int n)
 	return carta;
 }
 
+//Vacia el mazo actual reiniciando el contador de la funcion cuantas()
 inline void tMazo::vaciar()
 {
 	cuantas = 0;
@@ -933,11 +981,13 @@ void tMazo::barajar()
 	}
 }
 
+//Genera un numero aleatorio entre 0 y el numero que se le pase como argumento
 int randint(int max)
 {
 	return rand() % (max);
 }
 
+//Intercambia al azahar las posiciones de dos cartas dentro de un mazo
 void tMazo::intercambiar(int pos1, int pos2)
 {
 	tCarta aux;
@@ -962,6 +1012,9 @@ bool tMazo::desplazar(int numero)
 	else return false;
 }
 
+//Corta el mazo actual por la posicion que indique el argumento, 
+//y completa el mazo situando ambas partes en el orden contrario 
+//a en que se separaron
 void tMazo::cortar(int cuantasCartas)
 {
 	tMazo otroMazo;
@@ -973,6 +1026,8 @@ void tMazo::cortar(int cuantasCartas)
 	}
 }
 
+//Corta el mazo actual por la posicion que indique el argumento, 
+//y guarda la otra parte de este en una variable tMazo 
 bool tMazo::partir(tMazo &otroMazo, int cuantasCoger)
 {
 	int i;
@@ -991,6 +1046,8 @@ bool tMazo::partir(tMazo &otroMazo, int cuantasCoger)
 	}
 }
 
+//Une el mazo actual con el mazo que le pases de argumento, 
+//guardando el mazo resultante en el mazo actual
 bool tMazo::unir(const tMazo &otroMazo)
 {
 	if (desplazar(otroMazo.cuantas))
@@ -1004,16 +1061,19 @@ bool tMazo::unir(const tMazo &otroMazo)
 	else return false;
 }
 
+//Añade una carta elegida por el usuario al mazo actual
 inline void tMazo::carta_concreta_dentro()
 {
 	agregar_carta(elegir_carta());
 }
 
+//Quita una carta elegida por el usuario del mazo actual
 inline void tMazo::carta_concreta_fuera()
 {
 	quitar_carta(elegir_carta());
 }
 
+//Añade la carta que le passes como argumento al mazo actual
 bool tMazo::agregar_carta(tCarta carta)
 {
 	if (cuantas == MAX_CARTAS)
@@ -1029,6 +1089,7 @@ bool tMazo::agregar_carta(tCarta carta)
 	}
 }
 
+//Quita la carta que le pases como argumento del mazo actual
 bool tMazo::quitar_carta(tCarta carta)
 {
 	int i;
@@ -1051,41 +1112,49 @@ bool tMazo::quitar_carta(tCarta carta)
 	}
 }
 
+//Criterio de si la carta que se pase como argumento es par
 bool pares(tCarta carta)
 {
 	return (!(carta.num % 2));
 }
 
+//Separa el mazo en dos segun sean sus cartas pares o impares
 void tMazo::repartirParImpar(tMazo &mazoPar, tMazo &mazoImpar)
 {
 	repartir_segun_criterio(mazoPar, mazoImpar, pares);
 }
 
+//Criterio de si la carta que se pase como argumento es figura
 bool figuras(tCarta carta)
 {
 	return (carta.num > 10 || carta.num == A);
 }
 
+//Separa el mazo en dos segun sean sus cartas figuras o numero
 void tMazo::repartirFigurasNumeros(tMazo &mazoFiguras, tMazo &mazoNumeros)
 {
 	repartir_segun_criterio(mazoFiguras, mazoNumeros, figuras);
 }
 
+//Criterio de si la carta que se pase como argumento es baja
 bool bajas(tCarta carta)
 {
 	return (carta.num < 8);
 }
 
+//Separa el mazo en dos segun sean sus cartas bajas o altas
 void tMazo::repartirBajaAlta(tMazo &mazoBajas, tMazo &mazoAltas)
 {
 	repartir_segun_criterio(mazoBajas, mazoAltas, bajas);
 }
 
+//Criterio de si la carta que se pase como argumento es negra
 bool negro(tCarta carta)
 {
 	return ((carta.palo == picas)||(carta.palo == treboles));
 }
 
+//Separa el mazo en dos segun sean sus cartas negras o rojas
 void tMazo::repartirNegroRojo(tMazo &mazoNegro, tMazo &mazoRojo)
 {
 	repartir_segun_criterio(mazoNegro, mazoRojo, negro);
@@ -1113,6 +1182,8 @@ void tMazo::repartir_segun_criterio(tMazo &mazo1, tMazo &mazo2, bool (*criterio)
 	mazo2.cuantas = k;
 }
 
+//Reparte una de cada enCuantos cartas del mazo actual a mazoNuevo, 
+//comenzando por la carta queMaoz del mazo actual
 void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
 {
 	int j=0;
@@ -1123,6 +1194,7 @@ void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
 	mazoNuevo.cuantas = j;
 }
 
+//Reparte el mazo actual en tantos mazos como le pases como argumento
 void tMazo::repartir_en_n(tMazo mazo[], int n)
 {
 	//Repartir alternamente
@@ -1130,6 +1202,8 @@ void tMazo::repartir_en_n(tMazo mazo[], int n)
 		repartirIntercalando( n, i, mazo[i]);
 }
 
+//Reparte consecutivamente las cartas que pases como argumento desde el
+//mazo actual a mazoJugador
 void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres) 
 //cont evita que siempre repartamos las mismas cartas.
 {
@@ -1148,6 +1222,10 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
 	}
 }
 
+//Usada en el truco de cabo caniaveral, reparte las cartas que le pases como argumento
+//del mazo principal a mazoNuevo y las va mostrando, haciendo una cuenta atras desde cuenta.
+//Si el numero de la carta coincide con cuenta, el reparto se detiene, en cambio si la cuenta 
+//llega a 0 la cuenta tambien se detiene, pero no se muestra la ultima carta.
 int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
 {	int i = cuenta+1;
 
@@ -1156,13 +1234,19 @@ int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
 		i--;
 		(*this).repartir_n_cartas(mazoNuevo, 1);
 		
-		cout << "Carta " << i << ": ";
-		mostrar(mazoNuevo[cuenta-i]);
+		if(i == 0)
+		{
+			cout << "Carta " << i << ": "
+			     << "Valor = 0";
+		}
+		else
+		{
+			cout << "Carta " << i << ": ";
+			mostrar(mazoNuevo[cuenta-i]);
+		}
 
 		pausa();
 	} while (i>0 && valor(mazoNuevo[cuenta-i]) != i);
-
-	if(i == 0) cout << "Valor = 0";
 	
 	return i;
 }
@@ -1509,6 +1593,7 @@ void delete_user(string usuario)
 	fcopy("backup.txt", "stats.txt");
 }
 
+//Truco de la parte obligatoria
 void truco_de_los_tres_montones()
 {
 	tMazo mazoU, mazo[3];
@@ -1560,6 +1645,7 @@ void truco_de_los_tres_montones()
 	}
 }
 
+//Truco de la parte obligatoria
 void truco_de_la_posada()
 {
 	tMazo mazo[4], mazoU;
@@ -1610,6 +1696,7 @@ void truco_de_la_posada()
 	}
 }
 
+//Truco obligatorio de la parte opcional
 void truco_del_jugador_desconfiado()
 {
 	tMazo mazoD, mazo[4], mazoNegro, mazoRojo, mazoBajas, mazoAltas; 
@@ -1717,20 +1804,44 @@ void truco_del_jugador_desconfiado()
 	}
 }
 
-void truco_cabo_caniaberal()
+//Truco addicional de parte de la casa
+void truco_de_cabo_caniaberal()
 {
 	tMazo mazoI, mazo[4];
 	int valorMazo1, valorMazo2, valorMazo3, valorMazo4, valorTotal = 0;
+	
+	cout << "El truco consiste en la adivinacion por parte de la consola " 
+	     << "de la carta que saldra tras tras repartir un mazo en cuatro "
+		 << "de una determinada manera." << endl << endl;
 	
 	mazoI.cargar_mazo_completo();
 	
 	mazoI.barajar();
 	
+	pausa();
+	
+	cout << "Mazo completo barajado: " << endl;
 	mostrar(mazoI);
 	
 	cout << endl;
 	
 	prediccion(mazoI);
+	
+	pausa();
+	
+	cout << endl
+	     << "Una vez que la consola ha hecho la prediccion, nos disponemos "
+	     << "nos disponemos a repartir 10 cartas del mazo barajado a otro mazo, "
+		 << "haciendo una cuenta atras desde 10. si el numero de la carta que salga "
+		 << "coincide con el numero por el que vayamos en la cuenta atras, se dejara "
+		 << "esa carta boca arriba en el primer mazo y se pasara a repartir a otro; "
+		 << "sin embargo, si la cuenta llega hasta 0 si que cioncida ningun numero de "
+		 << "carta con el de la cuenta, la ultima carta se dejara boca abajo en el mazo "
+		 << "al que estemos repartiendo, y se procedera a repartir a otro mazo." << endl
+		 << "Este proceso se realizara un total de 4 veces, o sea, se repartiran cartas "
+		 << "a 4 mazos desde el mazo principal." << endl;
+		 
+	pausa();
 	
 	cout << "Primer mazo: " << endl;
 	valorMazo1 = mazoI.repartir_con_cuenta_atras(mazo[0], 10);
@@ -1749,16 +1860,22 @@ void truco_cabo_caniaberal()
 	
 	pausa();
 	
+	cout << "A continuacion se suman los numeros de las cartas que se "
+	     << "que se quedaran boca arriba (las que esten boca abajo suman 0), "
+		 << "y del primer mazo se sacan tantas cartas como indique la suma "
+		 << "obtenida anteriormente." << endl << endl;
+	
 	valorTotal = valorMazo1 + valorMazo2 + valorMazo3 + valorMazo4;
 	
 	revelar_carta(valorTotal, mazoI);
 }
 
+//Menu de opciones del juego de blackjack
 int Blackjack::menu_opciones()
 {
 	linea();
 	
-	cout << "Blackjack:"                << endl
+	cout << "Menu de Blackjack:"        << endl
 	     << "1 - Jugar"                 << endl
 	     << "2 - Reglas"                << endl
 	     << "3 - Estadisticas"          << endl
@@ -1769,6 +1886,7 @@ int Blackjack::menu_opciones()
 	return digitoEntre(0,5);
 }
 
+//Opciones que tienes durante tu turno en el juego de blackjack
 int Blackjack::opciones_de_blackjack()
 {
 	cout << "Que decides hacer?:" << endl
@@ -1780,6 +1898,7 @@ int Blackjack::opciones_de_blackjack()
 	return digitoEntre(0,3);
 }
 
+//Te pregunta cuanto quieres apostar en una partida de blackjack
 int Blackjack::apuesta()
 {
 	int pastaJugada;
@@ -1796,6 +1915,8 @@ int Blackjack::apuesta()
 	return pastaJugada;
 }
 
+//Define y proporciona la recompensa tras una partida de blackjack
+//basandose en los posibles finales de esta
 void Blackjack::recompensa(int apu, int queHacer, string usuario)
 {
 	int manoCrup = valor(mazoBot);
@@ -1912,6 +2033,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 	actualizar_stats(ganador, usuario);
 }
 
+//Define el valor de una mano de blackjack
 int Blackjack::valor(const tMazo &mano)
 {
 	int total = 0;
@@ -1929,6 +2051,7 @@ int Blackjack::valor(const tMazo &mano)
 	else return total;
 }
 
+//Controla el menu de blackjack
 void Blackjack::run(string usuario)
 {
 	
@@ -1973,6 +2096,7 @@ void Blackjack::run(string usuario)
 	while(opcion != 0);
 }
 
+//Controla una partida de blackjack
 void Blackjack::mano(string usuario)
 {
 	int queHacer, apu;
@@ -2060,6 +2184,8 @@ bool Blackjack::turno_crupier()
 	return pasa_crup;
 }
 
+//Muestra por consola que el usuario ha ganado, añade lo que
+//ganara de la apuesta a su dinero actual, y se lo muestra
 inline void Blackjack::ganar(int apu)
 {
 	dinero += apu;
@@ -2068,13 +2194,16 @@ inline void Blackjack::ganar(int apu)
 	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
+//Determina que el jugador ha perdido y le muestra el saldo actual
 inline void Blackjack::perder(int apu)
 {
 	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
 	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
+//Pausa el programa cuando le la llama, para continuar pula (enter)
 inline void pausa()
 {
+	cin.sync(); //Para eliminar los datos basura del buffer
 	cin.get();
 }
