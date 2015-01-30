@@ -1656,14 +1656,14 @@ void truco_de_la_posada()
 	
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
-			 << "Un dia llegaron cuatro caballeros y cada uno se" 
-			 << "puso en una habitacion diferente."                   << endl
-			 << "Luego llegaron cuatro senioras, y para no dejarlas" 
-			 << "sin habitacion, ubicaron a cada una en una de dichas"
-			 << "habitaciones, con los caballeros."                   << endl
-			 << "Luego llegaron cuatro reyes con sus cuatro peones,"
-			 << "y pusieron cada rey y cada peon en alguna de dichas" << endl
-			 << "cuatro habitaciones. "                               << endl;
+		     << "Un dia llegaron cuatro caballeros y cada uno se" 
+		     << "puso en una habitacion diferente."                   << endl
+		     << "Luego llegaron cuatro senioras, y para no dejarlas" 
+		     << "sin habitacion, ubicaron a cada una en una de dichas"
+		     << "habitaciones, con los caballeros."                   << endl
+		     << "Luego llegaron cuatro reyes con sus cuatro peones,"
+		     << "y pusieron cada rey y cada peon en alguna de dichas" << endl
+		     << "cuatro habitaciones. "                               << endl;
 		 	 
 		pausa();
 		mazoU.repartir_en_n(mazo, 4);
@@ -1677,7 +1677,7 @@ void truco_de_la_posada()
 	
 		//Cortamos el mazo
 		cout << "Por que numero de carta quieres cortar?";
-		cin >> corte;
+		cin  >> corte;
 		mazoU.cortar(corte);
 	
 		cout << "Sin embargo, a la maniana siguiente..." << endl;
@@ -1688,7 +1688,7 @@ void truco_de_la_posada()
 		mostrar(mazo, 4);
 
 		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
-			 << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+		     << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
 	}
 	else
 	{
@@ -1812,7 +1812,7 @@ void truco_de_cabo_caniaberal()
 	
 	cout << "El truco consiste en la adivinacion por parte de la consola " 
 	     << "de la carta que saldra tras tras repartir un mazo en cuatro "
-		 << "de una determinada manera." << endl << endl;
+	     << "de una determinada manera." << endl << endl;
 	
 	mazoI.cargar_mazo_completo();
 	
@@ -1832,14 +1832,14 @@ void truco_de_cabo_caniaberal()
 	cout << endl
 	     << "Una vez que la consola ha hecho la prediccion, nos disponemos "
 	     << "nos disponemos a repartir 10 cartas del mazo barajado a otro mazo, "
-		 << "haciendo una cuenta atras desde 10. si el numero de la carta que salga "
-		 << "coincide con el numero por el que vayamos en la cuenta atras, se dejara "
-		 << "esa carta boca arriba en el primer mazo y se pasara a repartir a otro; "
-		 << "sin embargo, si la cuenta llega hasta 0 si que cioncida ningun numero de "
-		 << "carta con el de la cuenta, la ultima carta se dejara boca abajo en el mazo "
-		 << "al que estemos repartiendo, y se procedera a repartir a otro mazo." << endl
-		 << "Este proceso se realizara un total de 4 veces, o sea, se repartiran cartas "
-		 << "a 4 mazos desde el mazo principal." << endl;
+	     << "haciendo una cuenta atras desde 10. si el numero de la carta que salga "
+	     << "coincide con el numero por el que vayamos en la cuenta atras, se dejara "
+	     << "esa carta boca arriba en el primer mazo y se pasara a repartir a otro; "
+	     << "sin embargo, si la cuenta llega hasta 0 si que cioncida ningun numero de "
+	     << "carta con el de la cuenta, la ultima carta se dejara boca abajo en el mazo "
+	     << "al que estemos repartiendo, y se procedera a repartir a otro mazo." << endl
+	     << "Este proceso se realizara un total de 4 veces, o sea, se repartiran cartas "
+	     << "a 4 mazos desde el mazo principal." << endl;
 		 
 	pausa();
 	
@@ -1862,8 +1862,8 @@ void truco_de_cabo_caniaberal()
 	
 	cout << "A continuacion se suman los numeros de las cartas que se "
 	     << "que se quedaran boca arriba (las que esten boca abajo suman 0), "
-		 << "y del primer mazo se sacan tantas cartas como indique la suma "
-		 << "obtenida anteriormente." << endl << endl;
+	     << "y del primer mazo se sacan tantas cartas como indique la suma "
+	     << "obtenida anteriormente." << endl << endl;
 	
 	valorTotal = valorMazo1 + valorMazo2 + valorMazo3 + valorMazo4;
 	
@@ -2013,7 +2013,7 @@ void Blackjack::recompensa(int apu, int queHacer, string usuario)
 		else if(manoCrup == 21)
 		{
 			cout << "El crupier y tu teneis la misma mano, "
-				 << "gana el Crupier" << endl;
+			     << "gana el Crupier" << endl;
 					
 			perder(apu);
 						
