@@ -1149,9 +1149,9 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
 }
 
 int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
-{	int i;
+{	int i = cuenta;
 
-	for(i=cuenta; i>=0 && valor(mazoNuevo[i]) != i; i--)
+	do
 	{
 		(*this).repartir_n_cartas(mazoNuevo, 1);
 		
@@ -1166,7 +1166,8 @@ int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
 			cout << "Valor = 0";
 		}
 		pausa();
-	}
+	} while (i>=0 && valor(mazoNuevo[cuenta-i]) != i--);
+
 	return i;
 }
 
