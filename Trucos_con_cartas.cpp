@@ -1149,25 +1149,21 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
 }
 
 int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
-{	int i = cuenta;
+{	int i = cuenta+1;
 
 	do
 	{
+		i--;
 		(*this).repartir_n_cartas(mazoNuevo, 1);
 		
 		cout << "Carta " << i << ": ";
-		
-		if(i != 0)
-		{
-			mostrar(mazoNuevo[cuenta-i]);
-		}
-		else
-		{
-			cout << "Valor = 0";
-		}
-		pausa();
-	} while (i>0 && valor(mazoNuevo[cuenta-i]) != i--);
+		mostrar(mazoNuevo[cuenta-i]);
 
+		pausa();
+	} while (i>0 && valor(mazoNuevo[cuenta-i]) != i);
+
+	if(i == 0) cout << "Valor = 0";
+	
 	return i;
 }
 
