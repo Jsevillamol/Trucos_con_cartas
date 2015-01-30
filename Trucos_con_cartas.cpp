@@ -693,12 +693,47 @@ void truco_de_los_tres_montones()
 	tMazo mazoU, mazo1, mazo2, mazo3;
 	string nomb;
 	int mazo;
-
+	
+	cout << "El truco consiste en:" << endl
+	     << "En primer lugar mostramos un mazo de 21 cartas" << endl;
+	
 	//generamos el mazo de 21 cartas
 	if (mazoValido(mazoU, 21, nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
+			if(i == 0)
+			{
+				cout << "Ahora dividimos el mazo en tres repartiendo cartas alternamente "
+				     << "desde el mazo inicial a otros tres mazos." << endl;
+				     
+				pausa();
+				
+				cout << "Ahora fijate en una de las cartas de cualquiera de los tres mazos, "
+				     << "y memorizala" << endl;
+				     
+				pausa();
+			}
+			else if(i == 1)
+			{
+				cout << "Repetimos el proceso otra vez" << endl;
+				
+				pausa();
+				
+				cout << "Localiza la carta que has meorizado antes" << endl;
+				
+				pausa();
+			}
+			else if(i == 2)
+			{
+				cout << "Y volvemos a repetirlo una ultima vez" << endl;
+				
+				pausa();
+				
+				cout << "Presta atencion y encuentra tu carta" << endl;
+				
+				pausa();
+			}
 			//Repartir alternamente
 			repartir_en_tres(mazoU, mazo1, mazo2, mazo3);
 			vaciar(mazoU);
@@ -741,13 +776,10 @@ void truco_de_los_tres_montones()
 
 void truco_de_la_posada()
 {
-<<<<<<< HEAD
 	tMazo mazo1, mazo2, mazo3, mazo4;
 	string nomb = "posada.txt";
-=======
 	tMazo mazoU, mazo1, mazo2, mazo3, mazo4;
 	string nomb;
->>>>>>> origin/master
 	int corte;
 	
 	if (mazoValido(mazoU, 16, nomb))
@@ -794,5 +826,6 @@ void truco_de_la_posada()
 
 void pausa()
 {
+	cin.sync();
 	cin.get();
 }
