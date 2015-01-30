@@ -174,6 +174,7 @@ void mostrar(const tPalo p);
 bool mostrar(string archivo);
 void prediccion();
 void revelar_carta(int sumaValor);
+int valor(tCarta carta);
 
 //Funciones de carga y guardado de mazos
 bool abrir(string &nomb, ifstream &archivo);
@@ -719,7 +720,7 @@ void prediccion(tMazo mazo)
 {
 	cout << "Saldra la carta: ";
 	
-	mostrar(mazo[42]);
+	mostrar(mazo[8]);
 }
 
 void revelar_carta(int sumaValor, tMazo mazo)
@@ -729,7 +730,7 @@ void revelar_carta(int sumaValor, tMazo mazo)
 
 	for(int i=0; i<sumaValor; i++)
 	{
-		cout << "Carta " << i << ": " << endl;
+		cout << "Carta " << i+1 << ": " << endl;
 		
 		mostrar(mazo[i]);
 	}
@@ -737,6 +738,21 @@ void revelar_carta(int sumaValor, tMazo mazo)
 	cout << "La carta final es: ";
 	
 	mostrar(mazo[sumaValor-1]);
+}
+
+int valor(tCarta carta)
+{
+	int valor;
+	
+	if(carta.num == K || carta.num == Q || carta.num == J)
+	{
+		valor = 10;
+	}
+	else 
+	{
+		valor = carta.num;
+	}
+	return valor;
 }
 
 //Carga un mazo de un archivo a elección del usuario.
@@ -1135,15 +1151,21 @@ void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
 int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
 {	int i;
 
-	for(i=cuenta; i>=0 && mazoNuevo[i].num != i; i--)
+	for(i=cuenta; i>=0 && valor(mazoNuevo[i]) != i; i--)
 	{
 		(*this).repartir_n_cartas(mazoNuevo, 1);
 		
+		cout << "Carta " << i << ": ";
+		
 		if(i != 0)
 		{
-			cout << "Carta " << i << ": ";
 			mostrar(mazoNuevo[cuenta-i]);
 		}
+		else
+		{
+			cout << "Valor = 0";
+		}
+		pausa();
 	}
 	return i;
 }
