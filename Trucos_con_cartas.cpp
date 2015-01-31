@@ -2295,6 +2295,8 @@ void Blackjack::mano(string usuario)
 							     
 							dinero -= apu;
 							apu *= 2;
+
+							dudaApuesta = false;
 						}
 						else if(decision == 'n')
 						{
