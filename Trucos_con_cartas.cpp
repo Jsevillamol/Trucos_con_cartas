@@ -157,6 +157,7 @@ public:
 
 	//Funciones de datos
 	int apuesta();
+	char Blackjack::doblarApuesta(char decision, int cuantasVeces);
 	void recompensa(int apu, int queHacer, string usuario);
 	int valor(const tMazo &mano);
 
@@ -2025,6 +2026,64 @@ int Blackjack::apuesta()
 	return pastaJugada;
 }
 
+//Funcion que controla si puedes o no dolar la apuesta 
+//mediante recursividad
+char Blackjack::doblarApuesta(char decision, int cuantasVeces)
+{
+	if(decision == 's')
+	{
+		cout << "Has tomado tu decision, ya no hay vuelta atras..."
+			 << endl;
+			 
+		dinero -= apu;
+		apu *= 2;
+
+		dudaApuesta = false;
+	}
+	else if(decision == 'n')
+	{
+		cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
+			 << "menores, pero tu lo has querido..." << endl;
+			 
+		dudaApuesta = false;
+	}
+	else
+	{
+		if(int cuantasVeces == 0)
+		{
+			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
+				 << "haces bien, es una decision muy importante, pero tranquilo, "
+				 << "tu sobre todo no te pongas nervioso..." << endl;
+				 
+			pausa();
+				 
+			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+				 
+			doblarApuesta(decision, cuantasVeces);
+		}     
+		else if(int cuantasVeces == 1)
+		{
+			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
+				 << "nervioso? Relmente la decision no es tan importante" << endl;
+				 
+			pausa();
+				 
+			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+				 
+			doblarApuesta(decision, cuantasVeces);	     
+		}
+		else if(int cuantasVeces == 2)
+		{
+			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
+				 << "clara esa decision, continua la partida sin doblar la apuesta" 
+				 << endl;
+				 
+			dudaApuesta = false;
+		}
+	}
+	return decision;
+}
+
 //Define y proporciona la recompensa tras una partida de blackjack
 //basandose en los posibles finales de esta
 void Blackjack::recompensa(int apu, int queHacer, string usuario)
@@ -2267,16 +2326,16 @@ void Blackjack::mano(string usuario)
 				{
 					if(apu > dinero/2)
 					{
-						cout << "Error, con tu saldo restante (" << dinero << ") no "
-						     << "puedes permitirte doblar la apuesta" << endl;
+						cout << "Lo siento, pero con tu saldo restante (" << dinero << ") no "
+							 << "puedes permitirte doblar la apuesta" << endl;
 					}
 					else 
 					{
 						if(apu == dinero/2)
 						{
 							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
-							     << "de tu saldo restante, estas seguro de que quieres "
-							     << "hacerlo? (s(si)/n(no))";
+								 << "de tu saldo restante, estas seguro de que quieres "
+								 << "hacerlo? (s(si)/n(no))";
 						}
 						else if(apu < dinero/2)
 						{
@@ -2291,57 +2350,25 @@ void Blackjack::mano(string usuario)
 						if(decision == 's')
 						{
 							cout << "Has tomado tu decision, ya no hay vuelta atras..."
-							     << endl;
-							     
+								 << endl;
+								 
 							dinero -= apu;
 							apu *= 2;
-
+				
 							dudaApuesta = false;
 						}
 						else if(decision == 'n')
 						{
 							cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
-							     << "menores, pero tu lo has querido..." << endl;
-							     
+								 << "menores, pero tu lo has querido..." << endl;
+								 
 							dudaApuesta = false;
 						}
 						else
 						{
 							for(int i=0; i<3; i++)
 							{
-								if(i == 0)
-								{
-									cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
-									     << "haces bien, es una decision muy importante, pero tranquilo, "
-									     << "tu sobre todo no te pongas nervioso..." << endl;
-									     
-									pausa();
-									     
-									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-									     
-									cin.clear();
-									cin  >> decision;
-								}     
-								else if(i == 1)
-								{
-									cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
-									     << "nervioso? Relmente la decision no es tan importante" << endl;
-									     
-									pausa();
-									     
-									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-									     
-									cin.clear();
-									cin  >> decision;	     
-								}
-								else if(i == 2)
-								{
-									cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
-									     << "clara esa decision, continua la partida sin doblar la apuesta" 
-									     << endl;
-									     
-									dudaApuesta = false;
-								}
+								doblarApuesta(decision, i);
 							}
 						}
 					}
@@ -2349,7 +2376,7 @@ void Blackjack::mano(string usuario)
 				else if(dudaApuesta == false)
 				{
 					cout << "Lo siento, pero no puedes doblar la apuesta si ya " 
-					     << "antes has decidido hacerlo o no hacerlo" << endl;
+						 << "antes has decidido hacerlo o no hacerlo" << endl;
 				}
 			}
 		}
