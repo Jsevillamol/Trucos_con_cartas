@@ -2006,11 +2006,23 @@ int Blackjack::apuesta()
 	
 	pastaJugada = digitoEntre(APU_MIN,APU_MAX);
 	
-	while(pastaJugada > dinero)
+	if(pastaJugada == dinero)
 	{
-		cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
+		cout << "Con que apuestas todo el dinero que te queda, eh?." << endl
+		     << "Buena suerte... " << endl;
 		
-		pastaJugada = digitoEntre(APU_MIN,APU_MAX);
+		pausa();
+		
+		cout << "Buena suerte... Te hara falta" << endl;
+	}
+	else
+	{
+		while(pastaJugada > dinero)
+		{
+			cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
+		
+			pastaJugada = digitoEntre(APU_MIN,APU_MAX);
+		}
 	}
 	return pastaJugada;
 }
@@ -2200,6 +2212,7 @@ void Blackjack::run(string usuario)
 void Blackjack::mano(string usuario)
 {
 	int queHacer, apu;
+	bool dudaApuesta = true
 	
 	cout << "Bienvenido al juego de Blackjack" << endl;
 	
@@ -2252,9 +2265,145 @@ void Blackjack::mano(string usuario)
 			}
 			else 
 			{
-				cout << "Acabas de doblar tu apuesta, espero que sepas lo que haces" << endl;
-				dinero -= apu;
-				apu *= 2;
+				if(dudaApuesta == true)
+				{
+					if(apu < dinero/2)
+					{
+						cout << "Error, con tu saldo restante (" << dinero << ") no "
+						     << "puedes permitirte doblar la apuesta" << endl;
+					}
+					else if(apu == dinero/2)
+					{
+						char decision;
+						
+						for(int i=0; i<3 || decision == 's' || decision == 'n')
+						{
+							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
+							     << "de tu saldo restante, estas seguro de que quieres "
+							     << "hacerlo? (s(si)/n(no))";
+							     
+							cin.clear();
+							cin  >> decision;
+							
+							if(decision == 's')
+							{
+								cout << "Has tomado tu decision, ya no hay vuelta atras..."
+								     << endl;
+								     
+								dinero -= apu;
+								apu *= 2;
+							}
+							else if(decision == 'n')
+							{
+								cout << "Cobarde...Bueno, ahora si ganas tus ganancias seran "
+								     << "menores, pero tu lo has querido..." << endl;
+							}
+							else
+							{
+								if(i == 0)
+								{
+									cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
+									     << "haces bien, es una decision muy importante, pero tranquilo, "
+									     << "tu sobre todo no te pongas nervioso..." << endl;
+									     
+									pausa();
+									     
+									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";"
+									     
+									cin.clear();
+									cin  >> decision;
+								}     
+								else if(i == 1)
+								{
+									cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
+									     << "nervioso? Relmente la decision no es tan importante" << endl;
+									     
+									pausa();
+									     
+									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";"
+									     
+									cin.clear();
+									cin  >> decision;	     
+								}
+								else if(i == 2)
+								{
+									cout << "Lo siento, pero si udas tanto debe ser que en ralidad no ves "
+									     << "clara esa decision, continua la partida sin doblar la apuesta" 
+									     << endl;
+									     
+									dudaApuesta = false;
+								}
+							}
+						}
+					}
+					else
+					{
+						char decision;
+						
+						for(int i=0; i<3 || decision == 's' || decision == 'n')
+						{
+							cout << "Estas seguro de que quieres doblar la apuesta? (s(si)/n(no))";
+							     
+							cin.clear();
+							cin  >> decision;
+							
+							if(decision == 's')
+							{
+								cout << "Has tomado tu decision, ya no hay vuelta atras..."
+								     << endl;
+								     
+								dinero -= apu;
+								apu *= 2;
+							}
+							else if(decision == 'n')
+							{
+								cout << "Cobarde...Bueno, ahora si ganas tus ganancias seran "
+								     << "menores, pero tu lo has querido..." << endl;
+							}
+							else
+							{
+								if(i == 0)
+								{
+									cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
+									     << "haces bien, es una decision muy importante, pero tranquilo, "
+									     << "tu sobre todo no te pongas nervioso..." << endl;
+									     
+									pausa();
+									     
+									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";"
+									     
+									cin.clear();
+									cin  >> decision;
+								}     
+								else if(i == 1)
+								{
+									cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
+									     << "nervioso? Relmente la decision no es tan importante" << endl;
+									     
+									pausa();
+									     
+									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";"
+									     
+									cin.clear();
+									cin  >> decision;	     
+								}
+								else if(i == 2)
+								{
+									cout << "Lo siento, pero si udas tanto debe ser que en ralidad no ves "
+									     << "clara esa decision, continua la partida sin doblar la apuesta" 
+									     << endl;
+									     
+									dudaApuesta = false;
+								}
+							}
+						}	
+					}
+				}
+				else if(dudaApuesta == false)
+				{
+					cout << "Lo siento, pero no puedes doblar la apuesta si ya lo " 
+					     << "has intentado y has dudado tanto..." << endl;
+				}
 			}
 		}
 	}while((valor(mazoJugador) < 21) && (queHacer != 2) && (queHacer != 0));
