@@ -2265,7 +2265,7 @@ void Blackjack::mano(string usuario)
 			{
 				if(dudaApuesta == true)
 				{
-					if(apu < dinero/2)
+					if(apu > dinero/2)
 					{
 						cout << "Error, con tu saldo restante (" << dinero << ") no "
 						     << "puedes permitirte doblar la apuesta" << endl;
@@ -2278,7 +2278,7 @@ void Blackjack::mano(string usuario)
 							     << "de tu saldo restante, estas seguro de que quieres "
 							     << "hacerlo? (s(si)/n(no))";
 						}
-						else if(apu > dinero/2)
+						else if(apu < dinero/2)
 						{
 							cout << "Estas seguro de que quieres doblar la apuesta? (s(si)/n(no))";
 						}
