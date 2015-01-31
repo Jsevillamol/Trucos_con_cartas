@@ -1,3 +1,27 @@
+/*-------------------------------
+TRUCOS DE MAGIA CON CARTAS:
+
+Autores:
+Jaime Sevilla Molina.
+Victor Gonzalez del Hierro.
+
+Fecha:
+2015/2
+
+Version: 
+6.0
+
+Features:
+Aparte de lo pedido en el enunciado de la practica, hemos implementado:
+	1. Deteccion y correcciones de errores en la entrada de datos por consola.
+	2. Un truco de magia addicional
+	3. Juego de cartas Blackjack
+	4. Soporte para multiples perfiles de usuario.
+	5. Opciones de manipulacion de las estadisticas: reseteo, borrado, backups,...
+
+---------------------------------*/
+
+//BIBLIOTECAS
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -159,11 +183,10 @@ int menu_de_magia();
 int digitoEntre(int a, int b);
 inline void linea();
 
-int digitoEntre(int a, int b);
-
 inline tCarta elegir_carta();
 int elegir_numero();
 char elegir_palo();
+char paloValido();
 
 //Funciones de output
 void mostrar(const tMazo mazo[], int n);
@@ -644,15 +667,22 @@ int elegir_numero()
 //Pide al usuario el char correspondiente al palo de la carta que quiere elegir
 char elegir_palo()
 {
-	char simboloPalo = 'j';
+
+	cout << "Que palo eliges?"
+	     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
+	
+	return paloValido();
+}
+
+char paloValido()
+{
+	char palo = 'j';
 	
 	do
 	{
 		cin.sync();
-		
-		cout << "Que palo eliges?"
-		     << " (p = picas, d = diamantes, t = treboles, c = corazones)" << endl;
 		cin  >> simboloPalo;
+		
 		if(cin.fail())
 		{
 			cout << "Error, introduce una letra, una sola" << endl;
@@ -660,14 +690,14 @@ char elegir_palo()
 		}
 		else if(simboloPalo != 'p' || simboloPalo != 'd' || simboloPalo != 't' || simboloPalo != 'c')
 		{
-			cout << "Erroor, introduce una de estas cuatro letras (p = picas, d = diamantes, "
+			cout << "Error, introduce una de estas cuatro letras (p = picas, d = diamantes, "
 			     << "t = treboles, c = corazones)";
 			simboloPalo = 'j';
 		}
 	}
-	while(simboloPalo = 'j');
+	while(palo == 'j');
 	
-	return simboloPalo;
+	return palo;
 }
 
 //Muestra por consola tantos mazos como se le pasen como argumento
