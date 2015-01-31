@@ -14,8 +14,8 @@ Version:
 Features:
 Aparte de lo pedido en el enunciado de la practica, hemos implementado:
 	1. Deteccion y correcciones de errores en la entrada de datos por consola.
-	2. Un truco de magia addicional
-	3. Juego de cartas Blackjack
+	2. Un truco de magia addicional.
+	3. Juego de cartas Blackjack.
 	4. Soporte para multiples perfiles de usuario.
 	5. Opciones de manipulacion de las estadisticas: reseteo, borrado, backups,...
 
@@ -157,7 +157,7 @@ public:
 
 	//Funciones de datos
 	int apuesta();
-	char Blackjack::doblarApuesta(char decision, int cuantasVeces);
+	char Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta);
 	void recompensa(int apu, int queHacer, string usuario);
 	int valor(const tMazo &mano);
 
@@ -2028,7 +2028,7 @@ int Blackjack::apuesta()
 
 //Funcion que controla si puedes o no dolar la apuesta 
 //mediante recursividad
-char Blackjack::doblarApuesta(char decision, int cuantasVeces)
+char Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta)
 {
 	if(decision == 's')
 	{
@@ -2037,6 +2037,8 @@ char Blackjack::doblarApuesta(char decision, int cuantasVeces)
 			 
 		dinero -= apu;
 		apu *= 2;
+
+		cout << "Ahora juegas la partida por " << apu << " dolares" << endl;
 
 		dudaApuesta = false;
 	}
@@ -2049,7 +2051,7 @@ char Blackjack::doblarApuesta(char decision, int cuantasVeces)
 	}
 	else
 	{
-		if(int cuantasVeces == 0)
+		if(cuantasVeces == 0)
 		{
 			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
 				 << "haces bien, es una decision muy importante, pero tranquilo, "
@@ -2058,10 +2060,14 @@ char Blackjack::doblarApuesta(char decision, int cuantasVeces)
 			pausa();
 				 
 			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-				 
-			doblarApuesta(decision, cuantasVeces);
+			cin.clear();
+			cin >> decision;
+
+			cuantasVeces += 1;
+
+			doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);
 		}     
-		else if(int cuantasVeces == 1)
+		else if(cuantasVeces == 1)
 		{
 			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
 				 << "nervioso? Relmente la decision no es tan importante" << endl;
@@ -2069,10 +2075,14 @@ char Blackjack::doblarApuesta(char decision, int cuantasVeces)
 			pausa();
 				 
 			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+			cin.clear();
+			cin >> decision;
+
+			cuantasVeces += 1;
 				 
-			doblarApuesta(decision, cuantasVeces);	     
+			doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);	     
 		}
-		else if(int cuantasVeces == 2)
+		else if(cuantasVeces == 2)
 		{
 			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
 				 << "clara esa decision, continua la partida sin doblar la apuesta" 
@@ -2331,6 +2341,8 @@ void Blackjack::mano(string usuario)
 					}
 					else 
 					{
+						int cuantasVeces = 0;
+
 						if(apu == dinero/2)
 						{
 							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
@@ -2354,6 +2366,8 @@ void Blackjack::mano(string usuario)
 								 
 							dinero -= apu;
 							apu *= 2;
+
+							cout << "Ahora juegas la partida por " << apu << " dolares" << endl;
 				
 							dudaApuesta = false;
 						}
@@ -2366,10 +2380,7 @@ void Blackjack::mano(string usuario)
 						}
 						else
 						{
-							for(int i=0; i<3; i++)
-							{
-								doblarApuesta(decision, i);
-							}
+							doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);
 						}
 					}
 				}
