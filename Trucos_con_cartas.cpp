@@ -19,6 +19,11 @@ Aparte de lo pedido en el enunciado de la practica, hemos implementado:
 	4. Soporte para multiples perfiles de usuario.
 	5. Opciones de manipulacion de las estadisticas: reseteo, borrado, backups,...
 
+Warnings:
+En los trucos que requieren cargar mazos determinados hemos implementado una funcion que
+los carga automaticamente, sin pedirte el nombre de dicho mazo. Para que la funcion cargue 
+el mazo deseado debes cambiar el nombre desl archivo que quieres que cargue, la propia funcion
+de dicho truco.
 ---------------------------------*/
 
 //BIBLIOTECAS
@@ -94,6 +99,7 @@ public:
 	//Funciones de carga y guardado de mazos
 	bool cargar(string &nomb);
 	bool cargar_auto(string &nomb);
+	bool mazoValido(int cartasNecesarias, string &nomb);
 	void cargar_mazo_completo();
 	bool agregar();
 	bool guardar(string &nomb);
@@ -874,6 +880,26 @@ bool tMazo::cargar_auto(string &nomb)
 	else return false;
 }
 
+//Comprueba que el mazo cargado tenga las cartas necesarias para los trucos
+bool tMazo::mazoValido(int cartasNecesarias, string &nomb)
+{
+	if(mazo.cargar_auto(nomb))
+	{
+		while(cartasNecesarias != mazo.cuantas)
+			{
+				cout << "Error, el mazo nargado no tiene las "
+			             << cartasNecesarias << " cartas necesarias." << endl
+			             << "Cambia el nombre del archivo y pulsa (enter)" << endl;
+			             
+				pausa();
+			             
+				mazo.cargar_auto(nomb);
+			}
+		return true;
+	}
+	else return false;
+}
+
 //Carga un mazo de 52 cartas sin necesidad de acceder a ningun archivo
 void tMazo::cargar_mazo_completo()
 {
@@ -1633,7 +1659,7 @@ void truco_de_los_tres_montones()
 	int n;
 
 	//generamos el mazo de 21 cartas
-	if(mazoU.cargar_auto(nomb))
+	if(mazoU.mazoValido(21, nomb))
 	{
 		for (int i=0; i<3; i++)
 		{
@@ -1716,7 +1742,8 @@ void truco_de_la_posada()
 	string nomb = "posada.txt";
 	int corte;
 	
-	if (mazoU.cargar_auto(nomb)){
+	if(mazoU.mazoValido(16, nomb))
+	{
 	
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones."   << endl
@@ -1769,7 +1796,7 @@ void truco_del_jugador_desconfiado()
 	
 
 	
-	if (mazoD.cargar_auto(nomb))
+	if if(mazoU.mazoValido(20, nomb))
 	{
 		cout << "En una partida de poker de mesa redonda, con cuatro jugadores sentados "
 		     << "en ella, un jugador dice que desconfia de que los jugadores sentados en "
