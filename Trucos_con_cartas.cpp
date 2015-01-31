@@ -2290,22 +2290,24 @@ void Blackjack::mano(string usuario)
 						cin.clear();
 						cin >> decision;
 						
-						for(int i=0; i<3 || decision != 's' || decision != 'n')
+						if(decision == 's')
 						{
-							if(decision == 's')
-							{
-								cout << "Has tomado tu decision, ya no hay vuelta atras..."
-								     << endl;
-								     
-								dinero -= apu;
-								apu *= 2;
-							}
-							else if(decision == 'n')
-							{
-								cout << "Cobarde...Bueno, ahora si ganas tus ganancias seran "
-								     << "menores, pero tu lo has querido..." << endl;
-							}
-							else
+							cout << "Has tomado tu decision, ya no hay vuelta atras..."
+							     << endl;
+							     
+							dinero -= apu;
+							apu *= 2;
+						}
+						else if(decision == 'n')
+						{
+							cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
+							     << "menores, pero tu lo has querido..." << endl;
+							     
+							dudaApuesta = false;
+						}
+						else
+						{
+							for(int i=0; i<3; i++)
 							{
 								if(i == 0)
 								{
@@ -2346,8 +2348,8 @@ void Blackjack::mano(string usuario)
 				}
 				else if(dudaApuesta == false)
 				{
-					cout << "Lo siento, pero no puedes doblar la apuesta si ya lo " 
-					     << "has intentado y has dudado tanto..." << endl;
+					cout << "Lo siento, pero no puedes doblar la apuesta si ya " 
+					     << "antes has decidido no hacerlo" << endl;
 				}
 			}
 		}
