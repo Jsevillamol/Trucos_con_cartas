@@ -432,7 +432,6 @@ bool mazoValido(tMazo &mazo, int cartasNecesarias, string &nomb)
 	else return false;
 }
 
-
 //Concatena al mazo actual un mazo cargado de archivo.
 bool agregar(tMazo mazo)
 {
