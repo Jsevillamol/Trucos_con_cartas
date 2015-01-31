@@ -2349,7 +2349,7 @@ void Blackjack::mano(string usuario)
 				else if(dudaApuesta == false)
 				{
 					cout << "Lo siento, pero no puedes doblar la apuesta si ya " 
-					     << "antes has decidido no hacerlo" << endl;
+					     << "antes has decidido hacerlo o no hacerlo" << endl;
 				}
 			}
 		}
