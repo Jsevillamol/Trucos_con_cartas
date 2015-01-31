@@ -9,7 +9,7 @@ Fecha:
 2015/2
 
 Version: 
-6.0
+5.0
 
 Features:
 Aparte de lo pedido en el enunciado de la practica, hemos implementado:
@@ -885,16 +885,16 @@ bool tMazo::mazoValido(int cartasNecesarias, string &nomb)
 {
 	if(mazo.cargar_auto(nomb))
 	{
-		while(cartasNecesarias != mazo.cuantas)
-			{
-				cout << "Error, el mazo nargado no tiene las "
-			             << cartasNecesarias << " cartas necesarias." << endl
-			             << "Cambia el nombre del archivo y pulsa (enter)" << endl;
-			             
-				pausa();
-			             
-				mazo.cargar_auto(nomb);
-			}
+		if(cartasNecesarias != mazo.cuantas)
+		{
+			cout << "Error, el mazo nargado no tiene las "
+		             << cartasNecesarias << " cartas necesarias." << endl
+		             << "Sal del programa, ve al codigo, modifica el nombre " 
+		             << "del archivo y vuelve a ejecutar el programa y el truco"
+		             << endl;
+		             
+			pausa();
+		}
 		return true;
 	}
 	else return false;
@@ -1731,7 +1731,10 @@ void truco_de_los_tres_montones()
 	}
 	else
 	{
-		cout << "Archivo \"3montones.txt\" no encontrado" << endl;
+		cout << "Archivo " << nomb << " no encontrado" << endl
+		     << "Sal del programa, ve al codigo, modifica el nombre " 
+		     << "del archivo y vuelve a ejecutar el programa y el truco"
+		     << endl;
 	}
 }
 
@@ -1783,7 +1786,10 @@ void truco_de_la_posada()
 	}
 	else
 	{
-		cout << "Archivo \"posada.txt\" no encontrado." << endl;
+		cout << "Archivo " << nomb << " no encontrado" << endl
+		     << "Sal del programa, ve al codigo, modifica el nombre " 
+		     << "del archivo y vuelve a ejecutar el programa y el truco"
+		     << endl;
 	}
 }
 
@@ -1891,7 +1897,10 @@ void truco_del_jugador_desconfiado()
 	}
 	else
 	{
-		cout << "Error, archivo \"desconfiado.txt\" no encontrado";
+		cout << "Archivo " << nomb << " no encontrado" << endl
+		     << "Sal del programa, ve al codigo, modifica el nombre " 
+		     << "del archivo y vuelve a ejecutar el programa y el truco"
+		     << endl;
 	}
 }
 
