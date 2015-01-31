@@ -2317,7 +2317,7 @@ void Blackjack::mano(string usuario)
 									     
 									pausa();
 									     
-									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";"
+									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
 									     
 									cin.clear();
 									cin  >> decision;
