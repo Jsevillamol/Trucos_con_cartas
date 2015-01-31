@@ -682,7 +682,7 @@ char elegir_palo()
 
 char paloValido()
 {
-	char palo = 'j';
+	char simboloPalo = 'j';
 	
 	do
 	{
@@ -701,9 +701,9 @@ char paloValido()
 			simboloPalo = 'j';
 		}
 	}
-	while(palo == 'j');
+	while(simboloPalo == 'j');
 	
-	return palo;
+	return simboloPalo;
 }
 
 //Muestra por consola tantos mazos como se le pasen como argumento
@@ -883,9 +883,9 @@ bool tMazo::cargar_auto(string &nomb)
 //Comprueba que el mazo cargado tenga las cartas necesarias para los trucos
 bool tMazo::mazoValido(int cartasNecesarias, string &nomb)
 {
-	if(mazo.cargar_auto(nomb))
+	if(cargar_auto(nomb))
 	{
-		if(cartasNecesarias != mazo.cuantas)
+		if(cartasNecesarias != cuantas)
 		{
 			cout << "Error, el mazo nargado no tiene las "
 		             << cartasNecesarias << " cartas necesarias." << endl
@@ -1800,9 +1800,7 @@ void truco_del_jugador_desconfiado()
 	tMazo mazoPar, mazoImpar, mazoFiguras, mazoNumeros;
 	string nomb = "desconfiado.txt";
 	
-
-	
-	if if(mazoU.mazoValido(20, nomb))
+	if(mazoD.mazoValido(20, nomb))
 	{
 		cout << "En una partida de poker de mesa redonda, con cuatro jugadores sentados "
 		     << "en ella, un jugador dice que desconfia de que los jugadores sentados en "
@@ -2212,7 +2210,7 @@ void Blackjack::run(string usuario)
 void Blackjack::mano(string usuario)
 {
 	int queHacer, apu;
-	bool dudaApuesta = true
+	bool dudaApuesta = true;
 	
 	cout << "Bienvenido al juego de Blackjack" << endl;
 	
@@ -2329,14 +2327,14 @@ void Blackjack::mano(string usuario)
 									     
 									pausa();
 									     
-									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";"
+									cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
 									     
 									cin.clear();
 									cin  >> decision;	     
 								}
 								else if(i == 2)
 								{
-									cout << "Lo siento, pero si udas tanto debe ser que en ralidad no ves "
+									cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
 									     << "clara esa decision, continua la partida sin doblar la apuesta" 
 									     << endl;
 									     
@@ -2397,7 +2395,7 @@ inline void Blackjack::perder(int apu)
 	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
-//Pausa el programa cuando le la llama, para continuar pula (enter)
+//Pausa el programa, para continuar pulsa cualquier boton
 inline void pausa()
 {
 	cin.sync(); //Para eliminar los datos basura del buffer
