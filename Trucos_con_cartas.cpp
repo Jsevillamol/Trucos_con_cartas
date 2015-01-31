@@ -22,8 +22,8 @@ Aparte de lo pedido en el enunciado de la practica, hemos implementado:
 Warnings:
 En los trucos que requieren cargar mazos determinados hemos implementado una funcion que
 los carga automaticamente, sin pedirte el nombre de dicho mazo. Para que la funcion cargue
-el mazo deseado debes cambiar el nombre desl archivo que quieres que cargue, la propia funcion
-de dicho truco.
+el mazo deseado debes cambiar el nombre desl archivo que quieres que cargue, en la propia 
+funcion de dicho truco.
 ---------------------------------*/
 
 //BIBLIOTECAS
@@ -172,10 +172,12 @@ public:
 
 private:
 	//Variables
-	int dinero,
-		cont;
-	tMazo mazo;
-	tMazo mazoJugador, mazoBot;
+	int   dinero,
+	      cont;
+	      
+	tMazo mazo,
+	      mazoJugador, 
+	      mazoBot;
 };
 
 //FUNCIONES
