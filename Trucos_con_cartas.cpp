@@ -14,12 +14,12 @@ Version:
 Features:
 Aparte de lo pedido en el enunciado de la practica, hemos implementado:
 1. Deteccion y correcciones de errores en la entrada de datos por consola.
-2. Un truco de magia addicional.
+2. Un truco de magia adicional. (Agradecimientos a nuestros compañeros por la idea)
 3. Juego de cartas Blackjack.
 4. Soporte para multiples perfiles de usuario.
 5. Opciones de manipulacion de las estadisticas: reseteo, borrado, backups,...
 
-Warnings:
+Warning:
 En los trucos que requieren cargar mazos determinados hemos implementado una funcion que
 los carga automaticamente, sin pedirte el nombre de dicho mazo. Para que la funcion cargue
 el mazo deseado debes cambiar el nombre desl archivo que quieres que cargue, la propia funcion
