@@ -778,12 +778,7 @@ char paloValido()
 		cin.sync();
 		cin >> simboloPalo;
 
-		if (cin.fail())
-		{
-			cout << "Error, introduce una letra, una sola" << endl;
-			cin.clear();
-		}
-		else if (simboloPalo != 'p' || simboloPalo != 'd' || simboloPalo != 't' || simboloPalo != 'c')
+		if (simboloPalo != 'p' || simboloPalo != 'd' || simboloPalo != 't' || simboloPalo != 'c')
 		{
 			cout << "Error, introduce una de estas cuatro letras (p = picas, d = diamantes, "
 				<< "t = treboles, c = corazones)";
