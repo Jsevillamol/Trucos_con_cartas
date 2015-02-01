@@ -363,9 +363,9 @@ int main()
 					cout << "Altas: " << endl;
 					mostrar(alto);
 
-					cout << "Que mazo escoges?" << endl
-						<< "1 - Bajas" << endl
-						<< "2 - Altas" << endl
+					cout << "Que mazo escoges?"      << endl
+						<< "1 - Bajas"               << endl
+						<< "2 - Altas"               << endl
 						<< "0 - Ultimo mazo cargado" << endl;
 
 					cualQuieres = digitoEntre(0, 2);
@@ -425,10 +425,10 @@ int main()
 					cout << "Numeros:" << endl;
 					mostrar(numero);
 
-					cout << "Que mazo escoges?" << endl
-						<< "1 - Figuras" << endl
-						<< "2 - Numeros" << endl
-						<< "0 - Ultimo mazo cargado" << endl;
+					cout << "Que mazo escoges?"       << endl
+						 << "1 - Figuras"             << endl
+						 << "2 - Numeros"             << endl
+						 << "0 - Ultimo mazo cargado" << endl;
 
 					cualQuieres = digitoEntre(0, 2);
 
@@ -648,12 +648,12 @@ string usuario_valido()
 int menu_principal()
 {
 	linea();
-	cout << "Menu principal:" << endl
-		<< "1 - Menu de carga y guardado" << endl
+	cout << "Menu principal:"                  << endl
+		<< "1 - Menu de carga y guardado"      << endl
 		<< "2 - Menu de manipulacion de mazos" << endl
-		<< "3 - Menu de Blackjack" << endl
-		<< "4 - Menu de magia de cartas" << endl
-		<< "0 - Salir" << endl;
+		<< "3 - Menu de Blackjack"             << endl
+		<< "4 - Menu de magia de cartas"       << endl
+		<< "0 - Salir"                         << endl;
 
 	return digitoEntre(0, 4);
 }
@@ -662,11 +662,11 @@ int menu_principal()
 int menu_de_carga_y_guardado()
 {
 	linea();
-	cout << "Menu de carga y guardado:" << endl
-		<< "1 - Cargar mazo a elegir" << endl
-		<< "2 - Cargar mazo completo" << endl
-		<< "3 - Guardar" << endl
-		<< "4 - Agregar mazo" << endl
+	cout << "Menu de carga y guardado:"   << endl
+		<< "1 - Cargar mazo a elegir"     << endl
+		<< "2 - Cargar mazo completo"     << endl
+		<< "3 - Guardar"                  << endl
+		<< "4 - Agregar mazo"             << endl
 		<< "0 - Volver al menu principal" << endl;
 
 	return digitoEntre(0, 4);
@@ -677,20 +677,20 @@ int menu_de_carga_y_guardado()
 int menu_de_manipulacion_de_mazos()
 {
 	linea();
-	cout << "Menu de manipulacion de mazos:" << endl
-		<< "1  - Barajar" << endl
-		<< "2  - Cortar" << endl
-		<< "3  - Separar en negras y rojas" << endl
-		<< "4  - Separar en altas y bajas" << endl
-		<< "5  - Separar en pares e impares" << endl
+	cout << "Menu de manipulacion de mazos:"   << endl
+		<< "1  - Barajar"                      << endl
+		<< "2  - Cortar"                       << endl
+		<< "3  - Separar en negras y rojas"    << endl
+		<< "4  - Separar en altas y bajas"     << endl
+		<< "5  - Separar en pares e impares"   << endl
 		<< "6  - Separar en figuras y numeros" << endl
-		<< "7  - Separar en n montones" << endl
-		<< "8  - Repartir n cartas" << endl
-		<< "9  - Mostrar mazo actual" << endl
-		<< "10 - Aniadir una carta concreta" << endl
-		<< "11 - Eliminar una carta concreta" << endl
-		<< "12 - Vaciar mazo actual" << endl
-		<< "0  - Volver al menu principal" << endl;
+		<< "7  - Separar en n montones"        << endl
+		<< "8  - Repartir n cartas"            << endl
+		<< "9  - Mostrar mazo actual"          << endl
+		<< "10 - Aniadir una carta concreta"   << endl
+		<< "11 - Eliminar una carta concreta"  << endl
+		<< "12 - Vaciar mazo actual"           << endl
+		<< "0  - Volver al menu principal"     << endl;
 
 	return digitoEntre(0, 12);
 }
@@ -699,12 +699,12 @@ int menu_de_manipulacion_de_mazos()
 int menu_de_magia()
 {
 	linea();
-	cout << "Menu de magia de cartas:" << endl
-		<< "1 - Truco de los tres montones" << endl
-		<< "2 - Truco de la posada" << endl
-		<< "3 - Truco del jugador despistado" << endl
-		<< "4 - Truco de cabo caniaveral " << endl
-		<< "0 - Volver al menu principal" << endl;
+	cout << "Menu de magia de cartas:"         << endl
+		<< "1 - Truco de los tres montones"    << endl
+		<< "2 - Truco de la posada"            << endl
+		<< "3 - Truco del jugador desconfiado" << endl
+		<< "4 - Truco de cabo caniaveral "     << endl
+		<< "0 - Volver al menu principal"      << endl;
 
 	return digitoEntre(0, 4);
 }
@@ -972,6 +972,8 @@ void revelar_carta(int sumaValor, tMazo &mazo)
 	cout << "La carta final es: ";
 
 	mostrar(mazo[mazo.cuantas - sumaValor]);
+
+	cout << endl;
 }
 
 //Usada en el truco cabo caniaveral, determina el valor de la carta que le 
@@ -1044,7 +1046,7 @@ bool tMazo::mazoValido(int cartasNecesarias, string &nomb)
 	{
 		if (cartasNecesarias != cuantas)
 		{
-			cout << "Error, el mazo nargado no tiene las "
+			cout << "Error, el mazo cargado no tiene las "
 				<< cartasNecesarias << " cartas necesarias." << endl
 				<< "Sal del programa, ve al codigo, modifica el nombre "
 				<< "del archivo y vuelve a ejecutar el programa y el truco"
@@ -1813,8 +1815,13 @@ void delete_user(string usuario)
 void truco_de_los_tres_montones()
 {
 	tMazo mazoU, mazo[3];
-	string nomb = "3montones.txt";
+	string nomb = "3montones.txt.";
 	int n;
+
+	cout << "Se trata de un truco de adivinacion en el que un mazo de 21 cartas se reparte "
+		<< "alternamente en tres montones, y se le pide al usuario que escoja una carta y "
+		<< "la memorice, y despues los mazos se vuelven a juntar. El proceso se repite tres "
+		<< "veces, y al final, la consola adivinara la carta elegida por el usuario" << endl;
 
 	//generamos el mazo de 21 cartas
 	if (mazoU.mazoValido(21, nomb))
@@ -1823,8 +1830,8 @@ void truco_de_los_tres_montones()
 		{
 			if (i == 0)
 			{
-				cout << "Ahora dividimos el mazo en tres repartiendo cartas alternamente "
-					<< "desde el mazo inicial a otros tres mazos." << endl;
+				cout << "Empezamos dividimos el mazo en tres repartiendo cartas alternamente "
+					 << "desde el mazo inicial a otros tres mazos." << endl;
 
 				pausa();
 
@@ -1886,13 +1893,14 @@ void truco_de_los_tres_montones()
 		//Adivinamos la carta
 		cout << "Tu carta era el..." << endl;
 		mostrar(mazoU[10]);
+		cout << endl;
 	}
 	else
 	{
 		cout << "Archivo " << nomb << " no encontrado" << endl
-			<< "Sal del programa, ve al codigo, modifica el nombre "
-			<< "del archivo y vuelve a ejecutar el programa y el truco"
-			<< endl;
+			 << "Sal del programa, ve al codigo, modifica el nombre "
+			 << "del archivo y vuelve a ejecutar el programa y el truco"
+			 << endl;
 	}
 }
 
@@ -1905,17 +1913,16 @@ void truco_de_la_posada()
 
 	if (mazoU.mazoValido(16, nomb))
 	{
-
 		//Contamos la historia
 		cout << "Habia una vez una posada con cuatro habitaciones." << endl
-			<< "Un dia llegaron cuatro caballeros y cada uno se"
-			<< "puso en una habitacion diferente." << endl
-			<< "Luego llegaron cuatro senioras, y para no dejarlas"
-			<< "sin habitacion, ubicaron a cada una en una de dichas"
-			<< "habitaciones, con los caballeros." << endl
-			<< "Luego llegaron cuatro reyes con sus cuatro peones,"
-			<< "y pusieron cada rey y cada peon en alguna de dichas" << endl
-			<< "cuatro habitaciones. " << endl;
+			 << "Un dia llegaron cuatro caballeros y cada uno se"
+			 << "puso en una habitacion diferente." << endl
+			 << "Luego llegaron cuatro senioras, y para no dejarlas"
+			 << "sin habitacion, ubicaron a cada una en una de dichas"
+			 << "habitaciones, con los caballeros." << endl
+			 << "Luego llegaron cuatro reyes con sus cuatro peones,"
+			 << "y pusieron cada rey y cada peon en alguna de dichas" << endl
+			 << "cuatro habitaciones. " << endl;
 
 		pausa();
 		int cuantas = mazoU.repartir_en_n(mazo, 4);
@@ -1929,7 +1936,7 @@ void truco_de_la_posada()
 
 		//Cortamos el mazo
 		cout << "Por que numero de carta quieres cortar?";
-		cin >> corte;
+		cin  >> corte;
 		mazoU.cortar(corte);
 
 		cout << "Sin embargo, a la maniana siguiente..." << endl;
@@ -1940,14 +1947,14 @@ void truco_de_la_posada()
 		mostrar(mazo, 4, cuantas);
 
 		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
-			<< "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
+			 << "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
 	}
 	else
 	{
 		cout << "Archivo " << nomb << " no encontrado" << endl
-			<< "Sal del programa, ve al codigo, modifica el nombre "
-			<< "del archivo y vuelve a ejecutar el programa y el truco"
-			<< endl;
+			 << "Sal del programa, ve al codigo, modifica el nombre "
+			 << "del archivo y vuelve a ejecutar el programa y el truco"
+			 << endl;
 	}
 }
 
@@ -1961,9 +1968,9 @@ void truco_del_jugador_desconfiado()
 	if (mazoD.mazoValido(20, nomb))
 	{
 		cout << "En una partida de poker de mesa redonda, con cuatro jugadores sentados "
-			<< "en ella, un jugador dice que desconfia de que los jugadores sentados en "
-			<< "la mesa le hagan trampas. Por ello propone que las 20 cartas que se van "
-			<< "a repartir sean visibles para todos antes de repartirse." << endl;
+			 << "en ella, un jugador dice que desconfia de que los jugadores sentados en "
+			 << "la mesa le hagan trampas. Por ello propone que las 20 cartas que se van "
+			 << "a repartir sean visibles para todos antes de repartirse." << endl;
 		pausa();
 
 		cout << "Mazo:" << endl;
@@ -1978,8 +1985,8 @@ void truco_del_jugador_desconfiado()
 		pausa();
 
 		cout << "El jugador dice que no se fia del que ha repartido, asi que propone "
-			<< "seguir unos pasos para asegurarse de que el reparto ha sido aleatorio "
-			<< "y justo:" << endl;
+			 << "seguir unos pasos para asegurarse de que el reparto ha sido aleatorio "
+			 << "y justo:" << endl;
 		pausa();
 
 		for (int i = 0; i<2; i++)
@@ -1987,16 +1994,16 @@ void truco_del_jugador_desconfiado()
 			if (i == 0)
 			{
 				cout << "Cada jugador debe dividir su mazo en dos, pero cada jugador "
-					<< "con un criterio distinto: El jugador que desconfia "
-					<< "(jugador 1) debe separar su mazo por colores (negro a la izquierda, "
-					<< "rojo a la derecha). El jugador situado a su derecha debera separar el "
-					<< "suyo segun sea el numero de su carta inferior (izquierda) o superior "
-					<< "(derecha) a 7. El siguiente jugador separara su mazo en cartas pares "
-					<< "(izquierda) e impares (derecha). Y el ultimo jugador habra de separar "
-					<< "su mazo en figuras (izquierda) y numeros (derecha)." << endl
-					<< "A continuacion cada jugador pasara su mazo izquierdo al jugador de su "
-					<< "izquierda, y su mazo derecho al jugador de su derecha. Ahora los jugadores "
-					<< "tendran un solo mazo formado por los dos que les pasaron sus companieros." << endl;
+					 << "con un criterio distinto: El jugador que desconfia "
+					 << "(jugador 1) debe separar su mazo por colores (negro a la izquierda, "
+					 << "rojo a la derecha). El jugador situado a su derecha debera separar el "
+					 << "suyo segun sea el numero de su carta inferior (izquierda) o superior "
+					 << "(derecha) a 7. El siguiente jugador separara su mazo en cartas pares "
+					 << "(izquierda) e impares (derecha). Y el ultimo jugador habra de separar "
+					 << "su mazo en figuras (izquierda) y numeros (derecha)." << endl
+					 << "A continuacion cada jugador pasara su mazo izquierdo al jugador de su "
+					 << "izquierda, y su mazo derecho al jugador de su derecha. Ahora los jugadores "
+					 << "tendran un solo mazo formado por los dos que les pasaron sus companieros." << endl;
 				pausa();
 			}
 			else if (i == 1)
@@ -2025,8 +2032,8 @@ void truco_del_jugador_desconfiado()
 		}
 
 		cout << "Y otra mas, con la excepcion de que ahora cada jugador se quedara con su mazo "
-			<< "derecho, y pasan su izquierdo al jugador de su izquierda, despues los vuelven "
-			<< "a juntar." << endl;
+			 << "derecho, y pasan su izquierdo al jugador de su izquierda, despues los vuelven "
+			 << "a juntar." << endl;
 		pausa();
 
 		mazo[0].repartirNegroRojo(mazoNegro, mazoRojo);
@@ -2049,14 +2056,14 @@ void truco_del_jugador_desconfiado()
 		mostrar(mazo, 4, cuantas);
 
 		cout << "El jugador desconfiado tiene escalera de color. El de su izquierda full. El siguiente, "
-			<< "poker. Y el ultimo, color" << endl;
+			 << "poker. Y el ultimo, color" << endl;
 	}
 	else
 	{
 		cout << "Archivo " << nomb << " no encontrado" << endl
-			<< "Sal del programa, ve al codigo, modifica el nombre "
-			<< "del archivo y vuelve a ejecutar el programa y el truco"
-			<< endl;
+			 << "Sal del programa, ve al codigo, modifica el nombre "
+			 << "del archivo y vuelve a ejecutar el programa y el truco"
+			 << endl;
 	}
 }
 
@@ -2067,8 +2074,8 @@ void truco_de_cabo_caniaberal()
 	int valorMazo1, valorMazo2, valorMazo3, valorMazo4, valorTotal = 0;
 
 	cout << "El truco consiste en la adivinacion por parte de la consola "
-		<< "de la carta que saldra tras tras repartir un mazo en cuatro "
-		<< "de una determinada manera." << endl << endl;
+		 << "de la carta que saldra tras tras repartir un mazo en cuatro "
+		 << "de una determinada manera." << endl << endl;
 
 	mazoI.cargar_mazo_completo();
 
@@ -2086,16 +2093,16 @@ void truco_de_cabo_caniaberal()
 	pausa();
 
 	cout << endl
-		<< "Una vez que la consola ha hecho la prediccion, nos disponemos "
-		<< "nos disponemos a repartir 10 cartas del mazo barajado a otro mazo, "
-		<< "haciendo una cuenta atras desde 10. si el numero de la carta que salga "
-		<< "coincide con el numero por el que vayamos en la cuenta atras, se dejara "
-		<< "esa carta boca arriba en el primer mazo y se pasara a repartir a otro; "
-		<< "sin embargo, si la cuenta llega hasta 0 si que cioncida ningun numero de "
-		<< "carta con el de la cuenta, la ultima carta se dejara boca abajo en el mazo "
-		<< "al que estemos repartiendo, y se procedera a repartir a otro mazo." << endl
-		<< "Este proceso se realizara un total de 4 veces, o sea, se repartiran cartas "
-		<< "a 4 mazos desde el mazo principal." << endl;
+	     << "Una vez que la consola ha hecho la prediccion, nos disponemos "
+	     << "nos disponemos a repartir 10 cartas del mazo barajado a otro mazo, "
+	     << "haciendo una cuenta atras desde 10. si el numero de la carta que salga "
+	     << "coincide con el numero por el que vayamos en la cuenta atras, se dejara "
+	     << "esa carta boca arriba en el primer mazo y se pasara a repartir a otro; "
+	     << "sin embargo, si la cuenta llega hasta 0 si que cioncida ningun numero de "
+		 << "carta con el de la cuenta, la ultima carta se dejara boca abajo en el mazo "
+		 << "al que estemos repartiendo, y se procedera a repartir a otro mazo." << endl
+		 << "Este proceso se realizara un total de 4 veces, o sea, se repartiran cartas "
+		 << "a 4 mazos desde el mazo principal." << endl;
 
 	pausa();
 
@@ -2491,7 +2498,7 @@ void Blackjack::mano(string usuario)
 					if (apu > dinero / 2)
 					{
 						cout << "Lo siento, pero con tu saldo restante (" << dinero << ") no "
-						     << "puedes permitirte doblar la apuesta" << endl;
+							<< "puedes permitirte doblar la apuesta" << endl;
 					}
 					else
 					{
@@ -2500,8 +2507,8 @@ void Blackjack::mano(string usuario)
 						if (apu == dinero / 2)
 						{
 							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
-						             << "de tu saldo restante, estas seguro de que quieres "
-							     << "hacerlo? (s(si)/n(no))";
+								<< "de tu saldo restante, estas seguro de que quieres "
+								<< "hacerlo? (s(si)/n(no))";
 						}
 						else if (apu < dinero / 2)
 						{
@@ -2519,7 +2526,7 @@ void Blackjack::mano(string usuario)
 				else if (dudaApuesta == false)
 				{
 					cout << "Lo siento, pero no puedes doblar la apuesta si ya "
-					     << "antes has decidido hacerlo o no hacerlo" << endl;
+						<< "antes has decidido hacerlo o no hacerlo" << endl;
 				}
 			}
 		}
@@ -2545,7 +2552,7 @@ bool Blackjack::turno_crupier()
 	}
 
 	cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-	     << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;
+		<< "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;
 
 	return pasa_crup;
 }
@@ -2557,14 +2564,14 @@ inline void Blackjack::ganar(int apu)
 	dinero += apu;
 
 	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-	     << "Saldo actual: " << dinero << " dolares" << endl;
+		<< "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Determina que el jugador ha perdido y le muestra el saldo actual
 inline void Blackjack::perder(int apu)
 {
 	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-	     << "Saldo actual: " << dinero << " dolares" << endl;
+		<< "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Pausa el programa, para continuar pulsa cualquier boton
