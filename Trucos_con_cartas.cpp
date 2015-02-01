@@ -792,13 +792,11 @@ char paloValido()
 //Muestra por consola tantos mazos como se le pasen como argumento
 void mostrar(const tMazo mazo[], int n, int cuantasPorMazo)
 {
-	for (int i = 0; i<n; i++)
-	{
-		cout << "Mazo " << (i + 1) << ":";
+	cout << left;
 
-		if (i != (n-1))
-			cout << setw(10);
-	}
+	for (int i = 0; i<n; i++)
+		cout << setw(20) << string("Mazo ") + to_string(i + 1) + string(":");
+
 	cout << endl;
 
 	for (int i = 0; i < cuantasPorMazo; i++)
