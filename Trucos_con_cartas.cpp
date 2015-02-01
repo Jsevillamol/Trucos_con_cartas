@@ -30,7 +30,6 @@ typedef int tCarta;
 typedef tCarta tMazo[MAX_CARTAS+1];
 
 //FUNCIONES
-void saludar();
 
 //Menus
 int menu();
@@ -97,8 +96,6 @@ int main()
 
 	srand(time(NULL));
 	vaciar(mazo);
-	
-	saludar();
 
 	do
 	{
@@ -191,16 +188,6 @@ int main()
 	}while(opcion != 0);
 
 	return 1;
-}
-
-//Pide el nombre al usuario y le saluda
-void saludar()
-{
-	string nombre;
-	cout << "Bienvenido al programa de la cartomagia!" << endl
-	     << "Como te llamas? ";
-	cin  >> nombre;
-	cout << "Hola " << nombre << endl << endl;
 }
 
 //Permite al usuario elegir que hacer
@@ -775,10 +762,8 @@ void truco_de_los_tres_montones()
 
 void truco_de_la_posada()
 {
-	tMazo mazo1, mazo2, mazo3, mazo4;
 	string nomb = "posada.txt";
 	tMazo mazoU, mazo1, mazo2, mazo3, mazo4;
-	string nomb;
 	int corte;
 	
 	if (mazoValido(mazoU, 16, nomb))
@@ -795,13 +780,14 @@ void truco_de_la_posada()
 			 << "cuatro habitaciones. "                               << endl;
 		 	 
 		pausa();
-		repartir_en_cuatro(mazo1, mazo1, mazo2, mazo3, mazo4);
+		repartir_en_cuatro(mazoU, mazo1, mazo2, mazo3, mazo4);
 		mostrar(mazo1, mazo2, mazo3, mazo4);
 		
 		//Juntamos los mazos
-		unir(mazo1, mazo2);
-		unir(mazo1, mazo3);
-		unir(mazo1, mazo4);
+		unir(mazoU, mazo1);
+		unir(mazoU, mazo2);
+		unir(mazoU, mazo3);
+		unir(mazoU, mazo4);
 	
 		//Cortamos el mazo
 		cout << "Por que numero de carta quieres cortar?";
