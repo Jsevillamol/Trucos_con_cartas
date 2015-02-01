@@ -200,9 +200,9 @@ char paloValido();
 //Funciones de output
 void mostrar(const tMazo mazo[], int n, int cuantasPorMazo);
 void mostrar(const tMazo mazo);
-void mostrar(const tCarta carta);
-void mostrar(const tNumero n);
-void mostrar(const tPalo p);
+int mostrar(const tCarta carta);
+int mostrar(const tNumero n);
+int mostrar(const tPalo p);
 bool mostrar(string archivo);
 void prediccion();
 void revelar_carta(int sumaValor);
@@ -451,7 +451,7 @@ int main()
 					int cualQuieres;
 
 					cout << "En cuantos mazos quieres separar este mazo?" << endl;
-					en_cuantos = digitoEntre(2, 4);
+					en_cuantos = digitoEntre(1,4);
 
 					tMazo *mazos = new tMazo[en_cuantos];
 					int cuantas = mazo.repartir_en_n(mazos, en_cuantos);
@@ -792,21 +792,34 @@ char paloValido()
 //Muestra por consola tantos mazos como se le pasen como argumento
 void mostrar(const tMazo mazo[], int n, int cuantasPorMazo)
 {
-	cout << left;
+	int longitud;
+
+	cout << " ";
 
 	for (int i = 0; i<n; i++)
-		cout << setw(20) << string("Mazo ") + to_string(i + 1) + string(":");
+	{
+		cout << "Mazo " << (i + 1) << ":";
 
+		if (i != (n-1))
+			cout << right << setw(17);
+	}
 	cout << endl;
 
 	for (int i = 0; i < cuantasPorMazo; i++)
 	{
+		cout << " ";
+
 		for (int j = 0; j < n; j++)
 		{
-			mostrar(mazo[j][i]);
-
-			if (j != (n-1))
-				cout << setw(10);
+			longitud = mostrar(mazo[j][i]);
+			if (j == 0 && mazo[j][i].num == 10)
+			{
+				longitud++;
+			}
+			if (j != (n - 1))
+			{
+				cout << right << setw(20 - longitud);
+			}
 		}
 		cout << endl;
 	}
@@ -824,33 +837,80 @@ void mostrar(tMazo mazo)
 }
 
 //Muestra la carta que le pases como argumento
-void mostrar(const tCarta carta)
+int mostrar(const tCarta carta)
 {
-	mostrar(carta.num);
+	int longTotal;
+
+	int longNumero = mostrar(carta.num);
 
 	cout << " ";
 
-	mostrar(carta.palo);
+	int longPalo = mostrar(carta.palo);
+
+	longTotal = longNumero + longPalo + 1;
+
+	return longTotal;
 }
 
 //Traduce los numeros de una carta a simbolos (A, J, Q, K)
 //y los muestra por consola
-void mostrar(const tNumero n)
+int mostrar(const tNumero n)
 {
-	if (n == A) cout << "A";
-	else if (n == J) cout << "J";
-	else if (n == Q) cout << "Q";
-	else if (n == K) cout << "K";
-	else             cout << n;
+	int longNumero = 1;
+
+	if (n == A)
+	{
+		cout << "A";
+	}
+	else if (n == J)
+	{
+		cout << "J";
+	}
+	else if (n == Q)
+	{
+		cout << "Q";
+	}
+	else if (n == K)
+	{
+		cout << "K";
+	}
+	else
+	{
+		cout << n;
+	}
+	return longNumero;
 }
 
 //Traduce los palos de una carta y los muestra por consola
-void mostrar(const tPalo p)
+int mostrar(const tPalo p)
 {
-	if (p == picas)   cout << "de picas";
-	else if (p == treboles)   cout << "de treboles";
-	else if (p == diamantes)   cout << "de diamantes";
-	else /*if (c == corazones)*/ cout << "de corazones";
+	int longPalo;
+
+	if (p == picas)
+	{
+		cout << "de picas";
+		
+		longPalo = 8;
+	}
+	else if (p == treboles)
+	{
+		cout << "de treboles";
+
+		longPalo = 11;
+	}
+	else if (p == diamantes)
+	{
+		cout << "de diamantes";
+
+		longPalo = 12;
+	}
+	else /*if (c == corazones)*/
+	{
+		cout << "de corazones";
+
+		longPalo = 12;
+	}
+	return longPalo;
 }
 
 //Muestra el contenido del archivo que le pases como argumento
@@ -2497,7 +2557,7 @@ inline void Blackjack::ganar(int apu)
 	dinero += apu;
 
 	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-	     << "Saldo actual: " << dinero << " dolares" << endl;
+		<< "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Determina que el jugador ha perdido y le muestra el saldo actual
