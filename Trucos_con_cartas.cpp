@@ -322,6 +322,7 @@ int main()
 				else if (opcion == 3)
 				{
 					linea();
+					int cualQuieres;
 					tMazo negro, rojo;
 					mazo.repartirNegroRojo(negro, rojo);
 
@@ -330,10 +331,29 @@ int main()
 
 					cout << "Rojas: " << endl;
 					mostrar(rojo);
+
+					cout << "Que mazo escoges?" << endl
+						<< "1 - Negras" << endl
+						<< "2 - Rojas" << endl
+						<< "0 - Ultimo mazo cargado" << endl;
+
+					cualQuieres = digitoEntre(0, 2);
+
+					if (cualQuieres == 1)
+					{
+						mazo.vaciar();
+						mazo.unir(negro);
+					}
+					else if (cualQuieres == 2)
+					{
+						mazo.vaciar();
+						mazo.unir(rojo);
+					}
 				}
 				else if (opcion == 4)
 				{
 					linea();
+					int cualQuieres;
 					tMazo alto, bajo;
 					mazo.repartirBajaAlta(bajo, alto);
 
@@ -342,10 +362,29 @@ int main()
 
 					cout << "Altas: " << endl;
 					mostrar(alto);
+
+					cout << "Que mazo escoges?" << endl
+						<< "1 - Bajas" << endl
+						<< "2 - Altas" << endl
+						<< "0 - Ultimo mazo cargado" << endl;
+
+					cualQuieres = digitoEntre(0, 2);
+
+					if (cualQuieres == 1)
+					{
+						mazo.vaciar();
+						mazo.unir(bajo);
+					}
+					else if (cualQuieres == 2)
+					{
+						mazo.vaciar();
+						mazo.unir(alto);
+					}
 				}
 				else if (opcion == 5)
 				{
 					linea();
+					int cualQuieres;
 					tMazo par, impar;
 					mazo.repartirParImpar(par, impar);
 
@@ -354,10 +393,29 @@ int main()
 
 					cout << "Impares: " << endl;
 					mostrar(impar);
+
+					cout << "Que mazo escoges?" << endl
+						<< "1 - Pares" << endl
+						<< "2 - Impares" << endl
+						<< "0 - Ultimo mazo cargado" << endl;
+
+					cualQuieres = digitoEntre(0, 2);
+
+					if (cualQuieres == 1)
+					{
+						mazo.vaciar();
+						mazo.unir(par);
+					}
+					else if (cualQuieres == 2)
+					{
+						mazo.vaciar();
+						mazo.unir(impar);
+					}
 				}
 				else if (opcion == 6)
 				{
 					linea();
+					int cualQuieres;
 					tMazo figura, numero;
 					mazo.repartirFigurasNumeros(figura, numero);
 
@@ -366,20 +424,49 @@ int main()
 
 					cout << "Numeros:" << endl;
 					mostrar(numero);
+
+					cout << "Que mazo escoges?" << endl
+						<< "1 - Figuras" << endl
+						<< "2 - Numeros" << endl
+						<< "0 - Ultimo mazo cargado" << endl;
+
+					cualQuieres = digitoEntre(0, 2);
+
+					if (cualQuieres == 1)
+					{
+						mazo.vaciar();
+						mazo.unir(figura);
+					}
+					else if (cualQuieres == 2)
+					{
+						mazo.vaciar();
+						mazo.unir(numero);
+					}
 				}
 				else if (opcion == 7)
 				{
 					linea();
 
 					int en_cuantos;
+					int cualQuieres;
+
 					cout << "En cuantos mazos quieres separar este mazo?" << endl;
-					cin >> en_cuantos;
+					en_cuantos = digitoEntre(2, 4);
 
 					tMazo *mazos = new tMazo[en_cuantos];
 					int cuantas = mazo.repartir_en_n(mazos, en_cuantos);
 
 					mostrar(mazos, en_cuantos, cuantas);
 
+					cout << "Que mazo escoges? (0 para ultimo mazo cargado):";
+
+					cualQuieres = digitoEntre(0, en_cuantos);
+
+					if (cualQuieres != 0)
+					{
+						mazo.vaciar();
+						mazo.unir(mazos[cualQuieres-1]);
+					}
 					delete[] mazos;
 				}
 				else if (opcion == 8)
@@ -2417,7 +2504,7 @@ inline void Blackjack::ganar(int apu)
 	dinero += apu;
 
 	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-		<< "Saldo actual: " << dinero << " dolares" << endl;
+	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Determina que el jugador ha perdido y le muestra el saldo actual
