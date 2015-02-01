@@ -204,9 +204,6 @@ int mostrar(const tCarta carta);
 int mostrar(const tNumero n);
 int mostrar(const tPalo p);
 bool mostrar(string archivo);
-void prediccion();
-void revelar_carta(int sumaValor);
-int valor(tCarta carta);
 
 //Funciones de carga y guardado de mazos
 bool abrir(string &nomb, ifstream &archivo);
@@ -238,6 +235,9 @@ void truco_de_los_tres_montones();
 void truco_de_la_posada();
 void truco_del_jugador_desconfiado();
 void truco_de_cabo_caniaberal();
+void prediccion();
+void revelar_carta(int sumaValor);
+int valor(tCarta carta);
 
 //Funcion de pausa
 inline void pausa();
@@ -553,6 +553,912 @@ int main()
 	} while (eleccion != 0);
 
 	return 1;
+}
+
+//Carga un mazo de un archivo a elección del usuario.
+bool tMazo::cargar(string &nomb)
+{
+	char p;
+	int cont = 0, n;
+	ifstream archivo;
+	if (abrir(nomb, archivo))
+	{
+		archivo >> p;
+		while (p != 'x' && cont < MAX_CARTAS)
+		{
+			archivo >> n;
+			cartas[cont] = traducir(p, n);
+			cont++;
+			archivo >> p;
+		}
+		cuantas = cont;
+		archivo.close();
+		return true;
+	}
+	else return false;
+}
+
+//Carga automaticamente el archivo que le pases como argumento
+bool tMazo::cargar_auto(string &nomb)
+{
+	char p;
+	int cont = 0, n;
+	ifstream archivo(nomb);
+	if (archivo.is_open())
+	{
+		archivo >> p;
+		while (p != 'x' && cont < MAX_CARTAS)
+		{
+			archivo >> n;
+			cartas[cont] = traducir(p, n);
+			cont++;
+			archivo >> p;
+		}
+		cuantas = cont;
+		archivo.close();
+		return true;
+	}
+	else return false;
+}
+
+//Comprueba que el mazo cargado tenga las cartas necesarias para los trucos
+bool tMazo::mazoValido(int cartasNecesarias, string &nomb)
+{
+	if (cargar_auto(nomb))
+	{
+		if (cartasNecesarias != cuantas)
+		{
+			cout << "Error, el mazo cargado no tiene las "
+				<< cartasNecesarias << " cartas necesarias." << endl
+				<< "Sal del programa, ve al codigo, modifica el nombre "
+				<< "del archivo y vuelve a ejecutar el programa y el truco"
+				<< endl;
+
+			pausa();
+		}
+		return true;
+	}
+	else return false;
+}
+
+//Carga un mazo de 52 cartas sin necesidad de acceder a ningun archivo
+void tMazo::cargar_mazo_completo()
+{
+	int k = 0;
+
+	for (int j = 0; j<4; j++)
+	{
+		for (int i = 1; i<14; i++)
+		{
+			cartas[k] = tCarta((tPalo)j, (tNumero)i);
+			k++;
+			cuantas = 52;
+		}
+	}
+}
+
+//Concatena al mazo actual un mazo cargado de archivo.
+bool tMazo::agregar()
+{
+	tMazo otroMazo;
+	string nomb;
+	if (!otroMazo.cargar(nomb))
+	{
+		cout << "No pudo cargarse el archivo" << endl;
+		return false;
+	}
+	else if (!unir(otroMazo))
+	{
+		cout << "El mazo seleccionado junto al actual superan el limite de cartas por mazo" << endl;
+		return false;
+	}
+	else return true;
+}
+
+//Guarda el mazo que tengas cargado, en el archivo que tue elijas 
+//(en el archivo) actual por defecto
+bool tMazo::guardar(string &nomb)
+{
+	string response;
+	ofstream archivo;
+
+	cout << "En que archivo quieres guardar el mazo? (intro para " << nomb << ")" << endl;
+	cin.sync();
+	getline(cin, response);
+
+	if (response == "") archivo.open(nomb);
+	else
+	{
+		archivo.open(response);
+		nomb == response;
+	}
+
+	if (archivo.is_open())
+	{
+		for (int i = 0; i < cuantas; i++)
+		{
+			archivo << traducir(cartas[i]) << endl;
+		}
+		archivo << "x";
+		return true;
+	}
+	else return false;
+}
+
+//Vacia el mazo actual reiniciando el contador de la funcion cuantas()
+inline void tMazo::vaciar()
+{
+	cuantas = 0;
+}
+
+//Baraja el mazo, intercambiando aleatoriemente cartas
+void tMazo::barajar()
+{
+	for (int i = 0; i<3 * cuantas; i++)
+	{
+		intercambiar(randint(cuantas), randint(cuantas));
+	}
+}
+
+//Intercambia al azahar las posiciones de dos cartas dentro de un mazo
+void tMazo::intercambiar(int pos1, int pos2)
+{
+	tCarta aux;
+
+	aux = cartas[pos1];
+
+	cartas[pos1] = cartas[pos2];
+
+	cartas[pos2] = aux;
+}
+
+//Desplaza las cartas del mazo a la derecha, para hacer hueco para nuevas cartas
+bool tMazo::desplazar(int numero)
+{
+	if (cuantas + numero <= MAX_CARTAS)
+	{
+		for (int i = cuantas - 1; i >= 0; i--)
+			cartas[i + numero] = cartas[i];
+		cuantas += numero;
+		return true;
+	}
+	else return false;
+}
+
+//Corta el mazo actual por la posicion que indique el argumento, 
+//y completa el mazo situando ambas partes en el orden contrario 
+//a en que se separaron
+void tMazo::cortar(int cuantasCartas)
+{
+	tMazo otroMazo;
+	//Corta...
+	if (partir(otroMazo, cuantasCartas))
+	{
+		//...y completa.
+		unir(otroMazo);
+	}
+}
+
+//Corta el mazo actual por la posicion que indique el argumento, 
+//y guarda la otra parte de este en una variable tMazo 
+bool tMazo::partir(tMazo &otroMazo, int cuantasCoger)
+{
+	int i;
+	if (cuantasCoger > cuantas) return false;
+	else
+	{
+		for (i = 0; cuantasCoger + i < cuantas; i++)
+		{
+			otroMazo[i] = cartas[cuantasCoger + i];
+		}
+
+		cuantas = cuantasCoger;
+		otroMazo.cuantas = i;
+
+		return true;
+	}
+}
+
+//Une el mazo actual con el mazo que le pases de argumento, 
+//guardando el mazo resultante en el mazo actual
+bool tMazo::unir(const tMazo &otroMazo)
+{
+	if (desplazar(otroMazo.cuantas))
+	{
+		for (int i = 0; i < otroMazo.cuantas; i++)
+		{
+			cartas[i] = otroMazo[i];
+		}
+		return true;
+	}
+	else return false;
+}
+
+//Añade una carta elegida por el usuario al mazo actual
+inline void tMazo::carta_concreta_dentro()
+{
+	agregar_carta(elegir_carta());
+}
+
+//Quita una carta elegida por el usuario del mazo actual
+inline void tMazo::carta_concreta_fuera()
+{
+	quitar_carta(elegir_carta());
+}
+
+//Añade la carta que le passes como argumento al mazo actual
+bool tMazo::agregar_carta(tCarta carta)
+{
+	if (cuantas == MAX_CARTAS)
+	{
+		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
+		return false;
+	}
+	else
+	{
+		cartas[cuantas] = carta;
+		cuantas++;
+		return true;
+	}
+}
+
+//Quita la carta que le pases como argumento del mazo actual
+bool tMazo::quitar_carta(tCarta carta)
+{
+	int i;
+
+	//Buscamos la carta objetivo
+	for (i = 0; cartas[i] != carta && i < cuantas; i++);
+
+	if (i == cuantas)
+	{
+		cout << "Error, no se encontro la carta seleccionada" << endl;
+		return false;
+	}
+	else
+	{
+		//Desplazamos el mazo hacia la izquierda, cubriendo la carta objetivo
+		for (; i < cuantas - 1; i++)
+			cartas[i] = cartas[i + 1];
+		cuantas--;
+		return true;
+	}
+}
+
+//Separa el mazo en dos segun sean sus cartas pares o impares
+void tMazo::repartirParImpar(tMazo &mazoPar, tMazo &mazoImpar)
+{
+	repartir_segun_criterio(mazoPar, mazoImpar, pares);
+}
+
+//Separa el mazo en dos segun sean sus cartas figuras o numero
+void tMazo::repartirFigurasNumeros(tMazo &mazoFiguras, tMazo &mazoNumeros)
+{
+	repartir_segun_criterio(mazoFiguras, mazoNumeros, figuras);
+}
+
+//Separa el mazo en dos segun sean sus cartas bajas o altas
+void tMazo::repartirBajaAlta(tMazo &mazoBajas, tMazo &mazoAltas)
+{
+	repartir_segun_criterio(mazoBajas, mazoAltas, bajas);
+}
+
+//Separa el mazo en dos segun sean sus cartas negras o rojas
+void tMazo::repartirNegroRojo(tMazo &mazoNegro, tMazo &mazoRojo)
+{
+	repartir_segun_criterio(mazoNegro, mazoRojo, negro);
+}
+
+//Generalizar es mejor. Para que tener cuatro funciones practicamente iguales?
+void tMazo::repartir_segun_criterio(tMazo &mazo1, tMazo &mazo2, bool(*criterio)(tCarta))
+{
+	int j = 0, k = 0;
+
+	for (int i = 0; i < cuantas; i++)
+	{
+		if (criterio(cartas[i]))
+		{
+			mazo1[j] = cartas[i];
+			j++;
+		}
+		else
+		{
+			mazo2[k] = cartas[i];
+			k++;
+		}
+	}
+	mazo1.cuantas = j;
+	mazo2.cuantas = k;
+}
+
+//Reparte una de cada enCuantos cartas del mazo actual a mazoNuevo, 
+//comenzando por la carta queMaoz del mazo actual
+void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
+{
+	int j = 0;
+	for (int i = queMazo; i < cuantas; i += enCuantos, j++)
+	{
+		mazoNuevo[j] = cartas[i];
+	}
+	mazoNuevo.cuantas = j;
+}
+
+//Reparte el mazo actual en tantos mazos como le pases como argumento
+int tMazo::repartir_en_n(tMazo mazo[], int n)
+{
+	//Repartir alternamente
+	for (int i = 0; i<n; i++)
+		repartirIntercalando(n, i, mazo[i]);
+
+	return ((*this).cuantas / n);
+}
+
+//Reparte consecutivamente las cartas que pases como argumento desde el
+//mazo actual a mazoJugador
+void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
+//cont evita que siempre repartamos las mismas cartas.
+{
+	if (cuantasQuieres >(*this).cuantas)
+	{
+		cout << "Error, no puedes coger mas cartas de las que tiene el mazo" << endl;
+	}
+	else if (cuantasQuieres + mazoJugador.cuantas > MAX_CARTAS)
+	{
+		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
+	}
+	else
+	{
+		for (int i = 0; i < cuantasQuieres; i++)
+			mazoJugador[mazoJugador.cuantas++] = (*this)[--(*this).cuantas];
+	}
+}
+
+//Usada en el truco de cabo caniaveral, reparte las cartas que le pases como argumento
+//del mazo principal a mazoNuevo y las va mostrando, haciendo una cuenta atras desde cuenta.
+//Si el numero de la carta coincide con cuenta, el reparto se detiene, en cambio si la cuenta 
+//llega a 0 la cuenta tambien se detiene, pero no se muestra la ultima carta.
+int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
+{
+	int i = cuenta + 1;
+
+	do
+	{
+		i--;
+		(*this).repartir_n_cartas(mazoNuevo, 1);
+
+		if (i == 0)
+		{
+			cout << "Carta " << i << ": "
+				<< "Valor = 0";
+		}
+		else
+		{
+			cout << "Carta " << i << ": ";
+			mostrar(mazoNuevo[cuenta - i]);
+		}
+
+		pausa();
+	} while (i>0 && valor(mazoNuevo[cuenta - i]) != i);
+
+	return i;
+}
+
+//Menu de opciones del juego de blackjack
+int Blackjack::menu_opciones()
+{
+	linea();
+
+	cout << "Menu de Blackjack:" << endl
+		<< "1 - Jugar" << endl
+		<< "2 - Reglas" << endl
+		<< "3 - Estadisticas" << endl
+		<< "4 - Cambiar usuario" << endl
+		<< "5 - Resetear estadisticas" << endl
+		<< "0 - Salir" << endl;
+
+	return digitoEntre(0, 5);
+}
+
+//Opciones que tienes durante tu turno en el juego de blackjack
+int Blackjack::opciones_de_blackjack()
+{
+	cout << "Que decides hacer?:" << endl
+		<< "1 - Pedir" << endl
+		<< "2 - Plantarse" << endl
+		<< "3 - Doblar apuesta" << endl
+		<< "0 - Abandonar" << endl;
+
+	return digitoEntre(0, 3);
+}
+
+//Actualiza las estadisticas
+bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
+{
+	bool ok;
+	int ganadas, perdidas;
+	string linea;
+	ifstream stats;
+	ofstream actualizar;
+
+	stats.open("stats.txt");
+
+	//Restauracion con el backup, si es necesaria
+	if (!stats.good())
+	{
+		cout << "Error! stats.txt no existe. Buscando backup..." << endl;
+		stats.close();
+
+		restore_from_backup();
+
+		stats.open("stats.txt");
+	}
+
+	actualizar.open("backup.txt");
+
+	if (stats.good())
+	{
+		//Copia de stats a backup, hasta la info del usuario
+		do
+		{
+			getline(stats, linea);
+			actualizar << linea << endl;
+		} while (linea != usuario);
+
+		//Actualizacion de datos
+		stats >> ganadas;
+		stats >> perdidas;
+
+		if (ganador == Jugador)   ganadas += 1;
+		else if (ganador == Automata) perdidas += 1;
+
+		actualizar << ganadas << endl;
+		actualizar << perdidas << endl;
+
+		char c;
+		stats.get(c);
+		while (!stats.eof())
+		{
+			actualizar.put(c);
+			stats.get(c);
+		}
+
+		ok = true;
+	}
+	else
+	{
+		ganadas = (ganador == Jugador) ? 1 : 0;
+		perdidas = (ganador == Automata) ? 1 : 0;
+
+		actualizar << 1 << endl << endl //Ejecuciones
+			<< usuario << endl
+			<< ganadas << endl
+			<< perdidas << endl
+			<< endl;
+
+		cout << "El archivo 'stats.txt' no se encontro, se ha creado un nuevo archivo" << endl;
+
+		ok = false;
+	}
+	stats.close();
+	actualizar.close();
+
+	//Ahora copiamos la informacion actualizada en el archivo original
+	fcopy("backup.txt", "stats.txt");
+
+	return ok;
+}
+
+//Te pregunta cuanto quieres apostar en una partida de blackjack
+int Blackjack::apuesta()
+{
+	int pastaJugada;
+	cout << "Cuanto quieres apostar?" << endl;
+
+	pastaJugada = digitoEntre(APU_MIN, APU_MAX);
+
+	if (pastaJugada == dinero)
+	{
+		cout << "Con que apuestas todo el dinero que te queda, eh?." << endl
+			<< "Buena suerte... " << endl;
+
+		pausa();
+
+		cout << "Buena suerte... Te hara falta" << endl;
+	}
+	else
+	{
+		while (pastaJugada > dinero)
+		{
+			cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
+
+			pastaJugada = digitoEntre(APU_MIN, APU_MAX);
+		}
+	}
+	return pastaJugada;
+}
+
+//Funcion que controla si puedes o no dolar la apuesta 
+//mediante recursividad
+void Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta)
+{
+	while ((decision != 's') && (decision != 'n') && (cuantasVeces < 3))
+	{
+		if (cuantasVeces == 0)
+		{
+			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
+				<< "haces bien, es una decision muy importante, pero tranquilo, "
+				<< "tu sobre todo no te pongas nervioso..." << endl;
+
+			pausa();
+
+			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+			cin.clear();
+			cin >> decision;
+
+			cuantasVeces += 1;
+		}
+		else if (cuantasVeces == 1)
+		{
+			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
+				<< "nervioso? Relmente la decision no es tan importante" << endl;
+
+			pausa();
+
+			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+			cin.clear();
+			cin >> decision;
+
+			cuantasVeces += 1;
+		}
+		else if (cuantasVeces == 2)
+		{
+			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
+				<< "clara esa decision, continua la partida sin doblar la apuesta"
+				<< endl;
+
+			cuantasVeces += 1;
+
+			dudaApuesta = false;
+		}
+	}
+
+	if (decision == 'n')
+	{
+		cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
+			<< "menores, pero tu lo has querido..." << endl;
+
+		dudaApuesta = false;
+	}
+	else if (decision == 's')
+	{
+		cout << "Has tomado tu decision, ya no hay vuelta atras..."
+			<< endl;
+
+		dinero -= apu;
+		apu *= 2;
+
+		cout << "Ahora juegas la partida por " << apu << " dolares" << endl;
+
+		dudaApuesta = false;
+	}
+}
+
+//Define y proporciona la recompensa tras una partida de blackjack
+//basandose en los posibles finales de esta
+void Blackjack::recompensa(int apu, int queHacer, string usuario)
+{
+	int manoCrup = valor(mazoBot);
+	int manoJug = valor(mazoJugador);
+	tJugador ganador;
+
+	cout << "Mazo actual: " << endl;
+	mostrar(mazoJugador);
+	cout << endl;
+
+	cout << "Mazo del crupier: " << endl;
+	mostrar(mazoBot);
+	cout << endl;
+
+	if (queHacer == 0)
+	{
+		cout << "Has abandonado la partida" << endl;
+
+		perder(apu);
+
+		ganador = Automata;
+	}
+	else if (queHacer == 2)
+	{
+		if ((manoJug <= 21) && (manoCrup <= 21))
+		{
+
+			if (manoJug <= manoCrup)
+			{
+				if (manoJug == manoCrup)
+				{
+					cout << "El crupier y tu teneis la misma mano, "
+						<< "gana el Crupier" << endl;
+				}
+				else
+				{
+					cout << "El crupier tiene una mano mejor que la tuya" << endl;
+				}
+
+				perder(apu);
+
+				ganador = Automata;
+			}
+			else
+			{
+				apu += apu;
+
+				cout << "Tu mano es mejor que la del crupier" << endl;
+
+				ganar(apu);
+
+				ganador = Jugador;
+			}
+		}
+		else if (manoJug > 21)
+		{
+			cout << "Tu mano supera el valor de 21" << endl;
+
+			perder(apu);
+
+			ganador = Automata;
+		}
+		else if ((manoJug <= 21) && (manoCrup > 21))
+		{
+			apu += apu;
+
+			cout << "La mano del crupier supera el valor de 21" << endl;
+
+			ganar(apu);
+
+			ganador = Jugador;
+		}
+		else if ((manoJug == 21) && (mazoJugador.cuantas == 2))
+		{
+			apu += apu / 2;
+
+			cout << "Has conseguido blackjack con tus dos primeras cartas" << endl;
+
+			ganar(apu);
+
+			ganador = Jugador;
+		}
+	}
+	else
+	{
+		if (manoJug > 21)
+		{
+			cout << "Tu mano supera el valor de 21" << endl;
+
+			perder(apu);
+
+			ganador = Automata;
+		}
+		else if (manoCrup == 21)
+		{
+			cout << "El crupier y tu teneis la misma mano, "
+				<< "gana el Crupier" << endl;
+
+			perder(apu);
+
+			ganador = Automata;
+		}
+		else
+		{
+			apu += apu;
+
+			cout << "Tu mano es mejor que la del crupier" << endl;
+
+			ganar(apu);
+
+			ganador = Jugador;
+		}
+	}
+	actualizar_stats(ganador, usuario);
+}
+
+//Define el valor de una mano de blackjack
+int Blackjack::valor(const tMazo &mano)
+{
+	int total = 0;
+	bool hay_un_as = false;
+	for (int i = 0; i < mano.cuantas; i++)
+	{
+		if (mano[i].num == A) hay_un_as = true;
+		if ((mano[i].num == K) || (mano[i].num == J) || (mano[i].num == Q))
+		{
+			total += 10;
+		}
+		else total += (int)mano[i].num;
+	}
+	if (hay_un_as && total <= 11) return total + 10; //El as puede valer 1 o 11, según nos convenga.
+	else return total;
+}
+
+//Controla el menu de blackjack
+void Blackjack::run(string usuario)
+{
+
+	int opcion;
+	string archivo = "reglas_bj.txt";
+
+	cout << "Saldo actual: " << dinero << endl;
+
+	do
+	{
+		opcion = menu_opciones();
+		if (opcion == 1)
+		{
+			if (dinero == 0)
+			{
+				cout << "No puedes volver a jugar, te has quedado sin dinero,"
+					<< " reinicia el programa para volver a jugar";
+			}
+			else
+			{
+				mano(usuario);
+			}
+		}
+		else if (opcion == 2)
+		{
+			mostrar(archivo);
+		}
+		else if (opcion == 3)
+		{
+			stats(usuario);
+		}
+		else if (opcion == 4)
+		{
+			cout << "Hasta la proxima, " << usuario << endl;
+			usuario = iniciar_sesion();
+		}
+		else if (opcion == 5)
+		{
+			usuario = reset(usuario);
+		}
+	} while (opcion != 0);
+}
+
+//Controla una partida de blackjack
+void Blackjack::mano(string usuario)
+{
+	int queHacer, apu;
+	bool dudaApuesta = true;
+
+	cout << "Bienvenido al juego de Blackjack" << endl;
+
+	mazo.barajar();
+
+	mazo.repartir_n_cartas(mazoJugador, 2);
+	mazo.repartir_n_cartas(mazoBot, 2);
+
+	cout << "Mano actual:" << endl;
+	mostrar(mazoJugador);
+	cout << endl;
+
+	cout << "Carta del crupier:" << endl;
+	mostrar(mazoBot[0]);
+	cout << endl;
+
+	apu = apuesta();
+	dinero -= apu;
+
+	//Antes de comenzar a jugar hay que comprobar que ni el crupier ni el jugador tengan 21 o más
+	do
+	{
+		//Siempre empieza el jugador
+
+		queHacer = opciones_de_blackjack();
+
+		if (queHacer == 1)
+		{
+			cout << "Has pedido otra carta" << endl << endl;
+
+			mazo.repartir_n_cartas(mazoJugador, 1);
+
+			cout << "Mano actual:" << endl;
+			mostrar(mazoJugador);
+			cout << endl;
+
+			cout << "Carta del crupier:" << endl;
+			mostrar(mazoBot[0]);
+			cout << endl;
+		}
+		else if (queHacer == 2)
+		{
+			cout << "Has decidido plantarte" << endl;
+		}
+		else if (queHacer == 3)
+		{
+			if (mazoJugador.cuantas > 2)
+			{
+				cout << "Error, no puedes doblar la apuesta si ya has pedido otra carta" << endl;
+			}
+			else
+			{
+				if (dudaApuesta == true)
+				{
+					if (apu > dinero / 2)
+					{
+						cout << "Lo siento, pero con tu saldo restante (" << dinero << ") no "
+							<< "puedes permitirte doblar la apuesta" << endl;
+					}
+					else
+					{
+						int cuantasVeces = 0;
+
+						if (apu == dinero / 2)
+						{
+							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
+								<< "de tu saldo restante, estas seguro de que quieres "
+								<< "hacerlo? (s(si)/n(no))";
+						}
+						else if (apu < dinero / 2)
+						{
+							cout << "Estas seguro de que quieres doblar la apuesta? (s(si)/n(no))";
+						}
+
+						char decision;
+
+						cin.clear();
+						cin >> decision;
+
+						doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);
+					}
+				}
+				else if (dudaApuesta == false)
+				{
+					cout << "Lo siento, pero no puedes doblar la apuesta si ya "
+						<< "antes has decidido hacerlo o no hacerlo" << endl;
+				}
+			}
+		}
+	} while ((valor(mazoJugador) < 21) && (queHacer != 2) && (queHacer != 0));
+
+	turno_crupier();
+
+	recompensa(apu, queHacer, usuario);
+
+	mazoBot.vaciar();
+	mazoJugador.vaciar();
+}
+
+
+bool Blackjack::turno_crupier()
+{
+	bool pasa_crup = true;
+	while (valor(mazoJugador) <= 21 && valor(mazoBot) < valor(mazoJugador))
+	{
+		cout << "El crupier ha pedido una carta" << endl;
+		mazo.repartir_n_cartas(mazoBot, 1);
+		pasa_crup = false;
+	}
+
+	cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
+		<< "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;
+
+	return pasa_crup;
+}
+
+//Muestra por consola que el usuario ha ganado, añade lo que
+//ganara de la apuesta a su dinero actual, y se lo muestra
+inline void Blackjack::ganar(int apu)
+{
+	dinero += apu;
+
+	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
+		<< "Saldo actual: " << dinero << " dolares" << endl;
+}
+
+//Determina que el jugador ha perdido y le muestra el saldo actual
+inline void Blackjack::perder(int apu)
+{
+	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
+		<< "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Devuelve el nombre de usuario, y crea su perfil 
@@ -944,137 +1850,6 @@ bool mostrar(string archivo)
 	return ok;
 }
 
-//Usada en el truco cabo caniaveral, adivina la carta que saldra al final del truco
-void prediccion(tMazo mazo)
-{
-	cout << "Saldra la carta: ";
-
-	mostrar(mazo[8]);
-
-	cout << endl;
-}
-
-//Usada en el truco cabo caniaveral, revela cual es la carta resultante del truco
-void revelar_carta(int sumaValor, tMazo &mazo)
-{
-	cout << "Ahora contamos " << sumaValor << " cartas, y las "
-		<< "vamos mostrando:" << endl << endl;
-
-	for (int i = sumaValor; i>0; i--)
-	{
-		cout << "Carta " << sumaValor - i + 1 << ": " << endl;
-
-		mostrar(mazo[mazo.cuantas - sumaValor + i - 1]);
-
-		cout << endl;
-	}
-
-	cout << "La carta final es: ";
-
-	mostrar(mazo[mazo.cuantas - sumaValor]);
-
-	cout << endl;
-}
-
-//Usada en el truco cabo caniaveral, determina el valor de la carta que le 
-//pases como argumento, teniendo en cuenta que las figuras tambien valen 10
-int valor(tCarta carta)
-{
-	int valor;
-
-	if (carta.num == K || carta.num == Q || carta.num == J)
-	{
-		valor = 10;
-	}
-	else
-	{
-		valor = carta.num;
-	}
-	return valor;
-}
-
-//Carga un mazo de un archivo a elección del usuario.
-bool tMazo::cargar(string &nomb)
-{
-	char p;
-	int cont = 0, n;
-	ifstream archivo;
-	if (abrir(nomb, archivo))
-	{
-		archivo >> p;
-		while (p != 'x' && cont < MAX_CARTAS)
-		{
-			archivo >> n;
-			cartas[cont] = traducir(p, n);
-			cont++;
-			archivo >> p;
-		}
-		cuantas = cont;
-		archivo.close();
-		return true;
-	}
-	else return false;
-}
-
-//Carga automaticamente el archivo que le pases como argumento
-bool tMazo::cargar_auto(string &nomb)
-{
-	char p;
-	int cont = 0, n;
-	ifstream archivo(nomb);
-	if (archivo.is_open())
-	{
-		archivo >> p;
-		while (p != 'x' && cont < MAX_CARTAS)
-		{
-			archivo >> n;
-			cartas[cont] = traducir(p, n);
-			cont++;
-			archivo >> p;
-		}
-		cuantas = cont;
-		archivo.close();
-		return true;
-	}
-	else return false;
-}
-
-//Comprueba que el mazo cargado tenga las cartas necesarias para los trucos
-bool tMazo::mazoValido(int cartasNecesarias, string &nomb)
-{
-	if (cargar_auto(nomb))
-	{
-		if (cartasNecesarias != cuantas)
-		{
-			cout << "Error, el mazo cargado no tiene las "
-				<< cartasNecesarias << " cartas necesarias." << endl
-				<< "Sal del programa, ve al codigo, modifica el nombre "
-				<< "del archivo y vuelve a ejecutar el programa y el truco"
-				<< endl;
-
-			pausa();
-		}
-		return true;
-	}
-	else return false;
-}
-
-//Carga un mazo de 52 cartas sin necesidad de acceder a ningun archivo
-void tMazo::cargar_mazo_completo()
-{
-	int k = 0;
-
-	for (int j = 0; j<4; j++)
-	{
-		for (int i = 1; i<14; i++)
-		{
-			cartas[k] = tCarta((tPalo)j, (tNumero)i);
-			k++;
-			cuantas = 52;
-		}
-	}
-}
-
 //Abre el archivo que indica el usuario. Si el archivo no existe, se pregunta de nuevo, hasta tres veces.
 bool abrir(string &nomb, ifstream &archivo)
 {
@@ -1093,54 +1868,6 @@ bool abrir(string &nomb, ifstream &archivo)
 	}
 	if (archivo.is_open()) return true;
 
-	else return false;
-}
-
-//Concatena al mazo actual un mazo cargado de archivo.
-bool tMazo::agregar()
-{
-	tMazo otroMazo;
-	string nomb;
-	if (!otroMazo.cargar(nomb))
-	{
-		cout << "No pudo cargarse el archivo" << endl;
-		return false;
-	}
-	else if (!unir(otroMazo))
-	{
-		cout << "El mazo seleccionado junto al actual superan el limite de cartas por mazo" << endl;
-		return false;
-	}
-	else return true;
-}
-
-//Guarda el mazo que tengas cargado, en el archivo que tue elijas 
-//(en el archivo) actual por defecto
-bool tMazo::guardar(string &nomb)
-{
-	string response;
-	ofstream archivo;
-
-	cout << "En que archivo quieres guardar el mazo? (intro para " << nomb << ")" << endl;
-	cin.sync();
-	getline(cin, response);
-
-	if (response == "") archivo.open(nomb);
-	else
-	{
-		archivo.open(response);
-		nomb == response;
-	}
-
-	if (archivo.is_open())
-	{
-		for (int i = 0; i < cuantas; i++)
-		{
-			archivo << traducir(cartas[i]) << endl;
-		}
-		archivo << "x";
-		return true;
-	}
 	else return false;
 }
 
@@ -1183,150 +1910,10 @@ tCarta traducir(char p, int n)
 	return carta;
 }
 
-//Vacia el mazo actual reiniciando el contador de la funcion cuantas()
-inline void tMazo::vaciar()
-{
-	cuantas = 0;
-}
-
-//Baraja el mazo, intercambiando aleatoriemente cartas
-void tMazo::barajar()
-{
-	for (int i = 0; i<3 * cuantas; i++)
-	{
-		intercambiar(randint(cuantas), randint(cuantas));
-	}
-}
-
 //Genera un numero aleatorio entre 0 y el numero que se le pase como argumento
 int randint(int max)
 {
 	return rand() % (max);
-}
-
-//Intercambia al azahar las posiciones de dos cartas dentro de un mazo
-void tMazo::intercambiar(int pos1, int pos2)
-{
-	tCarta aux;
-
-	aux = cartas[pos1];
-
-	cartas[pos1] = cartas[pos2];
-
-	cartas[pos2] = aux;
-}
-
-//Desplaza las cartas del mazo a la derecha, para hacer hueco para nuevas cartas
-bool tMazo::desplazar(int numero)
-{
-	if (cuantas + numero <= MAX_CARTAS)
-	{
-		for (int i = cuantas - 1; i >= 0; i--)
-			cartas[i + numero] = cartas[i];
-		cuantas += numero;
-		return true;
-	}
-	else return false;
-}
-
-//Corta el mazo actual por la posicion que indique el argumento, 
-//y completa el mazo situando ambas partes en el orden contrario 
-//a en que se separaron
-void tMazo::cortar(int cuantasCartas)
-{
-	tMazo otroMazo;
-	//Corta...
-	if (partir(otroMazo, cuantasCartas))
-	{
-		//...y completa.
-		unir(otroMazo);
-	}
-}
-
-//Corta el mazo actual por la posicion que indique el argumento, 
-//y guarda la otra parte de este en una variable tMazo 
-bool tMazo::partir(tMazo &otroMazo, int cuantasCoger)
-{
-	int i;
-	if (cuantasCoger > cuantas) return false;
-	else
-	{
-		for (i = 0; cuantasCoger + i < cuantas; i++)
-		{
-			otroMazo[i] = cartas[cuantasCoger + i];
-		}
-
-		cuantas = cuantasCoger;
-		otroMazo.cuantas = i;
-
-		return true;
-	}
-}
-
-//Une el mazo actual con el mazo que le pases de argumento, 
-//guardando el mazo resultante en el mazo actual
-bool tMazo::unir(const tMazo &otroMazo)
-{
-	if (desplazar(otroMazo.cuantas))
-	{
-		for (int i = 0; i < otroMazo.cuantas; i++)
-		{
-			cartas[i] = otroMazo[i];
-		}
-		return true;
-	}
-	else return false;
-}
-
-//Añade una carta elegida por el usuario al mazo actual
-inline void tMazo::carta_concreta_dentro()
-{
-	agregar_carta(elegir_carta());
-}
-
-//Quita una carta elegida por el usuario del mazo actual
-inline void tMazo::carta_concreta_fuera()
-{
-	quitar_carta(elegir_carta());
-}
-
-//Añade la carta que le passes como argumento al mazo actual
-bool tMazo::agregar_carta(tCarta carta)
-{
-	if (cuantas == MAX_CARTAS)
-	{
-		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
-		return false;
-	}
-	else
-	{
-		cartas[cuantas] = carta;
-		cuantas++;
-		return true;
-	}
-}
-
-//Quita la carta que le pases como argumento del mazo actual
-bool tMazo::quitar_carta(tCarta carta)
-{
-	int i;
-
-	//Buscamos la carta objetivo
-	for (i = 0; cartas[i] != carta && i < cuantas; i++);
-
-	if (i == cuantas)
-	{
-		cout << "Error, no se encontro la carta seleccionada" << endl;
-		return false;
-	}
-	else
-	{
-		//Desplazamos el mazo hacia la izquierda, cubriendo la carta objetivo
-		for (; i < cuantas - 1; i++)
-			cartas[i] = cartas[i + 1];
-		cuantas--;
-		return true;
-	}
 }
 
 //Criterio de si la carta que se pase como argumento es par
@@ -1335,22 +1922,10 @@ bool pares(tCarta carta)
 	return (!(carta.num % 2));
 }
 
-//Separa el mazo en dos segun sean sus cartas pares o impares
-void tMazo::repartirParImpar(tMazo &mazoPar, tMazo &mazoImpar)
-{
-	repartir_segun_criterio(mazoPar, mazoImpar, pares);
-}
-
 //Criterio de si la carta que se pase como argumento es figura
 bool figuras(tCarta carta)
 {
 	return (carta.num > 10 || carta.num == A);
-}
-
-//Separa el mazo en dos segun sean sus cartas figuras o numero
-void tMazo::repartirFigurasNumeros(tMazo &mazoFiguras, tMazo &mazoNumeros)
-{
-	repartir_segun_criterio(mazoFiguras, mazoNumeros, figuras);
 }
 
 //Criterio de si la carta que se pase como argumento es baja
@@ -1359,116 +1934,10 @@ bool bajas(tCarta carta)
 	return (carta.num < 8);
 }
 
-//Separa el mazo en dos segun sean sus cartas bajas o altas
-void tMazo::repartirBajaAlta(tMazo &mazoBajas, tMazo &mazoAltas)
-{
-	repartir_segun_criterio(mazoBajas, mazoAltas, bajas);
-}
-
 //Criterio de si la carta que se pase como argumento es negra
 bool negro(tCarta carta)
 {
 	return ((carta.palo == picas) || (carta.palo == treboles));
-}
-
-//Separa el mazo en dos segun sean sus cartas negras o rojas
-void tMazo::repartirNegroRojo(tMazo &mazoNegro, tMazo &mazoRojo)
-{
-	repartir_segun_criterio(mazoNegro, mazoRojo, negro);
-}
-
-//Generalizar es mejor. Para que tener cuatro funciones practicamente iguales?
-void tMazo::repartir_segun_criterio(tMazo &mazo1, tMazo &mazo2, bool(*criterio)(tCarta))
-{
-	int j = 0, k = 0;
-
-	for (int i = 0; i < cuantas; i++)
-	{
-		if (criterio(cartas[i]))
-		{
-			mazo1[j] = cartas[i];
-			j++;
-		}
-		else
-		{
-			mazo2[k] = cartas[i];
-			k++;
-		}
-	}
-	mazo1.cuantas = j;
-	mazo2.cuantas = k;
-}
-
-//Reparte una de cada enCuantos cartas del mazo actual a mazoNuevo, 
-//comenzando por la carta queMaoz del mazo actual
-void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
-{
-	int j = 0;
-	for (int i = queMazo; i < cuantas; i += enCuantos, j++)
-	{
-		mazoNuevo[j] = cartas[i];
-	}
-	mazoNuevo.cuantas = j;
-}
-
-//Reparte el mazo actual en tantos mazos como le pases como argumento
-int tMazo::repartir_en_n(tMazo mazo[], int n)
-{
-	//Repartir alternamente
-	for (int i = 0; i<n; i++)
-		repartirIntercalando(n, i, mazo[i]);
-
-	return ((*this).cuantas / n);
-}
-
-//Reparte consecutivamente las cartas que pases como argumento desde el
-//mazo actual a mazoJugador
-void tMazo::repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres)
-//cont evita que siempre repartamos las mismas cartas.
-{
-	if (cuantasQuieres >(*this).cuantas)
-	{
-		cout << "Error, no puedes coger mas cartas de las que tiene el mazo" << endl;
-	}
-	else if (cuantasQuieres + mazoJugador.cuantas > MAX_CARTAS)
-	{
-		cout << "Error, el mazo no puede contener mas de 52 cartas" << endl;
-	}
-	else
-	{
-		for (int i = 0; i < cuantasQuieres; i++)
-			mazoJugador[mazoJugador.cuantas++] = (*this)[--(*this).cuantas];
-	}
-}
-
-//Usada en el truco de cabo caniaveral, reparte las cartas que le pases como argumento
-//del mazo principal a mazoNuevo y las va mostrando, haciendo una cuenta atras desde cuenta.
-//Si el numero de la carta coincide con cuenta, el reparto se detiene, en cambio si la cuenta 
-//llega a 0 la cuenta tambien se detiene, pero no se muestra la ultima carta.
-int tMazo::repartir_con_cuenta_atras(tMazo &mazoNuevo, int cuenta)
-{
-	int i = cuenta + 1;
-
-	do
-	{
-		i--;
-		(*this).repartir_n_cartas(mazoNuevo, 1);
-
-		if (i == 0)
-		{
-			cout << "Carta " << i << ": "
-				<< "Valor = 0";
-		}
-		else
-		{
-			cout << "Carta " << i << ": ";
-			mostrar(mazoNuevo[cuenta - i]);
-		}
-
-		pausa();
-	} while (i>0 && valor(mazoNuevo[cuenta - i]) != i);
-
-	return i;
 }
 
 //Actualiza el numero de ejecuciones guardado en el archivo stats.
@@ -1494,83 +1963,6 @@ void registrar_nueva_ejecucion()
 	backup.close();
 
 	fcopy("backup.txt", "stats.txt");
-}
-
-//Actualiza las estadisticas
-bool Blackjack::actualizar_stats(tJugador ganador, string usuario)
-{
-	bool ok;
-	int ganadas, perdidas;
-	string linea;
-	ifstream stats;
-	ofstream actualizar;
-
-	stats.open("stats.txt");
-
-	//Restauracion con el backup, si es necesaria
-	if (!stats.good())
-	{
-		cout << "Error! stats.txt no existe. Buscando backup..." << endl;
-		stats.close();
-
-		restore_from_backup();
-
-		stats.open("stats.txt");
-	}
-
-	actualizar.open("backup.txt");
-
-	if (stats.good())
-	{
-		//Copia de stats a backup, hasta la info del usuario
-		do
-		{
-			getline(stats, linea);
-			actualizar << linea << endl;
-		} while (linea != usuario);
-
-		//Actualizacion de datos
-		stats >> ganadas;
-		stats >> perdidas;
-
-		if (ganador == Jugador)   ganadas += 1;
-		else if (ganador == Automata) perdidas += 1;
-
-		actualizar << ganadas << endl;
-		actualizar << perdidas << endl;
-
-		char c;
-		stats.get(c);
-		while (!stats.eof())
-		{
-			actualizar.put(c);
-			stats.get(c);
-		}
-
-		ok = true;
-	}
-	else
-	{
-		ganadas = (ganador == Jugador) ? 1 : 0;
-		perdidas = (ganador == Automata) ? 1 : 0;
-
-		actualizar << 1 << endl << endl //Ejecuciones
-			<< usuario << endl
-			<< ganadas << endl
-			<< perdidas << endl
-			<< endl;
-
-		cout << "El archivo 'stats.txt' no se encontro, se ha creado un nuevo archivo" << endl;
-
-		ok = false;
-	}
-	stats.close();
-	actualizar.close();
-
-	//Ahora copiamos la informacion actualizada en el archivo original
-	fcopy("backup.txt", "stats.txt");
-
-	return ok;
 }
 
 //Muestra las estadisticas del jugador actual.
@@ -2133,445 +2525,53 @@ void truco_de_cabo_caniaberal()
 	revelar_carta(valorTotal, mazoI);
 }
 
-//Menu de opciones del juego de blackjack
-int Blackjack::menu_opciones()
+//Usada en el truco cabo caniaveral, adivina la carta que saldra al final del truco
+void prediccion(tMazo mazo)
 {
-	linea();
+	cout << "Saldra la carta: ";
 
-	cout << "Menu de Blackjack:" << endl
-		<< "1 - Jugar" << endl
-		<< "2 - Reglas" << endl
-		<< "3 - Estadisticas" << endl
-		<< "4 - Cambiar usuario" << endl
-		<< "5 - Resetear estadisticas" << endl
-		<< "0 - Salir" << endl;
+	mostrar(mazo[8]);
 
-	return digitoEntre(0, 5);
+	cout << endl;
 }
 
-//Opciones que tienes durante tu turno en el juego de blackjack
-int Blackjack::opciones_de_blackjack()
+//Usada en el truco cabo caniaveral, revela cual es la carta resultante del truco
+void revelar_carta(int sumaValor, tMazo &mazo)
 {
-	cout << "Que decides hacer?:" << endl
-		<< "1 - Pedir" << endl
-		<< "2 - Plantarse" << endl
-		<< "3 - Doblar apuesta" << endl
-		<< "0 - Abandonar" << endl;
+	cout << "Ahora contamos " << sumaValor << " cartas, y las "
+		<< "vamos mostrando:" << endl << endl;
 
-	return digitoEntre(0, 3);
-}
-
-//Te pregunta cuanto quieres apostar en una partida de blackjack
-int Blackjack::apuesta()
-{
-	int pastaJugada;
-	cout << "Cuanto quieres apostar?" << endl;
-
-	pastaJugada = digitoEntre(APU_MIN, APU_MAX);
-
-	if (pastaJugada == dinero)
+	for (int i = sumaValor; i>0; i--)
 	{
-		cout << "Con que apuestas todo el dinero que te queda, eh?." << endl
-			<< "Buena suerte... " << endl;
+		cout << "Carta " << sumaValor - i + 1 << ": " << endl;
 
-		pausa();
+		mostrar(mazo[mazo.cuantas - sumaValor + i - 1]);
 
-		cout << "Buena suerte... Te hara falta" << endl;
+		cout << endl;
+	}
+
+	cout << "La carta final es: ";
+
+	mostrar(mazo[mazo.cuantas - sumaValor]);
+
+	cout << endl;
+}
+
+//Usada en el truco cabo caniaveral, determina el valor de la carta que le 
+//pases como argumento, teniendo en cuenta que las figuras tambien valen 10
+int valor(tCarta carta)
+{
+	int valor;
+
+	if (carta.num == K || carta.num == Q || carta.num == J)
+	{
+		valor = 10;
 	}
 	else
 	{
-		while (pastaJugada > dinero)
-		{
-			cout << "Error, no puedes apostar mas dinero del que tienes" << endl;
-
-			pastaJugada = digitoEntre(APU_MIN, APU_MAX);
-		}
+		valor = carta.num;
 	}
-	return pastaJugada;
-}
-
-//Funcion que controla si puedes o no dolar la apuesta 
-//mediante recursividad
-void Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta)
-{
-	while ((decision != 's') && (decision != 'n') && (cuantasVeces < 3))
-	{
-		if (cuantasVeces == 0)
-		{
-			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
-				<< "haces bien, es una decision muy importante, pero tranquilo, "
-				<< "tu sobre todo no te pongas nervioso..." << endl;
-
-			pausa();
-
-			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-			cin.clear();
-			cin >> decision;
-
-			cuantasVeces += 1;
-		}
-		else if (cuantasVeces == 1)
-		{
-			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
-				<< "nervioso? Relmente la decision no es tan importante" << endl;
-
-			pausa();
-
-			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-			cin.clear();
-			cin >> decision;
-
-			cuantasVeces += 1;
-		}
-		else if (cuantasVeces == 2)
-		{
-			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
-				<< "clara esa decision, continua la partida sin doblar la apuesta"
-				<< endl;
-
-			cuantasVeces += 1;
-
-			dudaApuesta = false;
-		}
-	}
-
-	if (decision == 'n')
-	{
-		cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
-			<< "menores, pero tu lo has querido..." << endl;
-
-		dudaApuesta = false;
-	}
-	else if (decision == 's')
-	{
-		cout << "Has tomado tu decision, ya no hay vuelta atras..."
-			<< endl;
-
-		dinero -= apu;
-		apu *= 2;
-
-		cout << "Ahora juegas la partida por " << apu << " dolares" << endl;
-
-		dudaApuesta = false;
-	}
-}
-
-//Define y proporciona la recompensa tras una partida de blackjack
-//basandose en los posibles finales de esta
-void Blackjack::recompensa(int apu, int queHacer, string usuario)
-{
-	int manoCrup = valor(mazoBot);
-	int manoJug = valor(mazoJugador);
-	tJugador ganador;
-
-	cout << "Mazo actual: " << endl;
-	mostrar(mazoJugador);
-	cout << endl;
-
-	cout << "Mazo del crupier: " << endl;
-	mostrar(mazoBot);
-	cout << endl;
-
-	if (queHacer == 0)
-	{
-		cout << "Has abandonado la partida" << endl;
-
-		perder(apu);
-
-		ganador = Automata;
-	}
-	else if (queHacer == 2)
-	{
-		if ((manoJug <= 21) && (manoCrup <= 21))
-		{
-
-			if (manoJug <= manoCrup)
-			{
-				if (manoJug == manoCrup)
-				{
-					cout << "El crupier y tu teneis la misma mano, "
-						<< "gana el Crupier" << endl;
-				}
-				else
-				{
-					cout << "El crupier tiene una mano mejor que la tuya" << endl;
-				}
-
-				perder(apu);
-
-				ganador = Automata;
-			}
-			else
-			{
-				apu += apu;
-
-				cout << "Tu mano es mejor que la del crupier" << endl;
-
-				ganar(apu);
-
-				ganador = Jugador;
-			}
-		}
-		else if (manoJug > 21)
-		{
-			cout << "Tu mano supera el valor de 21" << endl;
-
-			perder(apu);
-
-			ganador = Automata;
-		}
-		else if ((manoJug <= 21) && (manoCrup > 21))
-		{
-			apu += apu;
-
-			cout << "La mano del crupier supera el valor de 21" << endl;
-
-			ganar(apu);
-
-			ganador = Jugador;
-		}
-		else if ((manoJug == 21) && (mazoJugador.cuantas == 2))
-		{
-			apu += apu / 2;
-
-			cout << "Has conseguido blackjack con tus dos primeras cartas" << endl;
-
-			ganar(apu);
-
-			ganador = Jugador;
-		}
-	}
-	else
-	{
-		if (manoJug > 21)
-		{
-			cout << "Tu mano supera el valor de 21" << endl;
-
-			perder(apu);
-
-			ganador = Automata;
-		}
-		else if (manoCrup == 21)
-		{
-			cout << "El crupier y tu teneis la misma mano, "
-				<< "gana el Crupier" << endl;
-
-			perder(apu);
-
-			ganador = Automata;
-		}
-		else
-		{
-			apu += apu;
-
-			cout << "Tu mano es mejor que la del crupier" << endl;
-
-			ganar(apu);
-
-			ganador = Jugador;
-		}
-	}
-	actualizar_stats(ganador, usuario);
-}
-
-//Define el valor de una mano de blackjack
-int Blackjack::valor(const tMazo &mano)
-{
-	int total = 0;
-	bool hay_un_as = false;
-	for (int i = 0; i < mano.cuantas; i++)
-	{
-		if (mano[i].num == A) hay_un_as = true;
-		if ((mano[i].num == K) || (mano[i].num == J) || (mano[i].num == Q))
-		{
-			total += 10;
-		}
-		else total += (int)mano[i].num;
-	}
-	if (hay_un_as && total <= 11) return total + 10; //El as puede valer 1 o 11, según nos convenga.
-	else return total;
-}
-
-//Controla el menu de blackjack
-void Blackjack::run(string usuario)
-{
-
-	int opcion;
-	string archivo = "reglas_bj.txt";
-
-	cout << "Saldo actual: " << dinero << endl;
-
-	do
-	{
-		opcion = menu_opciones();
-		if (opcion == 1)
-		{
-			if (dinero == 0)
-			{
-				cout << "No puedes volver a jugar, te has quedado sin dinero,"
-					<< " reinicia el programa para volver a jugar";
-			}
-			else
-			{
-				mano(usuario);
-			}
-		}
-		else if (opcion == 2)
-		{
-			mostrar(archivo);
-		}
-		else if (opcion == 3)
-		{
-			stats(usuario);
-		}
-		else if (opcion == 4)
-		{
-			cout << "Hasta la proxima, " << usuario << endl;
-			usuario = iniciar_sesion();
-		}
-		else if (opcion == 5)
-		{
-			usuario = reset(usuario);
-		}
-	} while (opcion != 0);
-}
-
-//Controla una partida de blackjack
-void Blackjack::mano(string usuario)
-{
-	int queHacer, apu;
-	bool dudaApuesta = true;
-
-	cout << "Bienvenido al juego de Blackjack" << endl;
-
-	mazo.barajar();
-
-	mazo.repartir_n_cartas(mazoJugador, 2);
-	mazo.repartir_n_cartas(mazoBot, 2);
-
-	cout << "Mano actual:" << endl;
-	mostrar(mazoJugador);
-	cout << endl;
-
-	cout << "Carta del crupier:" << endl;
-	mostrar(mazoBot[0]);
-	cout << endl;
-
-	apu = apuesta();
-	dinero -= apu;
-
-	//Antes de comenzar a jugar hay que comprobar que ni el crupier ni el jugador tengan 21 o más
-	do
-	{
-		//Siempre empieza el jugador
-
-		queHacer = opciones_de_blackjack();
-
-		if (queHacer == 1)
-		{
-			cout << "Has pedido otra carta" << endl << endl;
-
-			mazo.repartir_n_cartas(mazoJugador, 1);
-
-			cout << "Mano actual:" << endl;
-			mostrar(mazoJugador);
-			cout << endl;
-
-			cout << "Carta del crupier:" << endl;
-			mostrar(mazoBot[0]);
-			cout << endl;
-		}
-		else if (queHacer == 2)
-		{
-			cout << "Has decidido plantarte" << endl;
-		}
-		else if (queHacer == 3)
-		{
-			if (mazoJugador.cuantas > 2)
-			{
-				cout << "Error, no puedes doblar la apuesta si ya has pedido otra carta" << endl;
-			}
-			else
-			{
-				if (dudaApuesta == true)
-				{
-					if (apu > dinero / 2)
-					{
-						cout << "Lo siento, pero con tu saldo restante (" << dinero << ") no "
-							<< "puedes permitirte doblar la apuesta" << endl;
-					}
-					else
-					{
-						int cuantasVeces = 0;
-
-						if (apu == dinero / 2)
-						{
-							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
-								<< "de tu saldo restante, estas seguro de que quieres "
-								<< "hacerlo? (s(si)/n(no))";
-						}
-						else if (apu < dinero / 2)
-						{
-							cout << "Estas seguro de que quieres doblar la apuesta? (s(si)/n(no))";
-						}
-
-						char decision;
-
-						cin.clear();
-						cin >> decision;
-
-						doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);
-					}
-				}
-				else if (dudaApuesta == false)
-				{
-					cout << "Lo siento, pero no puedes doblar la apuesta si ya "
-						<< "antes has decidido hacerlo o no hacerlo" << endl;
-				}
-			}
-		}
-	} while ((valor(mazoJugador) < 21) && (queHacer != 2) && (queHacer != 0));
-
-	turno_crupier();
-
-	recompensa(apu, queHacer, usuario);
-
-	mazoBot.vaciar();
-	mazoJugador.vaciar();
-}
-
-
-bool Blackjack::turno_crupier()
-{
-	bool pasa_crup = true;
-	while (valor(mazoJugador) <= 21 && valor(mazoBot) < valor(mazoJugador))
-	{
-		cout << "El crupier ha pedido una carta" << endl;
-		mazo.repartir_n_cartas(mazoBot, 1);
-		pasa_crup = false;
-	}
-
-	cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-		<< "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;
-
-	return pasa_crup;
-}
-
-//Muestra por consola que el usuario ha ganado, añade lo que
-//ganara de la apuesta a su dinero actual, y se lo muestra
-inline void Blackjack::ganar(int apu)
-{
-	dinero += apu;
-
-	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-		<< "Saldo actual: " << dinero << " dolares" << endl;
-}
-
-//Determina que el jugador ha perdido y le muestra el saldo actual
-inline void Blackjack::perder(int apu)
-{
-	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-		<< "Saldo actual: " << dinero << " dolares" << endl;
+	return valor;
 }
 
 //Pausa el programa, para continuar pulsa cualquier boton
