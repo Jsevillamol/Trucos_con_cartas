@@ -22,8 +22,8 @@ Aparte de lo pedido en el enunciado de la practica, hemos implementado:
 Warnings:
 En los trucos que requieren cargar mazos determinados hemos implementado una funcion que
 los carga automaticamente, sin pedirte el nombre de dicho mazo. Para que la funcion cargue
-el mazo deseado debes cambiar el nombre desl archivo que quieres que cargue, en la propia 
-funcion de dicho truco.
+el mazo deseado debes cambiar el nombre desl archivo que quieres que cargue, la propia funcion
+de dicho truco.
 ---------------------------------*/
 
 //BIBLIOTECAS
@@ -159,7 +159,7 @@ public:
 
 	//Funciones de datos
 	int apuesta();
-	char Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta);
+	void doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta);
 	void recompensa(int apu, int queHacer, string usuario);
 	int valor(const tMazo &mano);
 
@@ -172,12 +172,10 @@ public:
 
 private:
 	//Variables
-	int   dinero,
-	      cont;
-	      
-	tMazo mazo,
-	      mazoJugador, 
-	      mazoBot;
+	int dinero,
+		cont;
+	tMazo mazo;
+	tMazo mazoJugador, mazoBot;
 };
 
 //FUNCIONES
@@ -2029,9 +2027,57 @@ int Blackjack::apuesta()
 
 //Funcion que controla si puedes o no dolar la apuesta 
 //mediante recursividad
-char Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta)
+void Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &dudaApuesta)
 {
-	if (decision == 's')
+	while ((decision != 's') && (decision != 'n') && (cuantasVeces < 3))
+	{
+		if (cuantasVeces == 0)
+		{
+			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
+				 << "haces bien, es una decision muy importante, pero tranquilo, "
+				 << "tu sobre todo no te pongas nervioso..." << endl;
+
+			pausa();
+
+			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+			cin.clear();
+			cin  >> decision;
+
+			cuantasVeces += 1;
+		}
+		else if (cuantasVeces == 1)
+		{
+			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
+				 << "nervioso? Relmente la decision no es tan importante" << endl;
+
+			pausa();
+
+			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
+			cin.clear();
+			cin >> decision;
+
+			cuantasVeces += 1;
+		}
+		else if (cuantasVeces == 2)
+		{
+			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
+				 << "clara esa decision, continua la partida sin doblar la apuesta"
+				 << endl;
+
+			cuantasVeces += 1;
+
+			dudaApuesta = false;
+		}
+	}
+
+	if (decision == 'n')
+	{
+		cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
+			<< "menores, pero tu lo has querido..." << endl;
+
+		dudaApuesta = false;
+	}
+	else if (decision == 's')
 	{
 		cout << "Has tomado tu decision, ya no hay vuelta atras..."
 			<< endl;
@@ -2043,56 +2089,6 @@ char Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &du
 
 		dudaApuesta = false;
 	}
-	else if (decision == 'n')
-	{
-		cout << "Cobarde... Bueno, ahora si ganas tus ganancias seran "
-			<< "menores, pero tu lo has querido..." << endl;
-
-		dudaApuesta = false;
-	}
-	else
-	{
-		if (cuantasVeces == 0)
-		{
-			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
-				<< "haces bien, es una decision muy importante, pero tranquilo, "
-				<< "tu sobre todo no te pongas nervioso..." << endl;
-
-			pausa();
-
-			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-			cin.clear();
-			cin >> decision;
-
-			cuantasVeces += 1;
-
-			doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);
-		}
-		else if (cuantasVeces == 1)
-		{
-			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
-				<< "nervioso? Relmente la decision no es tan importante" << endl;
-
-			pausa();
-
-			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
-			cin.clear();
-			cin >> decision;
-
-			cuantasVeces += 1;
-
-			doblarApuesta(decision, cuantasVeces, apu, dudaApuesta);
-		}
-		else if (cuantasVeces == 2)
-		{
-			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
-				<< "clara esa decision, continua la partida sin doblar la apuesta"
-				<< endl;
-
-			dudaApuesta = false;
-		}
-	}
-	return decision;
 }
 
 //Define y proporciona la recompensa tras una partida de blackjack
