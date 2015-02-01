@@ -2491,7 +2491,7 @@ void Blackjack::mano(string usuario)
 					if (apu > dinero / 2)
 					{
 						cout << "Lo siento, pero con tu saldo restante (" << dinero << ") no "
-							<< "puedes permitirte doblar la apuesta" << endl;
+						     << "puedes permitirte doblar la apuesta" << endl;
 					}
 					else
 					{
@@ -2500,8 +2500,8 @@ void Blackjack::mano(string usuario)
 						if (apu == dinero / 2)
 						{
 							cout << "Doblar la apuesta ahora, supone apostar la totalidad "
-								<< "de tu saldo restante, estas seguro de que quieres "
-								<< "hacerlo? (s(si)/n(no))";
+						             << "de tu saldo restante, estas seguro de que quieres "
+							     << "hacerlo? (s(si)/n(no))";
 						}
 						else if (apu < dinero / 2)
 						{
@@ -2519,7 +2519,7 @@ void Blackjack::mano(string usuario)
 				else if (dudaApuesta == false)
 				{
 					cout << "Lo siento, pero no puedes doblar la apuesta si ya "
-						<< "antes has decidido hacerlo o no hacerlo" << endl;
+					     << "antes has decidido hacerlo o no hacerlo" << endl;
 				}
 			}
 		}
@@ -2545,7 +2545,7 @@ bool Blackjack::turno_crupier()
 	}
 
 	cout << "El crupier ahora tiene " << mazoBot.cuantas << " cartas." << endl
-		<< "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;
+	     << "Su carta visible es: "; mostrar(mazoBot[0]); cout << endl;
 
 	return pasa_crup;
 }
@@ -2557,14 +2557,14 @@ inline void Blackjack::ganar(int apu)
 	dinero += apu;
 
 	cout << "Enhorabuena, has ganado " << apu << " dolares" << endl
-		<< "Saldo actual: " << dinero << " dolares" << endl;
+	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Determina que el jugador ha perdido y le muestra el saldo actual
 inline void Blackjack::perder(int apu)
 {
 	cout << "Lo siento, has perdido los " << apu << " dolares que apostabas" << endl
-		<< "Saldo actual: " << dinero << " dolares" << endl;
+	     << "Saldo actual: " << dinero << " dolares" << endl;
 }
 
 //Pausa el programa, para continuar pulsa cualquier boton
