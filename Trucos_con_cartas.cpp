@@ -124,7 +124,7 @@ public:
 	void repartirNegroRojo(tMazo &mazoNegro, tMazo &mazoRojo);
 	void repartir_segun_criterio(tMazo &mazo1, tMazo &mazo2, bool(*criterio)(tCarta));
 	void repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo);
-	void repartir_en_n(tMazo mazo[], int n);
+	int repartir_en_n(tMazo mazo[], int n);
 
 	void repartir_n_cartas(tMazo &mazoJugador, int cuantasQuieres);
 
@@ -198,7 +198,7 @@ char elegir_palo();
 char paloValido();
 
 //Funciones de output
-void mostrar(const tMazo mazo[], int n);
+void mostrar(const tMazo mazo[], int n, int cuantasPorMazo);
 void mostrar(const tMazo mazo);
 void mostrar(const tCarta carta);
 void mostrar(const tNumero n);
@@ -376,9 +376,9 @@ int main()
 					cin >> en_cuantos;
 
 					tMazo *mazos = new tMazo[en_cuantos];
-					mazo.repartir_en_n(mazos, en_cuantos);
+					int cuantas = mazo.repartir_en_n(mazos, en_cuantos);
 
-					mostrar(mazos, en_cuantos);
+					mostrar(mazos, en_cuantos, cuantas);
 
 					delete[] mazos;
 				}
@@ -708,12 +708,22 @@ char paloValido()
 }
 
 //Muestra por consola tantos mazos como se le pasen como argumento
-void mostrar(const tMazo mazo[], int n)
+void mostrar(const tMazo mazo[], int n, int cuantasPorMazo)
 {
 	for (int i = 0; i<n; i++)
 	{
-		cout << "Mazo " << (i + 1) << ":" << endl;
-		mostrar(mazo[i]);
+		cout << "Mazo " << (i + 1) << ":" << setw(10);
+	}
+	cout << endl;
+
+	for (int i = 0; i < cuantasPorMazo; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			mostrar(mazo[j][i]);
+			cout << setw(10);
+		}
+		cout << endl;
 	}
 }
 
@@ -723,6 +733,7 @@ void mostrar(tMazo mazo)
 	for (int i = 0; i < mazo.cuantas; i++)
 	{
 		mostrar(mazo[i]);
+		cout << endl;
 	}
 	cout << endl;
 }
@@ -735,8 +746,6 @@ void mostrar(const tCarta carta)
 	cout << " ";
 
 	mostrar(carta.palo);
-
-	cout << endl;
 }
 
 //Traduce los numeros de una carta a simbolos (A, J, Q, K)
@@ -796,6 +805,8 @@ void prediccion(tMazo mazo)
 	cout << "Saldra la carta: ";
 
 	mostrar(mazo[8]);
+
+	cout << endl;
 }
 
 //Usada en el truco cabo caniaveral, revela cual es la carta resultante del truco
@@ -1254,11 +1265,13 @@ void tMazo::repartirIntercalando(int enCuantos, int queMazo, tMazo &mazoNuevo)
 }
 
 //Reparte el mazo actual en tantos mazos como le pases como argumento
-void tMazo::repartir_en_n(tMazo mazo[], int n)
+int tMazo::repartir_en_n(tMazo mazo[], int n)
 {
 	//Repartir alternamente
 	for (int i = 0; i<n; i++)
 		repartirIntercalando(n, i, mazo[i]);
+
+	return ((*this).cuantas / n);
 }
 
 //Reparte consecutivamente las cartas que pases como argumento desde el
@@ -1696,9 +1709,9 @@ void truco_de_los_tres_montones()
 				pausa();
 			}
 			//Repartir alternamente
-			mazoU.repartir_en_n(mazo, 3);
+			int cuantas = mazoU.repartir_en_n(mazo, 3);
 			mazoU.vaciar();
-			mostrar(mazo, 3);
+			mostrar(mazo, 3, cuantas);
 
 			//El usuario elije mazo
 			cout << "En que mazo esta tu carta?" << endl;
@@ -1760,10 +1773,10 @@ void truco_de_la_posada()
 			<< "cuatro habitaciones. " << endl;
 
 		pausa();
-		mazoU.repartir_en_n(mazo, 4);
+		int cuantas = mazoU.repartir_en_n(mazo, 4);
 		mazoU.vaciar();
 
-		mostrar(mazo, 4);
+		mostrar(mazo, 4, cuantas);
 
 		//Juntamos los mazos
 		for (int i = 0; i<4; i++)
@@ -1779,7 +1792,7 @@ void truco_de_la_posada()
 		pausa();
 		mazoU.repartir_en_n(mazo, 4);
 
-		mostrar(mazo, 4);
+		mostrar(mazo, 4, cuantas);
 
 		cout << "Los cuatro reyes amanecieron en la misma habitacion, "
 			<< "y lo mismo sucedio con los caballeros, las damas y los peones" << endl;
@@ -1815,8 +1828,8 @@ void truco_del_jugador_desconfiado()
 		cout << "El mazo se baraja y se reparte entre los cuatro jugadores." << endl;
 		pausa();
 
-		mazoD.repartir_en_n(mazo, 4);
-		mostrar(mazo, 4);
+		int cuantas = mazoD.repartir_en_n(mazo, 4);
+		mostrar(mazo, 4, cuantas);
 		pausa();
 
 		cout << "El jugador dice que no se fia del que ha repartido, asi que propone "
@@ -1862,7 +1875,7 @@ void truco_del_jugador_desconfiado()
 			mazo[3] = mazoImpar;
 
 
-			mostrar(mazo, 4);
+			mostrar(mazo, 4, cuantas);
 			pausa();
 		}
 
@@ -1888,7 +1901,7 @@ void truco_del_jugador_desconfiado()
 
 		cout << "Entonces los jugadores miran sus mazos, y descubren que..." << endl;
 		pausa();
-		mostrar(mazo, 4);
+		mostrar(mazo, 4, cuantas);
 
 		cout << "El jugador desconfiado tiene escalera de color. El de su izquierda full. El siguiente, "
 			<< "poker. Y el ultimo, color" << endl;
@@ -2034,21 +2047,21 @@ void Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &du
 		if (cuantasVeces == 0)
 		{
 			cout << "Eso no es ni si, ni no, se ve que te lo estas pensando, "
-				 << "haces bien, es una decision muy importante, pero tranquilo, "
-				 << "tu sobre todo no te pongas nervioso..." << endl;
+				<< "haces bien, es una decision muy importante, pero tranquilo, "
+				<< "tu sobre todo no te pongas nervioso..." << endl;
 
 			pausa();
 
 			cout << "Que haces entonces, doblas la apuesta o no? (s(si)/n(no))";
 			cin.clear();
-			cin  >> decision;
+			cin >> decision;
 
 			cuantasVeces += 1;
 		}
 		else if (cuantasVeces == 1)
 		{
 			cout << "Parece que te lo estas pensando mucho. Te estas poniendo "
-				 << "nervioso? Relmente la decision no es tan importante" << endl;
+				<< "nervioso? Relmente la decision no es tan importante" << endl;
 
 			pausa();
 
@@ -2061,8 +2074,8 @@ void Blackjack::doblarApuesta(char decision, int cuantasVeces, int apu, bool &du
 		else if (cuantasVeces == 2)
 		{
 			cout << "Lo siento, pero si dudas tanto debe ser que en ralidad no ves "
-				 << "clara esa decision, continua la partida sin doblar la apuesta"
-				 << endl;
+				<< "clara esa decision, continua la partida sin doblar la apuesta"
+				<< endl;
 
 			cuantasVeces += 1;
 
