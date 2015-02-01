@@ -1,3 +1,17 @@
+/*-------------------------------
+TRUCOS DE MAGIA CON CARTAS:
+
+Autores:
+Jaime Sevilla Molina.
+Victor Gonzalez del Hierro.
+
+Fecha:
+2015/2
+
+Version:
+4.0
+-----------------------------------*/
+
 #include <fstream>
 #include <iostream>
 #include <iomanip>
