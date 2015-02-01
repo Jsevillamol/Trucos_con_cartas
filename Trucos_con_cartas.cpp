@@ -712,7 +712,10 @@ void mostrar(const tMazo mazo[], int n, int cuantasPorMazo)
 {
 	for (int i = 0; i<n; i++)
 	{
-		cout << "Mazo " << (i + 1) << ":" << setw(10);
+		cout << "Mazo " << (i + 1) << ":";
+
+		if (i != (n-1))
+			cout << setw(10);
 	}
 	cout << endl;
 
@@ -721,7 +724,9 @@ void mostrar(const tMazo mazo[], int n, int cuantasPorMazo)
 		for (int j = 0; j < n; j++)
 		{
 			mostrar(mazo[j][i]);
-			cout << setw(10);
+
+			if (j != (n-1))
+				cout << setw(10);
 		}
 		cout << endl;
 	}
