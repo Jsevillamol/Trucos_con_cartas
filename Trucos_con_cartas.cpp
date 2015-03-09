@@ -1549,7 +1549,6 @@ string usuario_valido()
 	return nombre;
 }
 
-
 //Menu que permite al usuario acceder a otros menus, o bien al juego de blackjack 
 int menu_principal()
 {
